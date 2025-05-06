@@ -25,7 +25,7 @@ resource "azurerm_linux_function_app" "example" {
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
   storage_account_name       = azurerm_storage_account.example[each.key].name
-  storage_account_access_key = azurerm_storage_account.example[ech.key].primary_access_key
+  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key
 
   site_config {
     always_on = false
@@ -45,6 +45,18 @@ resource "azurerm_application_insights" "example" {
   application_type    = "web"
 }
 
+# Define an action group to use in the smart_detector
+resource "azurerm_monitor_action_group" "example" {
+  for_each = {
+    for app in local.flattened_function_apps :
+    app.name => app
+  }
+  name                = each.key
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+  short_name          = each.key
+}
+
+
 resource "azurerm_monitor_smart_detector_alert_rule" "example" {
   for_each = {
     for app in local.flattened_function_apps :
@@ -57,6 +69,10 @@ resource "azurerm_monitor_smart_detector_alert_rule" "example" {
   scope_resource_ids  = [azurerm_application_insights.example[each.key].id]
   frequency           = "PT1M"
   detector_type       = "FailureAnomaliesDetector"
+
+  action_group {
+    ids = [azurerm_monitor_action_group.example[each.key].id]
+  }
 }
 
 
