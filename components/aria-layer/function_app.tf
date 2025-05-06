@@ -25,7 +25,7 @@ resource "azurerm_linux_function_app" "example" {
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id     = azurerm_service_plan.example[each.key].id
 
-  site_config = {
+  site_config {
     always_on = false
   }
 }
@@ -39,7 +39,7 @@ resource "azurerm_application_insights" "example" {
   name                = each.key
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-  workspace_id        = azurerm_log_analytics_workspace.this.id
+  workspace_id        = data.azurerm_log_analytics_workspace.lz.id
   application_type    = "web"
 }
 
