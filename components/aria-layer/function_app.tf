@@ -27,7 +27,7 @@ resource "azurerm_linux_function_app" "example" {
 
   site_config = {
     always_on = false
-  } 
+  }
 }
 
 resource "azurerm_application_insights" "example" {
