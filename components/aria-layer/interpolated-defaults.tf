@@ -19,7 +19,7 @@ data "azurerm_subnet" "lz" {
 #pull through log analytics workspace from landing zone
 data "azurerm_log_analytics_workspace" "lz" {
   name                = "${local.name}-logAnalytics001-${var.env}"
-  resource_group_name = azurerm_resource_group.this[local.logging_resource_group].name
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-network-${var.env}"].name
 }
 
 module "ctags" {
