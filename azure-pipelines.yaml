@@ -26,21 +26,21 @@ parameters:
   - name: environment_components
     type: object
     default:
-      - deployment: 'sbox_project'
+      - deployment: 'sbox_aria'
         environment: 'sbox'
-        component: 'project-layer'
+        component: 'aria-layer'
         service_connection: 'DTS-DATAINGEST-SBOX'
         dependsOn: 'Precheck'
-      - deployment: 'stg_project'
+      - deployment: 'stg_aria'
         environment: 'stg'
-        component: 'project-layer'
+        component: 'aria-layer'
         service_connection: 'DTS-DATAINGEST-STG'
-        dependsOn: 'sbox_project'
-      - deployment: 'prod_project'
+        dependsOn: 'sbox_aria'
+      - deployment: 'prod_aria'
         environment: 'prod'
-        component: 'project-layer'
+        component: 'aria-layer'
         service_connection: 'DTS-DATAINGEST-PROD'
-        dependsOn: 'stg_project'
+        dependsOn: 'stg_aria'
 
 variables:
   - name: timeoutInMinutes
