@@ -7,7 +7,7 @@ resource "azurerm_storage_account" "example" {
     "${app.lz_key}-${app.name}" => app
   }
 
-  name                     = each.key
+  name                     = replace(each.key, "-", "")
   resource_group_name      = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                 = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   account_tier             = "Standard"
