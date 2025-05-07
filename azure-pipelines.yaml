@@ -1,20 +1,18 @@
+---
 trigger:
   batch: true
   branches:
     include:
       - main
-
 pr:
   - main
-
 resources:
   repositories:
     - repository: cnp-azuredevops-libraries
       type: github
       ref: refs/heads/master
       name: hmcts/cnp-azuredevops-libraries
-      endpoint: "hmcts"
-
+      endpoint: hmcts
 parameters:
   - name: overrideAction
     type: string
@@ -26,22 +24,11 @@ parameters:
   - name: environment_components
     type: object
     default:
-      - deployment: "sbox_aria"
-        environment: "sbox"
-        component: "aria-layer"
-        service_connection: "DTS-DATAINGEST-SBOX"
-        dependsOn: "Precheck"
-#      - deployment: 'stg_aria'
-#        environment: 'stg'
-#        component: 'aria-layer'
-#        service_connection: 'DTS-DATAINGEST-STG'
-#        dependsOn: 'sbox_aria'
-#      - deployment: 'prod_aria'
-#        environment: 'prod'
-#        component: 'aria-layer'
-#        service_connection: 'DTS-DATAINGEST-PROD'
-#        dependsOn: 'stg_aria'
-
+      - deployment: sbox_aria
+        environment: sbox
+        component: aria-layer
+        service_connection: DTS-DATAINGEST-SBOX
+        dependsOn: Precheck
 variables:
   - name: timeoutInMinutes
     value: 240
@@ -52,38 +39,41 @@ variables:
   - name: terraformInitSubscription
     value: 04d27a32-7a07-48b3-95b8-3c8691e1a263
   - template: vars/input-variables.yaml@cnp-azuredevops-libraries
-
 stages:
   - stage: Precheck
     jobs:
-      - job:
+      - job: null
         pool:
           vmImage: ${{ variables.agentImage }}
         steps:
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
-              keyvaultName: "infra-vault-nonprod"
-              keyvaultSecret: "azure-devops-sp-token"
-              serviceConnection: "azurerm-sandbox"
+              keyvaultName: infra-vault-nonprod
+              keyvaultSecret: azure-devops-sp-token
+              serviceConnection: azurerm-sandbox
               overrideAction: ${{ parameters.overrideAction }}
-
-  - ${{ each deployment in parameters.environment_components }}:
+  - "${{ each deployment in parameters.environment_components }}":
       - stage: ${{ deployment.deployment }}
         dependsOn: ${{ deployment.dependsOn }}
         jobs:
+          - job: waitForValidation
+            pool: server
+            displayName: Wait for external validation
+            steps:
+              - "${{ if or(eq(deployment.environment, 'sbox'), eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod')) }}":
+                  - task: ManualValidation@1
+                    inputs:
+                      approvers: andrew.mcdevitt@HMCTS.net
+                      instructions: Please validate the build configuration and resume
           - job: TerraformPlanApply
-            ${{ if eq(deployment.environment, 'sbox') }}:
-              pool: hmcts-sds-ptlsbox
-            ${{ else }}:
-              pool: hmcts-sds-ptl
+            displayName: Terraform Plan Apply
+            pool:
+              "${{ if eq(deployment.environment, 'sbox') }}":
+                name: hmcts-sds-ptlsbox
+              "${{ else }}":
+                name: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
             steps:
-              ${{ if or((eq(deployment.environment, 'sbox'), eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod'))) }}:
-              - task: ManualValidation@1
-                inputs:
-                  approvers: "andrew.mcdevitt@HMCTS.net"
-                  instructions: "Please validate the build configuration and resume"
-
               - template: steps/terraform.yaml@cnp-azuredevops-libraries
                 parameters:
                   overrideAction: ${{ parameters.overrideAction }}
@@ -92,4 +82,4 @@ stages:
                   serviceConnection: ${{ deployment.service_connection }}
                   terraformInitSubscription: ${{ variables.terraformInitSubscription }}
                   product: ${{ variables.product }}
-                  planCommandOptions: "-compact-warnings"
+                  planCommandOptions: -compact-warnings
