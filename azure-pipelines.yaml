@@ -78,18 +78,18 @@ stages:
               pool: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
             steps:
-              - task: ManualValidation@1
-                inputs:
-                  approvers: "andrew.mcdevitt@HMCTS.net"
-                  instructions: "Please validate the build configuration and resume"
+            - task: ManualValidation@1
+              inputs:
+                approvers: "andrew.mcdevitt@HMCTS.net"
+                instructions: "Please validate the build configuration and resume"
 
-              - task:
-                - template: steps/terraform.yaml@cnp-azuredevops-libraries
-                  parameters:
-                    overrideAction: ${{ parameters.overrideAction }}
-                    environment: ${{ deployment.environment }}
-                    component: ${{ deployment.component }}
-                    serviceConnection: ${{ deployment.service_connection }}
-                    terraformInitSubscription: ${{ variables.terraformInitSubscription }}
-                    product: ${{ variables.product }}
-                    planCommandOptions: "-compact-warnings"
+            - task:
+              - template: steps/terraform.yaml@cnp-azuredevops-libraries
+                parameters:
+                  overrideAction: ${{ parameters.overrideAction }}
+                  environment: ${{ deployment.environment }}
+                  component: ${{ deployment.component }}
+                  serviceConnection: ${{ deployment.service_connection }}
+                  terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+                  product: ${{ variables.product }}
+                  planCommandOptions: "-compact-warnings"
