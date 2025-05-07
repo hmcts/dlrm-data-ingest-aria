@@ -75,7 +75,7 @@ stages:
                   - task: ManualValidation@1
                     timeoutInMinutes: 23160 # task times out in 2 weeks
                     inputs:
-                      approvers: jason.dynes1@HMCTS.net
+                      approvers: jason.dynes1@HMCTS.net, andrew.mcdevitt@hmcts.net
                       instructions: Please validate the build configuration and resume
 
           - job: TerraformPlanApply
