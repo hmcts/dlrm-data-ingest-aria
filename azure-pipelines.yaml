@@ -78,7 +78,7 @@ stages:
               pool: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
             steps:
-              ${{ if or((eq(deployment.environment, 'sbox'), eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod') }}:
+              ${{ if or((eq(deployment.environment, 'sbox'), eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod'))) }}:
               - task: ManualValidation@1
                 inputs:
                   approvers: "andrew.mcdevitt@HMCTS.net"
