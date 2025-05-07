@@ -17,4 +17,22 @@ locals {
       }
     ]
   ])
+
+  # Function App 
+  function_apps = ["af-sbails-${var.env}-uks-dlrm-01",
+    "af-apflpa-${var.env}-uks-dlrm-01",
+    "af-apluta-${var.env}-uks-dlrm-01",
+    "af-apl-${var.env}-uks-dlrm-01",
+    "af-bails-${var.env}-uks-dlrm-01",
+    "af-joh-${var.env}-uks-dlrm-01",
+  "af-td-${var.env}-uks-dlrm-01"]
+  flattened_function_apps = flatten([
+    for lz_key, lz in var.landing_zones : [ # 00, 09 in sbox
+      for app in local.function_apps :
+      {
+        name   = app
+        lz_key = lz_key
+      }
+    ]
+  ])
 }

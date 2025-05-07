@@ -16,6 +16,14 @@ data "azurerm_subnet" "lz" {
   name                 = each.value.name
 }
 
+#pull through log analytics workspace from landing zone
+data "azurerm_log_analytics_workspace" "lz" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}-logAnalytics001-${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
 module "ctags" {
   source = "github.com/hmcts/terraform-module-common-tags"
 
