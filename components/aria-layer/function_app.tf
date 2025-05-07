@@ -3,7 +3,7 @@
 resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
 
   name                = each.key # pulls function_app names from locals
@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "example" {
 resource "azurerm_linux_function_app" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
 
   name                       = each.key
@@ -35,7 +35,7 @@ resource "azurerm_linux_function_app" "example" {
 resource "azurerm_application_insights" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
 
   name                = each.key
@@ -49,7 +49,7 @@ resource "azurerm_application_insights" "example" {
 resource "azurerm_monitor_action_group" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
   name                = each.key
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
@@ -60,7 +60,7 @@ resource "azurerm_monitor_action_group" "example" {
 resource "azurerm_monitor_smart_detector_alert_rule" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
 
   name                = each.key
