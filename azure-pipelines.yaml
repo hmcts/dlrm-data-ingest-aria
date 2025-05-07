@@ -82,7 +82,7 @@ stages:
 
           steps:
             # Conditional manual approval step for stg and prod
-            ${{ if or(eq(deployment.environment, 'sbox'),eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod')) }}:
+            - ${{ if or(eq(deployment.environment, 'sbox'),eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod')) }}:
               - task: ManualValidation@0
                 timeoutInMinutes: 1440
                 inputs:
