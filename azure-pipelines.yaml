@@ -74,20 +74,22 @@ stages:
           - job: TerraformPlanApply
             ${{ if eq(deployment.environment, 'sbox') }}:
               pool: hmcts-sds-ptlsbox
-          - task: ManualValidation@1
-            inputs:
-              approvers: "jason.dynes@justice.gov.uk"
-              instructions: "Please validate the build configuration and resume"
             ${{ else }}:
               pool: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
             steps:
-              - template: steps/terraform.yaml@cnp-azuredevops-libraries
-                parameters:
-                  overrideAction: ${{ parameters.overrideAction }}
-                  environment: ${{ deployment.environment }}
-                  component: ${{ deployment.component }}
-                  serviceConnection: ${{ deployment.service_connection }}
-                  terraformInitSubscription: ${{ variables.terraformInitSubscription }}
-                  product: ${{ variables.product }}
-                  planCommandOptions: "-compact-warnings"
+              - task: ManualValidation@1
+                inputs:
+                  approvers: "andrew.mcdevitt@HMCTS.net"
+                  instructions: "Please validate the build configuration and resume"
+
+              - task:
+                  - template: steps/terraform.yaml@cnp-azuredevops-libraries
+                    parameters:
+                      overrideAction: ${{ parameters.overrideAction }}
+                      environment: ${{ deployment.environment }}
+                      component: ${{ deployment.component }}
+                      serviceConnection: ${{ deployment.service_connection }}
+                      terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+                      product: ${{ variables.product }}
+                      planCommandOptions: "-compact-warnings"
