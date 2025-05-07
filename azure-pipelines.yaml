@@ -80,6 +80,7 @@ stages:
 
           - job: TerraformPlanApply
             displayName: Terraform Plan Apply
+            dependsOn: waitForValidation
             pool:
               "${{ if eq(deployment.environment, 'sbox') }}":
                 name: hmcts-sds-ptlsbox
