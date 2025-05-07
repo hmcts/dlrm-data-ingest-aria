@@ -29,6 +29,17 @@ parameters:
         component: aria-layer
         service_connection: DTS-DATAINGEST-SBOX
         dependsOn: Precheck
+      - deployment: 'stg_aria'
+        environment: 'stg'
+        component: 'aria-layer'
+        service_connection: 'DTS-DATAINGEST-STG'
+        dependsOn: 'sbox_aria'
+      - deployment: 'prod_aria'
+        environment: 'prod'
+        component: 'aria-layer'
+        service_connection: 'DTS-DATAINGEST-PROD'
+        dependsOn: 'stg_aria'
+      
 variables:
   - name: timeoutInMinutes
     value: 240
