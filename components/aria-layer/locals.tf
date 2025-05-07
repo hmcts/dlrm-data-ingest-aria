@@ -32,7 +32,7 @@ locals {
       {
         name   = app
         lz_key = lz_key
-      } if split("-", app)[1] == lz_key
+      } #if split("-", app)[1] == lz_key
     ]
   ])
 }
