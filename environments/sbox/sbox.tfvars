@@ -4,7 +4,7 @@ landing_zones = {
     use_microsoft_ip_kit_structure = true
   }
 
-  "09" = {
+  "02" = {
     use_microsoft_ip_kit_structure = true
   }
 }
