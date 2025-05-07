@@ -13,7 +13,7 @@ resources:
       type: github
       ref: refs/heads/master
       name: hmcts/cnp-azuredevops-libraries
-      endpoint: 'hmcts'
+      endpoint: "hmcts"
 
 parameters:
   - name: overrideAction
@@ -26,11 +26,11 @@ parameters:
   - name: environment_components
     type: object
     default:
-      - deployment: 'sbox_aria'
-        environment: 'sbox'
-        component: 'aria-layer'
-        service_connection: 'DTS-DATAINGEST-SBOX'
-        dependsOn: 'Precheck'
+      - deployment: "sbox_aria"
+        environment: "sbox"
+        component: "aria-layer"
+        service_connection: "DTS-DATAINGEST-SBOX"
+        dependsOn: "Precheck"
 #      - deployment: 'stg_aria'
 #        environment: 'stg'
 #        component: 'aria-layer'
@@ -57,33 +57,37 @@ stages:
   - stage: Precheck
     jobs:
       - job:
-        pool: 
+        pool:
           vmImage: ${{ variables.agentImage }}
         steps:
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
-              keyvaultName: 'infra-vault-nonprod'
-              keyvaultSecret: 'azure-devops-sp-token'
-              serviceConnection: 'azurerm-sandbox'
+              keyvaultName: "infra-vault-nonprod"
+              keyvaultSecret: "azure-devops-sp-token"
+              serviceConnection: "azurerm-sandbox"
               overrideAction: ${{ parameters.overrideAction }}
 
   - ${{ each deployment in parameters.environment_components }}:
-    - stage: ${{ deployment.deployment }}
-      dependsOn: ${{ deployment.dependsOn }}
-      jobs:
-        - job: TerraformPlanApply
-          ${{ if eq(deployment.environment, 'sbox') }}:
-            pool: hmcts-sds-ptlsbox
-          ${{ else }}:
-            pool: hmcts-sds-ptl
-          timeoutInMinutes: ${{ variables.timeoutInMinutes }}
-          steps:
-            - template: steps/terraform.yaml@cnp-azuredevops-libraries
-              parameters:
-                overrideAction: ${{ parameters.overrideAction }}
-                environment: ${{ deployment.environment }}
-                component: ${{ deployment.component }}
-                serviceConnection: ${{ deployment.service_connection }}
-                terraformInitSubscription: ${{ variables.terraformInitSubscription }}
-                product: ${{ variables.product }}
-                planCommandOptions: '-compact-warnings'
+      - stage: ${{ deployment.deployment }}
+        dependsOn: ${{ deployment.dependsOn }}
+        jobs:
+          - job: TerraformPlanApply
+            ${{ if eq(deployment.environment, 'sbox') }}:
+              pool: hmcts-sds-ptlsbox
+          - task: ManualValidation@1
+            inputs:
+              approvers: "jason.dynes@justice.gov.uk"
+              instructions: "Please validate the build configuration and resume"
+            ${{ else }}:
+              pool: hmcts-sds-ptl
+            timeoutInMinutes: ${{ variables.timeoutInMinutes }}
+            steps:
+              - template: steps/terraform.yaml@cnp-azuredevops-libraries
+                parameters:
+                  overrideAction: ${{ parameters.overrideAction }}
+                  environment: ${{ deployment.environment }}
+                  component: ${{ deployment.component }}
+                  serviceConnection: ${{ deployment.service_connection }}
+                  terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+                  product: ${{ variables.product }}
+                  planCommandOptions: "-compact-warnings"
