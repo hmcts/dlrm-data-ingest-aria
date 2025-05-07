@@ -4,7 +4,7 @@
 resource "azurerm_storage_account" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    app.name => app
+    "${app.lz_key}-${app.name}" => app
   }
 
   name                     = each.key

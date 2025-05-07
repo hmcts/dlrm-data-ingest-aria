@@ -53,7 +53,8 @@ resource "azurerm_monitor_action_group" "example" {
   }
   name                = each.key
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  short_name          = each.key
+  short_name          = element(split("-", each.value.name), 1)
+
 }
 
 
