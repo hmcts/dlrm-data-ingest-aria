@@ -10,7 +10,7 @@ resource "azurerm_service_plan" "example" {
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   os_type             = "Linux"
-  sku_name            = "B1" # to verify sku with Ara - premium required? (ElasticPremium)
+  sku_name            = "EP1" # to verify sku with Ara - premium required? (ElasticPremium)
 }
 
 # Define the function app 
