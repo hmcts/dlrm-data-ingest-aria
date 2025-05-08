@@ -29,6 +29,7 @@ resource "azurerm_key_vault_secret" "tenant_url" {
   tags = module.ctags.common_tags
 }
 
+# Waiting for PlatOps to resolve
 resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
