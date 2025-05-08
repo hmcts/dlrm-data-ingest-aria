@@ -29,6 +29,8 @@ resource "azurerm_linux_function_app" "example" {
   storage_account_name       = azurerm_storage_account.example[each.key].name #use xcutting storage account 
   storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key
 
+  application_insights_connection_string = azurerm_application_insights.example[each.key].connection_string
+
   site_config {
     always_on = false
   }
