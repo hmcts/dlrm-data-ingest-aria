@@ -9,7 +9,6 @@ data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   for_each = var.landing_zones
 
   name                = "RootManageSharedAccessKey"
-  namespace_name      = "ingest${each.key}-integration-eventHubNamespace001-${var.env}"
+  namespace_name      = "${var.env}-dlrm-eventhub-ns-${each.key}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
-
