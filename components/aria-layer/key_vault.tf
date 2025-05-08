@@ -27,6 +27,6 @@ resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPAL-CLIENT-SECRET"
-  value        = data.azurerm_client_config.current.client_secret_value
+  value        = var.client_secret
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
