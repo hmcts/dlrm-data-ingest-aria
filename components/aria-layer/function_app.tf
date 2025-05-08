@@ -34,7 +34,12 @@ resource "azurerm_linux_function_app" "example" {
   }
 
   app_settings = {
-    application_insights_connection_string = azurerm_application_insights.example[each.key].connection_string
+    APPLICATION_INSIGHTS_CONNECTION_STRING                = azurerm_application_insights.example[each.key].connection_string
+    BUILD_FLAGS                                           = "UseExpressBuild"
+    ENABLE_ORYX_BUILD                                     = true
+    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = ""
+    SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
+    XDG_CACHE_HOME                                        = "/tmp/.cache"
   }
 
   tags = module.ctags.common_tags
