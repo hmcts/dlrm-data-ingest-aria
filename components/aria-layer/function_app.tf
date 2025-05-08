@@ -10,7 +10,9 @@ resource "azurerm_service_plan" "example" {
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   os_type             = "Linux"
-  sku_name            = "EP1" # to verify sku with Ara - premium required? (ElasticPremium)
+  sku_name            = "EP1"
+
+  tags = module.ctags.common_tags
 }
 
 # Define the function app 
@@ -30,6 +32,8 @@ resource "azurerm_linux_function_app" "example" {
   site_config {
     always_on = false
   }
+
+  tags = module.ctags.common_tags
 }
 
 resource "azurerm_application_insights" "example" {
@@ -43,6 +47,8 @@ resource "azurerm_application_insights" "example" {
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   workspace_id        = data.azurerm_log_analytics_workspace.lz[each.value.lz_key].id
   application_type    = "web"
+
+  tags = module.ctags.common_tags
 }
 
 # Define an action group to use in the smart_detector
@@ -55,6 +61,7 @@ resource "azurerm_monitor_action_group" "example" {
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   short_name          = element(split("-", each.value.name), 1)
 
+  tags = module.ctags.common_tags
 }
 
 
@@ -74,6 +81,8 @@ resource "azurerm_monitor_smart_detector_alert_rule" "example" {
   action_group {
     ids = [azurerm_monitor_action_group.example[each.key].id]
   }
+
+  tags = module.ctags.common_tags
 }
 
 

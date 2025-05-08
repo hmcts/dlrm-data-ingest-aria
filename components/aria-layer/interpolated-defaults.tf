@@ -24,6 +24,17 @@ data "azurerm_log_analytics_workspace" "lz" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
+data "azurerm_client_config" "current" {}
+
+data "azurerm_key_vault" "logging_vault" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}-meta002-${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+
+
 module "ctags" {
   source = "github.com/hmcts/terraform-module-common-tags"
 
