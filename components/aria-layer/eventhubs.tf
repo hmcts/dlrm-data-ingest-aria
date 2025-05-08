@@ -8,12 +8,12 @@ data "azurerm_eventhub_namespace" "lz" {
 resource "azurerm_eventhub" "aria_topic" {
   for_each            = var.landing_zones
   name                = "test-evh-joh-dl-${var.env}-uks-dlrm-01"
-  name_space          = data.azurerm_eventhub_namespace.lz[each.key].name
+  name_space_name          = data.azurerm_eventhub_namespace.lz[each.key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.key].resource_group_name
   partition_count     = 2
-  message_rentention  = 1
+  message_retention  = 1
 
-  tags = module.ctags.common_tags
+#   tags = module.ctags.common_tags
 }
 
 
