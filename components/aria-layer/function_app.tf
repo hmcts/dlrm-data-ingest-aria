@@ -37,7 +37,7 @@ resource "azurerm_linux_function_app" "example" {
     APPLICATION_INSIGHTS_CONNECTION_STRING                = azurerm_application_insights.example[each.key].connection_string
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
-    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = ""
+    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     XDG_CACHE_HOME                                        = "/tmp/.cache"
   }
