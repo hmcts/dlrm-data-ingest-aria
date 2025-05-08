@@ -11,7 +11,7 @@ resource "azurerm_service_plan" "example" {
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   os_type             = "Linux"
   sku_name            = "EP1"
-  
+
   tags = module.ctags.common_tags
 }
 

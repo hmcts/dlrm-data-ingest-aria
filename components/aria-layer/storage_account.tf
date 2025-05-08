@@ -12,6 +12,6 @@ resource "azurerm_storage_account" "example" {
   location                 = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  
+
   tags = module.ctags.common_tags
 }
