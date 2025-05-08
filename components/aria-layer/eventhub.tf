@@ -12,3 +12,12 @@ data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   namespace_name      = "ingest${each.key}-integration-eventHubNamespace001-${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
+
+# test 
+output "eh_connection_string" {
+  value = {
+    for key, rule in data.azurerm_eventhub_namespace_authorization_rule.lz :
+    key => rule.primary_connection_string
+  }
+}
+
