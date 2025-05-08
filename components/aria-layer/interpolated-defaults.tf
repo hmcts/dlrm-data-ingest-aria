@@ -33,8 +33,6 @@ data "azurerm_key_vault" "logging_vault" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
-
-
 module "ctags" {
   source = "github.com/hmcts/terraform-module-common-tags"
 
