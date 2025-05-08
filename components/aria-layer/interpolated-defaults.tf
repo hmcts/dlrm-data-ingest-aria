@@ -33,7 +33,12 @@ data "azurerm_key_vault" "logging_vault" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
+data "azurerm_storage_account" "xcutting" {
+  for_each            = var.landing_zones
 
+  name                = "ingest${each.key}xcutting${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
 
 module "ctags" {
   source = "github.com/hmcts/terraform-module-common-tags"
