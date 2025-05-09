@@ -16,6 +16,15 @@ resource "azurerm_eventhub" "aria_topic" {
   #   tags = module.ctags.common_tags
 }
 
+data "azurerm_eventhub_namespace_authorization_rule" "lz" {
+  for_each = var.landing_zones
+
+  name                = "RootManageSharedAccessKey"
+  namespace_name      = "ingest${each.key}-integration-eventHubNamespace001-${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+
 
 # data "azure_eventhub_namespace" "aria_eventhub_ns" {
 #     for_each = var.landing_zones
