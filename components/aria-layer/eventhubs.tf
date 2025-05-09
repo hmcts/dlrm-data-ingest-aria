@@ -23,7 +23,7 @@ resource "azurerm_eventhub" "aria_topic" {
   }
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.key].name
-  resource_group_name = data.azurerm_eventhub_namespace.lz[each.key].resource_group_name
+  resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
   partition_count     = 2
   message_retention   = 1
 
