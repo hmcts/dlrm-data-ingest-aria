@@ -22,8 +22,8 @@ resource "azurerm_eventhub" "aria_topic" {
     ) : combination.key => combination
   }
   name                = each.value.name
-  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.key].name
-  resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.key].resource_group_name
+  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
+  resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
   partition_count     = 2
   message_retention   = 1
 
