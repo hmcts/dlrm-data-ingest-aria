@@ -1,10 +1,11 @@
 
 #Storage account is required for function_app provisioning
 
-resource "azurerm_storage_account" "example" {
+/* resource "azurerm_storage_account" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.name}" => app
+    if !(var.env == "sbox" && app.lz_key == "00")
   }
 
   name                     = replace(each.value.name, "-", "")
@@ -15,3 +16,4 @@ resource "azurerm_storage_account" "example" {
 
   tags = module.ctags.common_tags
 }
+ */

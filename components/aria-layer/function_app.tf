@@ -23,7 +23,7 @@ resource "azurerm_linux_function_app" "example" {
     if !(var.env == "sbox" && app.lz_key == "00")
   }
 
-  name                       = each.value.name #each.key
+  name                       = each.value.name
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
