@@ -6,8 +6,22 @@ data "azurerm_eventhub_namespace" "lz" {
 }
 
 resource "azurerm_eventhub" "aria_topic" {
-  for_each            = var.landing_zones
-  name                = "test-evh-joh-dl-${var.env}-uks-dlrm-01"
+  for_each = {
+    for combination in flatten([
+      for lz_key in keys(var.landing_zones) : [
+        for segment in var.segments : [
+          for suffix in var.eventhub_topic_suffixes : {
+            key     = "${lz_key}-${segment}-${suffix}"
+            lz_key  = lz_key
+            name    = "evh-${segment}-${suffix}-${lz_key}-uks-dlrm-01"
+            segment = segment
+            suffix  = suffix
+          }
+        ]
+      ]]
+    ) : combination.key => combination
+  }
+  name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.key].resource_group_name
   partition_count     = 2
@@ -15,6 +29,7 @@ resource "azurerm_eventhub" "aria_topic" {
 
   #   tags = module.ctags.common_tags
 }
+
 
 data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   for_each = var.landing_zones
