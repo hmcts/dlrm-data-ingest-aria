@@ -52,6 +52,18 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
   manage = true
 }
 
+output "eventhub_sas_keys" {
+  value = {
+    for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :
+    k => {
+      primary_key               = v.primary_key
+      primary_connection_string = v.primary_connection_string
+    }
+  }
+  sensitive   = true
+  description = "Connection string for eventhubs to be stored in key vaults"
+
+}
 
 
 # data "azure_eventhub_namespace" "aria_eventhub_ns" {
