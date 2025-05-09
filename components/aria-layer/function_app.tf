@@ -31,7 +31,6 @@ resource "azurerm_linux_function_app" "example" {
 
   site_config {
     always_on = false
-
   }
 
   app_settings = {
@@ -43,6 +42,7 @@ resource "azurerm_linux_function_app" "example" {
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     XDG_CACHE_HOME                                        = "/tmp/.cache"
+    WEBSITE_RUN_FROM_PACKAGE                              = "1"
   }
 
   tags = module.ctags.common_tags
