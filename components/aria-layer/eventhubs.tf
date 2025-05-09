@@ -39,6 +39,19 @@ data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
+resource "azurerm_eventhub_authorisation_rule" "aria_topic_sas" {
+  for_each = azurerm_eventhub.aria_topic
+
+  name                = "aria_manage_sas"
+  namespace_name      = each.value.namespace_name
+  eventhub_name       = each.value.name
+  resource_group_name = each.value.resource_group_name
+
+  listen = true
+  send   = true
+  manage = true
+}
+
 
 
 # data "azure_eventhub_namespace" "aria_eventhub_ns" {
