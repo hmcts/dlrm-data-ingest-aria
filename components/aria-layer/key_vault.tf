@@ -48,6 +48,7 @@ resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
       value  = v.primary_connection_string
       lz_key = split(k, "-")[0]
     }
+    if contains(keys(var.landing_zones), split(k, "-")[0])
   }
 
   name         = "${each.value.name}-key"
