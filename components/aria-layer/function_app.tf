@@ -31,12 +31,14 @@ resource "azurerm_linux_function_app" "example" {
 
   site_config {
     always_on = false
+    
   }
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
+    FUNCTIONS_WORKER_RUNTIME                              = "python"
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     XDG_CACHE_HOME                                        = "/tmp/.cache"
