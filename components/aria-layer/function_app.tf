@@ -47,6 +47,11 @@ resource "azurerm_linux_function_app" "example" {
       python_version = "3.10"
     }
     always_on = false
+
+    scm_use_main_ip_restriction = false
+    scm_disable_basic_auth      = true
+    ftps_state                  = "FtpsOnly"
+    ftp_disable_basic_auth      = true
   }
 
   tags = module.ctags.common_tags
