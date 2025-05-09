@@ -46,7 +46,7 @@ resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
     k => {
       name   = v.eventhub_name
       value  = v.primary_connection_string
-      lz_key = split(k, "-")[0] 
+      lz_key = split(k, "-")[0]
     }
   }
 
