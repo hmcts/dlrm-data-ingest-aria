@@ -35,6 +35,7 @@ resource "azurerm_linux_function_app" "example" {
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
     FUNCTIONS_WORKER_RUNTIME                              = "python"
+    PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     XDG_CACHE_HOME                                        = "/tmp/.cache"
