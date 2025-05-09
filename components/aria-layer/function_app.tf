@@ -31,11 +31,12 @@ resource "azurerm_linux_function_app" "example" {
 
   site_config {
     always_on = false
-    
+
   }
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
+    AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
     FUNCTIONS_WORKER_RUNTIME                              = "python"
