@@ -30,8 +30,8 @@ resource "azurerm_linux_function_app" "example" {
   storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
 
   site_config {
-    always_on      = false
-    LinuxFxVersion = "Python|3.9"
+    always_on        = false
+    linux_fx_version = "Python|3.11"
   }
 
   app_settings = {
