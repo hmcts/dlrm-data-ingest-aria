@@ -31,7 +31,7 @@ resource "azurerm_linux_function_app" "example" {
 
   site_config {
     always_on = false
-
+    LinuxFxVersion = "Python|3.9"
   }
 
   app_settings = {
