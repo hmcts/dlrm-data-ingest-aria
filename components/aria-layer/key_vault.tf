@@ -39,3 +39,14 @@ resource "azurerm_key_vault_secret" "client_secret" {
 
   tags = module.ctags.common_tags
 }
+
+resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
+  for_each = azurerm_eventhub_authorization_rule.aria_topic_sas
+
+  name         = "${each.value.eventhub_name}-key"
+  value        = each.value.primary_connection_string
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
+
+}
