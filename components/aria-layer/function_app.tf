@@ -29,10 +29,6 @@ resource "azurerm_linux_function_app" "example" {
   storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name
   storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
 
-  site_config {
-    always_on = false
-  }
-
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
@@ -45,8 +41,16 @@ resource "azurerm_linux_function_app" "example" {
     WEBSITE_RUN_FROM_PACKAGE                              = "1"
   }
 
+  site_config {
+    application_stack {
+      python_version = "3.10"
+    }
+    always_on = false
+  }
+
   tags = module.ctags.common_tags
 }
+
 
 resource "azurerm_application_insights" "example" {
   for_each = {
