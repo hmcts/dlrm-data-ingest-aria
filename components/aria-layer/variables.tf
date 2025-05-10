@@ -4,3 +4,15 @@ variable "client_secret" {
   sensitive   = true
   default     = ""
 }
+
+variable "segments" {
+  description = "llist of segment alias for eventhubs"
+  type        = list(string)
+  default     = ["bl", "joh", "ap", "td"]
+}
+
+variable "eventhub_topic_suffixes" {
+  description = "list of suffixs to add per segment for an eventhub"
+  type        = list(string)
+  default     = ["pub", "ack", "dl"]
+}
