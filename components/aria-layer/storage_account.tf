@@ -52,12 +52,36 @@ data "azurerm_storage_account_sas" "curated" {
   connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
 
   https_only = true
-  start      = "2025-05-05"
-  expiry     = "2026-05-05"
 
-  services       = "b"       # b = blob
-  resource_types = "sco"     # s = service, c = container, o = object
-  permissions    = "racwdlu" # read, add, create, write, delete, list, update
+  resource_types {
+    service   = true
+    container = false
+    object    = false
+  }
+
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
+
+  start  = "2025-03-21T00:00:00Z"
+  expiry = "2026-03-21T00:00:00Z"
+
+  permissions {
+    read    = true
+    write   = true
+    delete  = false
+    list    = false
+    add     = true
+    create  = true
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
 }
+
 
 
