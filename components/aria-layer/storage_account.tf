@@ -45,6 +45,7 @@ resource "azurerm_storage_container" "curated_extra" {
   container_access_type = "private"
 }
 
+
 data "azurerm_storage_account_sas" "curated" {
   for_each = var.landing_zones
 
@@ -52,29 +53,11 @@ data "azurerm_storage_account_sas" "curated" {
 
   https_only = true
   start      = "2025-05-05"
-  expiry     = "2036-05-05"
-  resource_types {
-    service   = true
-    container = true
-    object    = true
-  }
+  expiry     = "2026-05-05"
 
-  services {
-    blob  = true
-    queue = false
-    table = false
-    file  = false
-  }
-
-  permissions {
-    read    = true
-    write   = true
-    delete  = true
-    list    = true
-    add     = true
-    create  = true
-    update  = true
-    process = false
-  }
+  services       = "b"       # b = blob
+  resource_types = "sco"     # s = service, c = container, o = object
+  permissions    = "racwdlu" # read, add, create, write, delete, list, update
 }
+
 
