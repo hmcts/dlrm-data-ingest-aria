@@ -40,48 +40,28 @@ resource "azurerm_key_vault_secret" "client_secret" {
   tags = module.ctags.common_tags
 }
 
-data "azurerm_storage_account_sas" "curated" {
-  for_each = toset(["BRONZE", "SILVER", "GOLD"])
-
-  connection_string = data.azurerm_storage_account.curated[each.value.lz_key].primary_connection_string
-
-  https_only = true
-  start      = "2024-01-01"
-  expiry     = "2027-01-01"
-
-  services {
-    blob  = true
-    queue = true
-    table = true
-    file  = true
-  }
-
-  resource_types {
-    service   = false
-    container = true
-    object    = true
-  }
+data "azurerm_storage_account_blob_container_sas" "curated" {
+  for_each          = toset(["BRONZE", "SILVER", "GOLD"])
+  connection_string = azurerm_storage_account.curated.primary_connection_string
+  container_name    = each.key
+  https_only        = true
+  start             = "2024-01-01"
+  expiry            = "2030-01-01"
 
   permissions {
-    read    = true
-    write   = true
-    delete  = true
-    list    = true
-    add     = true
-    create  = true
-    update  = true
-    process = true
+    read   = true
+    write  = true
+    list   = true
+    create = true
   }
 }
 
-resource "azurerm_key_vault_secret" "curated-sas-tokens" {
-  for_each = data.azurerm_storage_account_sas.curated
-
+resource "azurerm_key_vault_secret" "curated_sas_tokens" {
+  for_each     = data.azurerm_storage_account_blob_container_sas.curated
   name         = "${each.key}-SAS-TOKEN"
   value        = each.value.sas
-  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+  key_vault_id = azurerm_key_vault.example.id
 }
-
 
 resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
   for_each = {
