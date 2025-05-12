@@ -42,7 +42,7 @@ resource "azurerm_key_vault_secret" "client_secret" {
 
 data "azurerm_storage_account_blob_container_sas" "curated" {
   for_each          = local.flattened_curated_containers
-  connection_string = azurerm_storage_account.curated.primary_connection_string
+  connection_string = data.azurerm_storage_account.curated.primary_connection_string
   container_name    = each.value
   https_only        = true
   start             = "2024-01-01"
