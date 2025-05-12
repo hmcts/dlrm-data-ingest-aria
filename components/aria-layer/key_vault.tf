@@ -43,7 +43,7 @@ resource "azurerm_key_vault_secret" "client_secret" {
 data "azurerm_storage_account_sas" "curated" {
   for_each = toset(["BRONZE", "SILVER", "GOLD"])
 
-  connection_string = azurerm_storage_account.curated.primary_connection_string
+  connection_string = data.azurerm_storage_account.curated.primary_connection_string
 
   https_only = true
   start      = "2024-01-01"
