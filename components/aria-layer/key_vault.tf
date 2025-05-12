@@ -41,9 +41,9 @@ resource "azurerm_key_vault_secret" "client_secret" {
 }
 
 data "azurerm_storage_account_blob_container_sas" "curated" {
-  for_each          = toset(["BRONZE", "SILVER", "GOLD"])
+  for_each          = local.flattened_curated_containers
   connection_string = azurerm_storage_account.curated.primary_connection_string
-  container_name    = each.key
+  container_name    = each.value
   https_only        = true
   start             = "2024-01-01"
   expiry            = "2030-01-01"

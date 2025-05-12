@@ -39,4 +39,10 @@ locals {
       }
     ]
   ])
+
+  curated_containers = ["BRONZE", "SILVER", "GOLD"]
+  flattened_curated_containers = {
+    for container in local.curated_containers :
+    container => container
+  }
 }
