@@ -40,9 +40,9 @@ resource "azurerm_key_vault_secret" "client_secret" {
   tags = module.ctags.common_tags
 }
 
-data "azurerm_storage_account_blob_container_sas" "curated" {
+/* data "azurerm_storage_account_blob_container_sas" "curated" {
   for_each          = local.flattened_curated_containers
-  connection_string = data.azurerm_storage_account.curated.primary_connection_string
+  connection_string = data.azurerm_storage_account.curated[each.value.lz_key].primary_access_key
   container_name    = each.value
   https_only        = true
   start             = "2024-01-01"
@@ -56,13 +56,23 @@ data "azurerm_storage_account_blob_container_sas" "curated" {
   }
 }
 
-resource "azurerm_key_vault_secret" "curated_sas_tokens" {
+/*  resource "azurerm_key_vault_secret" "curated_sas_tokens" {
   for_each     = data.azurerm_storage_account_blob_container_sas.curated
   name         = "${each.key}-SAS-TOKEN"
   value        = each.value.sas
   key_vault_id = azurerm_key_vault.example.id
 }
+ */
 
+/* resource "azurerm_key_vault_secret" "curated_access_key" {
+  for_each = local.flattened_curated_containers
+
+  name         = "BRONZE-SAS-KEY"
+  value        = azurerm_storage_account.curated[each.value.lz_key].primary_access_key
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+}
+
+ */
 resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
   for_each = {
     for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :

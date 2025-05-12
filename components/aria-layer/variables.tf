@@ -16,3 +16,10 @@ variable "eventhub_topic_suffixes" {
   type        = list(string)
   default     = ["pub", "ack", "dl"]
 }
+
+/* variable "storageaccount_primary_access_key" {
+  description = "The primary access key for the storage account."
+  type        = string
+  sensitive   = true
+  default     = "curated"
+} */
