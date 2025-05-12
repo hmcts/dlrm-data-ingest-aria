@@ -80,7 +80,7 @@ resource "azurerm_monitor_action_group" "example" {
   }
   name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  short_name          = element(split("-", each.value.name), 1)
+  short_name          = element(split("-", each.value.full_name), 1)
 
   tags = module.ctags.common_tags
 }
