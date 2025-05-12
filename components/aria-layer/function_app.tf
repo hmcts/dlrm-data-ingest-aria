@@ -4,7 +4,6 @@ resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
-    "${app.lz_key}-${app.base_name}" => app
   }
 
   name                = each.value.full_name # pulls function_app names from locals
