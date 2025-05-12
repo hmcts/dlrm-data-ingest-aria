@@ -44,3 +44,44 @@ resource "azurerm_storage_container" "curated_extra" {
   storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
   container_access_type = "private"
 }
+
+
+data "azurerm_storage_account_sas" "curated" {
+  for_each = var.landing_zones
+
+  connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
+
+  https_only = true
+
+  resource_types {
+    service   = true
+    container = false
+    object    = false
+  }
+
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
+
+  start  = "2025-03-21T00:00:00Z"
+  expiry = "2026-03-21T00:00:00Z"
+
+  permissions {
+    read    = true
+    write   = true
+    delete  = false
+    list    = false
+    add     = true
+    create  = true
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
+}
+
+
+
