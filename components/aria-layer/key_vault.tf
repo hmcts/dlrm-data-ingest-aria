@@ -41,13 +41,13 @@ resource "azurerm_key_vault_secret" "client_secret" {
 }
 
 data "azurerm_storage_account_sas" "curated" {
-    for_each = toset(local.curated_containers)
+  for_each = toset(["BRONZE", "SILVER", "GOLD"])
 
-    connection string = azurerm_storage_account.curated.primary_connection_string
+  connection_string = azurerm_storage_account.curated.primary_connection_string
 
-    https_only        = true
-    start             = "2024-01-01"
-    expiry            = "2027-01-01"
+  https_only = true
+  start      = "2024-01-01"
+  expiry     = "2027-01-01"
 
   services {
     blob  = true
@@ -75,11 +75,11 @@ data "azurerm_storage_account_sas" "curated" {
 }
 
 resource "azurerm_key_vault_secret" "curated-sas-tokens" {
-    for_each  = data.azurerm_storage_account_sas.curated
+  for_each = data.azurerm_storage_account_sas.curated
 
-    name = "${each.key}-SAS-TOKEN"
-    value = each.value.sas
-    key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+  name         = "${each.key}-SAS-TOKEN"
+  value        = each.value.sas
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
 
