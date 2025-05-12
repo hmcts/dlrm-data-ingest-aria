@@ -78,7 +78,7 @@ resource "azurerm_monitor_action_group" "example" {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
   }
-  name                = each.keyvalue.full_name
+  name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   short_name          = element(split("-", each.value.name), 1)
 
