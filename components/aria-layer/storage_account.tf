@@ -6,7 +6,7 @@ locals {
 
   container_matrix = {
     for pair in setproduct(keys(var.landing_zones), local.container_name) :
-    "${pair[0]}-${paor[1]}" => {
+    "${pair[0]}-${pair[1]}" => {
       lz_key         = pair[0]
       container_name = pair[1]
     } if pair[0] != "00"
