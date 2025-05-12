@@ -21,6 +21,6 @@ resource "azurerm_storage_container" "example" {
   for_each = var.landing_zones
 
   name                  = "test"
-  storage_account_id    = data.azurerm_storage_account.xcutting[each.key].id
+  storage_account_id    = data.azurerm_storage_account.curated[each.key].id
   container_access_type = "private"
 }
