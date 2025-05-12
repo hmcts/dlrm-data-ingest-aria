@@ -19,19 +19,24 @@ locals {
   ])
 
   # Function App 
-  function_apps = ["af-sbails-${var.env}-uks-dlrm-01",
-    "af-apflpa-${var.env}-uks-dlrm-01",
-    "af-apluta-${var.env}-uks-dlrm-01",
-    "af-apl-${var.env}-uks-dlrm-01",
-    "af-bails-${var.env}-uks-dlrm-01",
-    "af-joh-${var.env}-uks-dlrm-01",
-  "af-td-${var.env}-uks-dlrm-01"]
+  # Function App 
+  function_apps_base = [
+    "af-sbails",
+    "af-apflpa",
+    "af-apluta",
+    "af-apl",
+    "af-bails",
+    "af-joh",
+    "af-td"
+  ]
+
   flattened_function_apps = flatten([
-    for lz_key, lz in var.landing_zones : [ # 00, 09 in sbox
-      for app in local.function_apps :
+    for lz_key, lz in var.landing_zones : [ # 00, 02 in sbox
+      for app in local.function_apps_base :
       {
-        name   = app
-        lz_key = lz_key
+        base_name = app
+        lz_key    = lz_key
+        full_name = "${app}-${var.env}${lz_key}-uks-dlrm-01"
       }
     ]
   ])
