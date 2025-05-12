@@ -26,7 +26,9 @@ data "azurerm_storage_account" "curated" {
 }
 
 resource "azurerm_storage_container" "curated_extra" {
+  for_each = var.landing_zones
+
   name                  = "test-container-iac"
-  storage_account_name  = data.azurerm_storage_account.curated.name
+  storage_account_name  = data.azurerm_storage_account.curated[each.key].name
   container_access_type = "private"
 }
