@@ -4,9 +4,10 @@ resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = each.value.full_name
+  name                = each.value.full_name # pulls function_app names from locals
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   os_type             = "Linux"
