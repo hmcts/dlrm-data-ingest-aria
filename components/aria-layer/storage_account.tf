@@ -22,7 +22,7 @@ data "azurerm_storage_account" "curated" {
   for_each = var.landing_zones
 
   name                 = "ingest${each.key}curated${var.env}"
-  storage_account_name = "ingest${each.key}-main-${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
 resource "azurerm_storage_container" "curated_extra" {
