@@ -39,4 +39,6 @@ locals {
       }
     ]
   ])
+
+  curated_containers = ["BRONZE", "SILVER", "GOLD"]
 }
