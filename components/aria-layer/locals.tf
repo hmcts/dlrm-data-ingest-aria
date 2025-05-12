@@ -19,6 +19,10 @@ locals {
   ])
 
   # Function App 
+<<<<<<< HEAD
+=======
+  # Function App 
+>>>>>>> 18cc577ba336d045c398b5f408396dc5877d48d3
   function_apps_base = [
     "af-sbails",
     "af-apflpa",

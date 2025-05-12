@@ -4,6 +4,7 @@ resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
 
   name                = each.value.full_name # pulls function_app names from locals
@@ -80,7 +81,7 @@ resource "azurerm_monitor_action_group" "example" {
   }
   name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  short_name          = element(split("-", each.value.name), 1)
+  short_name          = element(split("-", each.value.full_name), 1)
 
   tags = module.ctags.common_tags
 }
