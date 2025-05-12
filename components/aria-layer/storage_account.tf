@@ -48,7 +48,7 @@ resource "azurerm_storage_container" "curated_extra" {
 data "azurerm_storage_account_sas" "curated" {
   for_each = var.landing_zones
 
-  name = data.azurerm_storage_account.curated[each.key].primary_connection_string
+  connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
 
   https_only = true
   start      = "2025-05-05"
