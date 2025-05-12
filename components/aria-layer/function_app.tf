@@ -3,10 +3,10 @@
 resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = each.value.name # pulls function_app names from locals
+  name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   os_type             = "Linux"
@@ -19,12 +19,11 @@ resource "azurerm_service_plan" "example" {
 resource "azurerm_linux_function_app" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.name}" => app
+    "${app.lz_key}-${app.base_name}" => app
     if !(var.env == "sbox" && app.lz_key == "00")
   }
 
-
-  name                       = each.value.name #each.key
+  name                       = each.value.full_name
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
@@ -61,10 +60,10 @@ resource "azurerm_linux_function_app" "example" {
 resource "azurerm_application_insights" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = each.value.name
+  name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   workspace_id        = data.azurerm_log_analytics_workspace.lz[each.value.lz_key].id
@@ -77,9 +76,9 @@ resource "azurerm_application_insights" "example" {
 resource "azurerm_monitor_action_group" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
-  name                = each.value.name
+  name                = each.keyvalue.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   short_name          = element(split("-", each.value.name), 1)
 
@@ -90,10 +89,10 @@ resource "azurerm_monitor_action_group" "example" {
 resource "azurerm_monitor_smart_detector_alert_rule" "example" {
   for_each = {
     for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.name}" => app
+    "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = each.value.name
+  name                = each.value.full_name
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   severity            = "Sev3"
   scope_resource_ids  = [azurerm_application_insights.example[each.key].id]
