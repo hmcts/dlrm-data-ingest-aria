@@ -94,14 +94,20 @@ data "azurerm_storage_account" "landing" {
 
 resource "azurerm_storage_container" "landing" {
   for_each = {
-    for lz_key, _ in var.landing_zones :
-    lz_key => {
-      lz_key = lz_key
-    }
-    if lz_key != "00"
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for container in ["html-template", "landing"] : {
+          key       = "${lz_key}-${container}"
+          lz_key    = lz_key
+          container = container
+        }
+      ]
+    ]) :
+    combo.key => combo
+    if combo.lz_key != "00"
   }
 
-  name                  = "external-csv"
+  name                  = each.value.container
   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
   container_access_type = "private"
 
