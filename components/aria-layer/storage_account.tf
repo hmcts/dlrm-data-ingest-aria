@@ -83,5 +83,52 @@ data "azurerm_storage_account_sas" "curated" {
   }
 }
 
+# add in containers for landing
 
+data "azurerm_storage_account" "landing" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}landing${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+resource "azurerm_storage_container" "landing" {
+  for_each = {
+    for lz_key, _ in var.landing_zones :
+    lz_key => {
+      lz_key = lz_key
+    }
+    if lz_key != "00"
+  }
+
+  name                  = "external-csv"
+  storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
+  container_access_type = "private"
+
+
+}
+
+# add in containers for external
+
+
+data "azurerm_storage_account" "external" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}external${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+resource "azurerm_storage_container" "external" {
+  for_each = {
+    for lz_key in keys(var.landing_zones) :
+    lz_key => {
+      lz_key = lz_key
+    }
+    if lz_key != "00"
+  }
+
+  name                  = "external-csv"
+  storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
+  container_access_type = "private"
+}
 
