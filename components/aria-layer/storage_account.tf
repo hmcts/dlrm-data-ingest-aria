@@ -103,7 +103,7 @@ resource "azurerm_storage_container" "landing" {
 
   name                  = "external-csv"
   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
-  container_access_type = private
+  container_access_type = "private"
 
 
 }
