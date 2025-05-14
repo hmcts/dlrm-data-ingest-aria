@@ -37,6 +37,7 @@ resource "azurerm_linux_function_app" "example" {
     ENABLE_ORYX_BUILD                                     = true
     ENVIRONMENT                                           = var.env
     FUNCTIONS_WORKER_RUNTIME                              = "python"
+    LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
