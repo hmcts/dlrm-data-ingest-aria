@@ -39,12 +39,15 @@ resource "azurerm_key_vault_secret" "client_secret" {
 
   tags = module.ctags.common_tags
 }
-# data "azurerm_key_vault" "aria_kv" {
-#   for_each = var.landing_zones
 
-#   name                = "ingest${each.key}-meta002-sbox"
-#   resource_group_name = "ingest${each.key}-main-${var.env}"
-# }
+resource "azurerm_key_vault_secret" "eh_root_key" {
+  for_each = var.landing_zones
+
+  name         = data.azurerm_eventhub_namespace_authorization_rule.lz.name
+  value        = data.azurerm_eventhub_namespace_authorization_rule.primary_connection_string
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+}
+
 resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
   for_each = {
     for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :
