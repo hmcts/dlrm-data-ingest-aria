@@ -44,7 +44,7 @@ resource "azurerm_key_vault_secret" "eh_root_key" {
   for_each = var.landing_zones
 
   name         = data.azurerm_eventhub_namespace_authorization_rule.lz[each.key].name
-  value        = data.azurerm_eventhub_namespace_authorization_rule.laz[each.key].primary_connection_string
+  value        = data.azurerm_eventhub_namespace_authorization_rule.lz[each.key].primary_connection_string
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
