@@ -28,7 +28,7 @@ resource "azurerm_linux_function_app" "example" {
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
   storage_account_name       = azurerm_storage_account.example[each.key].name #data.azurerm_storage_account.xcutting[each.value.lz_key].name
-  storage_account_access_key = azurerm_storage_account.example[each.key].name #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
+  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
