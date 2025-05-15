@@ -72,3 +72,23 @@ resource "azurerm_key_vault_secret" "curated_sas_token" {
   value        = "BlobEndpoint=${data.azurerm_storage_account.curated[each.key].primary_blob_endpoint};SharedAccessSignature=${data.azurerm_storage_account_sas.curated[each.key].sas}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
+
+# Add in ENV to keyvault
+
+resource "azurerm_key_vault_secret" "env" {
+  for_each = var.landing_zones
+
+  name         = "ENV"
+  value        = var.env
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+}
+
+# Add in LZ key to keyvault
+resource "azurerm_key_vault_secret" "lz" {
+  for_each = var.landing_zones
+
+  name         = "LZ_KEY"
+  value        = each.key
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+}
