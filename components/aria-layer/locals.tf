@@ -23,7 +23,7 @@ locals {
     "af-sbails",
     "af-apflpa",
     "af-apluta",
-    "af-apl",
+    "af-aplfta",
     "af-bails",
     "af-joh",
     "af-td"
