@@ -40,5 +40,5 @@ locals {
     ]
   ])
 
-  db_workspace_name = "ingest${var.lz_key}-product-databricks001-${var.env}"
+  # db_workspace_name = "ingest${var.lz_key}-product-databricks001-${var.env}"
 }
