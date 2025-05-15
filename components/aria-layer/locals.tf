@@ -21,7 +21,7 @@ locals {
   # Function App 
   function_apps_base = [
     "af-sbails",
-    "af-apflpa",
+    "af-aplfpa",
     "af-apluta",
     "af-aplfta",
     "af-bails",
