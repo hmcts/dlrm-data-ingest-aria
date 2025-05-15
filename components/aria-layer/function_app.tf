@@ -1,5 +1,5 @@
 
-# Creating service plan for function app - looping over each function_app per landing zone
+# Creating service plan for function app - looping over each function_app per landing zone.
 resource "azurerm_service_plan" "example" {
   for_each = {
     for app in local.flattened_function_apps :
