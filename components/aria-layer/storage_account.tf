@@ -2,7 +2,7 @@
 #Storage account is required for function_app provisioning
 
 locals {
-  container_name = ["bronze", "silver", "gold"]
+  container_name = ["Bronze", "Silver", "Gold"]
 
   container_matrix = {
     for pair in setproduct(keys(var.landing_zones), local.container_name) :
