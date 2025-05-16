@@ -4,7 +4,7 @@ resource "local_file" "config" {
     env = var.env
     lz  = each.key
   })
-  file_name = "${path.module}/tmp/config_${var.env}_${each.key}.json"
+  filename = "${path.module}/tmp/config_${var.env}_${each.key}.json"
 }
 
 resource "azurerm_storage_blob" "config_json" {
