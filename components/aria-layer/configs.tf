@@ -14,7 +14,7 @@ resource "azurerm_storage_blob" "config_json" {
 
   type = "Block"
 
-  source                 = local_file.config[each.key].file_name
+  source                 = local_file.config[each.key].filename
   storage_account_name   = data.azurerm_storage_account.curated[each.key].name
   storage_container_name = azurerm_storage_container.curated_extra["${each.key}-bronze"].name
 
