@@ -79,7 +79,7 @@ resource "azurerm_key_vault_secret" "env" {
   for_each = var.landing_zones
 
   name         = "ENV"
-  value        = var.env
+  value        = "env=${var.env}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
@@ -88,7 +88,7 @@ resource "azurerm_key_vault_secret" "lz" {
   for_each = var.landing_zones
 
   name         = "LZ-KEY"
-  value        = each.key
+  value        = "lz${each.key}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
 }

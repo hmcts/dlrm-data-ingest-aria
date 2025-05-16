@@ -9,7 +9,8 @@ locals {
     "${pair[0]}-${pair[1]}" => {
       lz_key         = pair[0]
       container_name = pair[1]
-    } if pair[0] != "00"
+    }
+    # if pair[0] != "00"
   }
 }
 
