@@ -27,15 +27,17 @@ resource "azurerm_linux_function_app" "example" {
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
-  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name
-  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
+  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name               #azurerm_storage_account.example[each.key].name               
+  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key 
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
+    ENVIRONMENT                                           = var.env
     FUNCTIONS_WORKER_RUNTIME                              = "python"
+    LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
