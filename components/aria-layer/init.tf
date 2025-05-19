@@ -23,11 +23,13 @@ provider "azurerm" {
 provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-00"].id
-  use_azure_cli_auth          = true
+
+  client_id     = $(CLIENT_ID)
+  client_secret = $(CLIENT_SECRET)
 }
 
-provider "databricks" {
-  alias                       = "sbox-02"
-  azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-02"].id
-  use_azure_cli_auth          = true
-}
+# provider "databricks" {
+#   alias                       = "sbox-02"
+#   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-02"].id
+#   use_azure_cli_auth          = true
+# }
