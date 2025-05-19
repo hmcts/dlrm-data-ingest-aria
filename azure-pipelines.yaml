@@ -41,7 +41,7 @@ parameters:
         dependsOn: 'stg_aria'
       
 variables:
-  - group ARIA-TEST-group
+  - group: ARIA-TEST-group
   - name: timeoutInMinutes
     value: 240
   - name: agentImage
