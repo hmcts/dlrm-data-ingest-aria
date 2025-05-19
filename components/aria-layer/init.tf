@@ -24,8 +24,8 @@ provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-00"].id
 
-  client_id     = $(CLIENT_ID)
-  client_secret = $(CLIENT_SECRET)
+  client_id     = $(client_id_test)
+  client_secret = $(client_secret_test)
 }
 
 # provider "databricks" {
