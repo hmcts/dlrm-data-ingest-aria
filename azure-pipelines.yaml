@@ -58,10 +58,11 @@ stages:
         pool:
           vmImage: ${{ variables.agentImage }}
         steps:
-          - env:
-          client_id_test: $(client_id_test)
-          client_secret_test: $(client_secret_test)
-          tenant_id_test: $(tenant_id_test)
+          - script: echo "Adding in ariable group secrets"
+            env:
+              client_id_test: $(client_id_test)
+              client_secret_test: $(client_secret_test)
+              tenant_id_test: $(tenant_id_test)
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
               keyvaultName: infra-vault-nonprod
