@@ -1,11 +1,12 @@
----
 trigger:
   batch: true
   branches:
     include:
       - main
+
 pr:
   - main
+
 resources:
   repositories:
     - repository: cnp-azuredevops-libraries
@@ -13,6 +14,7 @@ resources:
       ref: refs/heads/master
       name: hmcts/cnp-azuredevops-libraries
       endpoint: hmcts
+
 parameters:
   - name: overrideAction
     type: string
@@ -21,6 +23,7 @@ parameters:
       - plan
       - apply
       - destroy
+
   - name: environment_components
     type: object
     default:
@@ -29,17 +32,17 @@ parameters:
         component: aria-layer
         service_connection: DTS-DATAINGEST-SBOX
         dependsOn: Precheck
-      - deployment: 'stg_aria'
-        environment: 'stg'
-        component: 'aria-layer'
-        service_connection: 'DTS-DATAINGEST-STG'
-        dependsOn: 'sbox_aria'
-      - deployment: 'prod_aria'
-        environment: 'prod'
-        component: 'aria-layer'
-        service_connection: 'DTS-DATAINGEST-PROD'
-        dependsOn: 'stg_aria'
-      
+      - deployment: stg_aria
+        environment: stg
+        component: aria-layer
+        service_connection: DTS-DATAINGEST-STG
+        dependsOn: sbox_aria
+      - deployment: prod_aria
+        environment: prod
+        component: aria-layer
+        service_connection: DTS-DATAINGEST-PROD
+        dependsOn: stg_aria
+
 variables:
   - group: ARIA-TEST-group
   - name: timeoutInMinutes
@@ -51,6 +54,7 @@ variables:
   - name: terraformInitSubscription
     value: 04d27a32-7a07-48b3-95b8-3c8691e1a263
   - template: vars/input-variables.yaml@cnp-azuredevops-libraries
+
 stages:
   - stage: Precheck
     jobs:
@@ -61,23 +65,23 @@ stages:
         variables:
           TF_VAR_client_id_test: $(client_id_test)
           TF_VAR_client_secret_test: $(client_secret_test)
-          TF_VAR_tenant_id_test: $(tenant_id_test)
-        
+          TF_VAR_tenant_id_test: $(client_id_test)
+
         steps:
-        - script: |
-            TF_VAR_client_id_test: $(SBOX_CLIENT_ID)
-            TF_VAR_client_secret_test: $(SBOX_CLIENT_SECRET)
-            TF_VAR_tenant_id_test: $(SBOX_TENANT_ID)
-          displayName: Echo Variable Setup
+          - script: |
+              echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
+              echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
+              echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
+            displayName: Echo Variable Setup
 
-        - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
-          parameters:
-            keyvaultName: infra-vault-nonprod
-            keyvaultSecret: azure-devops-sp-token
-            serviceConnection: azurerm-sandbox
-            overrideAction: ${{ parameters.overrideAction }}
+          - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
+            parameters:
+              keyvaultName: infra-vault-nonprod
+              keyvaultSecret: azure-devops-sp-token
+              serviceConnection: azurerm-sandbox
+              overrideAction: ${{ parameters.overrideAction }}
 
-  - "${{ each deployment in parameters.environment_components }}":
+  - ${{ each deployment in parameters.environment_components }}:
       - stage: ${{ deployment.deployment }}
         dependsOn: ${{ deployment.dependsOn }}
         jobs:
@@ -85,9 +89,9 @@ stages:
             pool: server
             displayName: Wait for external validation
             steps:
-              - "${{ if or(eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod')) }}":
+              - ${{ if or(eq(deployment.environment, 'stg'), eq(deployment.environment, 'prod')) }}:
                   - task: ManualValidation@1
-                    timeoutInMinutes: 23160 # task times out in 2 weeks
+                    timeoutInMinutes: 23160 # 2 weeks
                     inputs:
                       approvers: jason.dynes1@HMCTS.net, andrew.mcdevitt@hmcts.net, ara.islam1@hmcts.net
                       instructions: Please validate the build configuration and resume
@@ -96,30 +100,29 @@ stages:
             displayName: Terraform Plan Apply
             dependsOn: waitForValidation
             pool:
-              "${{ if eq(deployment.environment, 'sbox') }}":
+              ${{ if eq(deployment.environment, 'sbox') }}:
                 name: hmcts-sds-ptlsbox
-              "${{ else }}":
+              ${{ else }}:
                 name: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
 
-            variables:
-              TF_VAR_client_id_test: $(SBOX_CLIENT_ID)
-              TF_VAR_client_secret_test: $(SBOX_CLIENT_SECRET)
-              TF_VAR_tenant_id_test: $(SBOX_TENANT_ID)
-            
             steps:
-            - script: |
-                echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
-                echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
-                echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
-              displayName: Echo Variable Setup
+              - script: |
+                  echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
+                  echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
+                  echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
+                displayName: Echo Variable Setup
+                env:
+                  TF_VAR_client_id_test: $(SBOX_CLIENT_ID)
+                  TF_VAR_client_secret_test: $(SBOX_CLIENT_SECRET)
+                  TF_VAR_tenant_id_test: $(SBOX_TENANT_ID)
 
-            - template: steps/terraform.yaml@cnp-azuredevops-libraries
-              parameters:
-                overrideAction: ${{ parameters.overrideAction }}
-                environment: ${{ deployment.environment }}
-                component: ${{ deployment.component }}
-                serviceConnection: ${{ deployment.service_connection }}
-                terraformInitSubscription: ${{ variables.terraformInitSubscription }}
-                product: ${{ variables.product }}
-                planCommandOptions: -compact-warnings
+              - template: steps/terraform.yaml@cnp-azuredevops-libraries
+                parameters:
+                  overrideAction: ${{ parameters.overrideAction }}
+                  environment: ${{ deployment.environment }}
+                  component: ${{ deployment.component }}
+                  serviceConnection: ${{ deployment.service_connection }}
+                  terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+                  product: ${{ variables.product }}
+                  planCommandOptions: -compact-warnings
