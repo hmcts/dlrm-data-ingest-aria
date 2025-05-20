@@ -54,22 +54,25 @@ variables:
 stages:
   - stage: Precheck
     jobs:
-      - job: null
-
+      - job: TerraformPrecheck
         pool:
           vmImage: ${{ variables.agentImage }}
+
+        variables:
+          TF_VAR_client_id_test: $(client_id_test)
+          TF_VAR_client_secret_test: $(client_secret_test)
+          TF_VAR_tenant_id_test: $(tenant_id_test)
+            
         steps:
-          - script: echo "Adding in ariable group secrets"
-            env:
-              TF_VAR_client_id_test: $(client_id_test)
-              TF_VAR_client_secret_test: $(client_secret_test)
-              TF_VAR_tenant_id_test: $(tenant_id_test)
-          - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
-            parameters:
-              keyvaultName: infra-vault-nonprod
-              keyvaultSecret: azure-devops-sp-token
-              serviceConnection: azurerm-sandbox
-              overrideAction: ${{ parameters.overrideAction }}
+        - script: echo "Adding in variable group secrets"
+          displayName: Echo Variable Setup
+
+        - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
+          parameters:
+            keyvaultName: infra-vault-nonprod
+            keyvaultSecret: azure-devops-sp-token
+            serviceConnection: azurerm-sandbox
+            overrideAction: ${{ parameters.overrideAction }}
 
   - "${{ each deployment in parameters.environment_components }}":
       - stage: ${{ deployment.deployment }}
@@ -95,12 +98,15 @@ stages:
               "${{ else }}":
                 name: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
-            steps:
-              - script: echo "Adding in ariable group secrets"
-                env:
-                  TF_VAR_client_id_test: $(client_id_test)
-                  TF_VAR_client_secret_test: $(client_secret_test)
-                  TF_VAR_tenant_id_test: $(tenant_id_test)
+
+            variables:
+              TF_VAR_client_id_test: $(client_id_test)
+              TF_VAR_client_secret_test: $(client_secret_test)
+              TF_VAR_tenant_id_test: $(tenant_id_test)
+            
+              steps:
+              - script: echo "Adding in variable group secrets"
+                displayName: Echo Variable Setup
 
               - template: steps/terraform.yaml@cnp-azuredevops-libraries
                 parameters:
