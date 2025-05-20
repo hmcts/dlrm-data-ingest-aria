@@ -33,13 +33,33 @@ output "workspace_host" {
 }
 
 
-resource "databricks_dbfs_file" "config_file" {
-  for_each = var.landing_zones
+# resource "databricks_dbfs_file" "config_file" {
+#   for_each = var.landing_zones
 
+
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
+#   filename = "${path.module}/config.json"
+# }
+
+resource "local_file" "config_file" {
+  for_each = var.landing_zones
 
   content = templatefile("${path.module}/config.json.tmpl", {
     env    = var.env
     lz_key = each.key
+
+    filename = "${path.module}/config.json"
   })
-  filename = "${path.module}/config.json"
+}
+
+resource "databricks_dbfs_file" "config_file" {
+  for_each = var.landing_zones
+
+
+  source = local_file.config_file[each.key].filename
+  path   = "dbfs:/configs/config.json"
+
 }
