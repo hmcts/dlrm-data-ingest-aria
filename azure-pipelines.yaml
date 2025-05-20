@@ -55,20 +55,23 @@ stages:
   - stage: Precheck
     jobs:
       - job: null
+        
+        env:
+            TF_VAR_client_id_test: $(client_id_test)
+            TF_VAR_client_secret_test: $(client_secret_test)
+            TF_VAR_tenant_id_test: $(tenant_id_test)
+
         pool:
           vmImage: ${{ variables.agentImage }}
         steps:
           - script: echo "Adding in ariable group secrets"
-            env:
-              client_id_test: $(client_id_test)
-              client_secret_test: $(client_secret_test)
-              tenant_id_test: $(tenant_id_test)
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
               keyvaultName: infra-vault-nonprod
               keyvaultSecret: azure-devops-sp-token
               serviceConnection: azurerm-sandbox
               overrideAction: ${{ parameters.overrideAction }}
+
   - "${{ each deployment in parameters.environment_components }}":
       - stage: ${{ deployment.deployment }}
         dependsOn: ${{ deployment.dependsOn }}
@@ -85,6 +88,11 @@ stages:
                       instructions: Please validate the build configuration and resume
 
           - job: TerraformPlanApply
+            env:
+              TF_VAR_client_id_test: $(client_id_test)
+              TF_VAR_client_secret_test: $(client_secret_test)
+              TF_VAR_tenant_id_test: $(tenant_id_test)
+
             displayName: Terraform Plan Apply
             dependsOn: waitForValidation
             pool:
