@@ -18,14 +18,14 @@ variable "eventhub_topic_suffixes" {
 }
 
 variable "client_id_test" {
-  type = string
+  type    = string
   default = ""
 }
 variable "client_secret_test" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }
 variable "tenant_id_test" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }

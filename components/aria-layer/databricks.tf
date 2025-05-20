@@ -22,13 +22,13 @@ data "azurerm_databricks_workspace" "db_ws" {
 
 output "workspace_host" {
   value = {
-    for key,ws in data.azurerm_databricks_workspace.db_ws:
+    for key, ws in data.azurerm_databricks_workspace.db_ws :
     key => {
-      ws_rl = ws.workspace_url
-      name = ws.name
+      ws_rl               = ws.workspace_url
+      name                = ws.name
       resource_group_name = ws.resource_group_name
 
+    }
   }
-}
 }
 
