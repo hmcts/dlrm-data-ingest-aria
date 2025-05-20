@@ -32,3 +32,17 @@ output "workspace_host" {
   }
 }
 
+
+resource "databricks_dbfs_file" "config_file" {
+  for_each = var.landing_zones
+
+  source = "${path.module}/config.json.tmpl"
+
+  destination = "dbfs:/configs/config.json"
+  overwrite   = true
+
+  content = templatefile("${path.module}/config.json.tmpl", {
+    env    = var.env
+    lz_key = each.key
+  })
+}
