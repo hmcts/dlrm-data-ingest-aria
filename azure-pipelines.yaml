@@ -62,9 +62,12 @@ stages:
           TF_VAR_client_id_test: $(client_id_test)
           TF_VAR_client_secret_test: $(client_secret_test)
           TF_VAR_tenant_id_test: $(tenant_id_test)
-            
+        
         steps:
-        - script: echo "Adding in variable group secrets"
+        - script: |
+            echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
+            echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
+            echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
           displayName: Echo Variable Setup
 
         - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
@@ -105,7 +108,10 @@ stages:
               TF_VAR_tenant_id_test: $(tenant_id_test)
             
             steps:
-            - script: echo "Adding in variable group secrets"
+            - script: |
+                echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
+                echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
+                echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
               displayName: Echo Variable Setup
 
             - template: steps/terraform.yaml@cnp-azuredevops-libraries
