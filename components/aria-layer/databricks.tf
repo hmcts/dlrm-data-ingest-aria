@@ -50,9 +50,9 @@ resource "local_file" "config_file" {
   content = templatefile("${path.module}/config.json.tmpl", {
     env    = var.env
     lz_key = each.key
-
-    filename = "${path.module}/config.json"
   })
+
+  filename = "${path.module}/config-${each.key}-${var.env}.json"
 }
 
 resource "databricks_dbfs_file" "config_file" {
