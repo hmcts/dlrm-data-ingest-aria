@@ -69,9 +69,9 @@ stages:
 
         steps:
           - script: |
-              echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
-              echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
-              echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
+              echo "TF_VAR_client_id_test: $(TF_VAR_client_id_test)"
+              echo "TF_VAR_client_secret_test: $(TF_VAR_client_secret_test)"
+              echo "TF_VAR_tenant_id_test: $(TF_VAR_tenant_id_test)"
             displayName: Echo Variable Setup
 
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
@@ -83,6 +83,8 @@ stages:
 
   - ${{ each deployment in parameters.environment_components }}:
       - stage: ${{ deployment.deployment }}
+        variables:
+          - group: ARIA-TEST-group
         dependsOn: ${{ deployment.dependsOn }}
         jobs:
           - job: waitForValidation
@@ -106,16 +108,18 @@ stages:
                 name: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
 
+            variables:  # These are pipeline variables, not necessarily environment variables
+              TF_VAR_client_id_test: $(client_id_test)
+              TF_VAR_client_secret_test: $(client_secret_test)
+              TF_VAR_tenant_id_test: $(tenant_id_test)
+
             steps:
               - script: |
-                  echo "TF_VAR_client_id_test: $TF_VAR_client_id_test"
-                  echo "TF_VAR_client_secret_test: $TF_VAR_client_secret_test"
-                  echo "TF_VAR_tenant_id_test: $TF_VAR_tenant_id_test"
+                  echo "TF_VAR_client_id_test: $(TF_VAR_client_id_test)"
+                  echo "TF_VAR_client_secret_test: $(TF_VAR_client_secret_test)"
+                  echo "TF_VAR_tenant_id_test: $(TF_VAR_tenant_id_test)"
                 displayName: Echo Variable Setup
-                env:
-                  TF_VAR_client_id_test: $(SBOX_CLIENT_ID)
-                  TF_VAR_client_secret_test: $(SBOX_CLIENT_SECRET)
-                  TF_VAR_tenant_id_test: $(SBOX_TENANT_ID)
+
 
               - template: steps/terraform.yaml@cnp-azuredevops-libraries
                 parameters:
@@ -126,3 +130,5 @@ stages:
                   terraformInitSubscription: ${{ variables.terraformInitSubscription }}
                   product: ${{ variables.product }}
                   planCommandOptions: -compact-warnings
+
+
