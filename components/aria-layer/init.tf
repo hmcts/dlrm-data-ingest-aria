@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.11.4"
+  required_version = ">=1.11.4, <2.0.0"
 
   required_providers {
     azurerm = {
@@ -23,11 +23,16 @@ provider "azurerm" {
 provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-00"].id
-  use_azure_cli_auth          = true
+  host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
+
+  azure_client_id     = var.client_id_test
+  azure_client_secret = var.client_secret_test
+  azure_tenant_id     = var.tenant_id_test
 }
 
-provider "databricks" {
-  alias                       = "sbox-02"
-  azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-02"].id
-  use_azure_cli_auth          = true
-}
+
+# provider "databricks" {
+#   alias                       = "sbox-02"
+#   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-02"].id
+#   use_azure_cli_auth          = true
+# }
