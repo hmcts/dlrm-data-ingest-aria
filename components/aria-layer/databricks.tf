@@ -16,8 +16,19 @@ locals {
 data "azurerm_databricks_workspace" "db_ws" {
   for_each = local.db_workspace_configs
 
-
   name                = each.value.databricks_ws_name
   resource_group_name = each.value.databricks_rg_name
+}
+
+output "workspace_host" {
+  value = {
+    for key,ws in data.azurerm_databricks_workspace.db_ws:
+    key => {
+      ws_rl = ws.workspace_url
+      name = ws.name
+      resource_group_name = ws.resource_group_name
+
+  }
+}
 }
 

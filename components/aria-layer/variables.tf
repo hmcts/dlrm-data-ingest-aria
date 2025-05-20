@@ -17,6 +17,15 @@ variable "eventhub_topic_suffixes" {
   default     = ["pub", "ack", "dl"]
 }
 
-variable "client_id_test" {}
-variable "client_secret_test" {}
-variable "tenant_id_test" {}
+variable "client_id_test" {
+  type = string
+  default = ""
+}
+variable "client_secret_test" {
+    type = string
+    default = ""
+}
+variable "tenant_id_test" {
+    type = string
+    default = ""
+}
