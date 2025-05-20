@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.11.4"
+  required_version = ">=1.11.4, <2.0.0"
 
   required_providers {
     azurerm = {
@@ -24,8 +24,8 @@ provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.ws["sbox-00"].id
 
-  client_id     = $(client_id_test)
-  client_secret = $(client_secret_test)
+  client_id     = var.client_id_test
+  client_secret = var.client_secret_test
 }
 
 # provider "databricks" {
