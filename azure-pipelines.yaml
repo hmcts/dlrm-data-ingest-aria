@@ -104,16 +104,16 @@ stages:
               TF_VAR_client_secret_test: $(client_secret_test)
               TF_VAR_tenant_id_test: $(tenant_id_test)
             
-              steps:
-              - script: echo "Adding in variable group secrets"
-                displayName: Echo Variable Setup
+            steps:
+            - script: echo "Adding in variable group secrets"
+              displayName: Echo Variable Setup
 
-              - template: steps/terraform.yaml@cnp-azuredevops-libraries
-                parameters:
-                  overrideAction: ${{ parameters.overrideAction }}
-                  environment: ${{ deployment.environment }}
-                  component: ${{ deployment.component }}
-                  serviceConnection: ${{ deployment.service_connection }}
-                  terraformInitSubscription: ${{ variables.terraformInitSubscription }}
-                  product: ${{ variables.product }}
-                  planCommandOptions: -compact-warnings
+            - template: steps/terraform.yaml@cnp-azuredevops-libraries
+              parameters:
+                overrideAction: ${{ parameters.overrideAction }}
+                environment: ${{ deployment.environment }}
+                component: ${{ deployment.component }}
+                serviceConnection: ${{ deployment.service_connection }}
+                terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+                product: ${{ variables.product }}
+                planCommandOptions: -compact-warnings
