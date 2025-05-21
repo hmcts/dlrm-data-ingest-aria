@@ -39,7 +39,7 @@ resource "databricks_secret_scope" "kv-scope-02" {
 
   keyvault_metadata {
     resource_id = data.azurerm_key_vault.logging_vault[02].id
-    dns_name    = azurerm_key_vault.logging_vault[02].vault_uri
+    dns_name    = data.azurerm_key_vault.logging_vault[02].vault_uri
   }
 }
 
