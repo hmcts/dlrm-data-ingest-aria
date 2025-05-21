@@ -20,14 +20,17 @@ provider "azurerm" {
   features {}
 }
 
+
+
+
 provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
 
-  azure_client_id     = var.client_id_test
-  azure_client_secret = var.client_secret_test
-  azure_tenant_id     = var.tenant_id_test
+  azure_client_id     = var.sboxClientIdTest
+  azure_client_secret = var.sboxClientSecretTest
+  azure_tenant_id     = var.sboxTenantIdTest
 }
 
 provider "databricks" {
@@ -35,7 +38,7 @@ provider "databricks" {
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-02"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
 
-  azure_client_id     = var.client_id_test
-  azure_client_secret = var.client_secret_test
-  azure_tenant_id     = var.tenant_id_test
+  azure_client_id     = var.sboxClientIdTest
+  azure_client_secret = var.sboxClientSecretTest
+  azure_tenant_id     = var.sboxTenantIdTest
 }
