@@ -63,6 +63,10 @@ resource "databricks_dbfs_file" "config_file_sbox-00" {
   source = local_file.config_file["00"].filename
   path   = "/configs/config.json"
 
+  depends_on = [
+    local_file.config_file["00"]
+  ]
+
 }
 
 resource "databricks_dbfs_file" "config_file_sbox-02" {
@@ -70,6 +74,10 @@ resource "databricks_dbfs_file" "config_file_sbox-02" {
 
   source = local_file.config_file["02"].filename
   path   = "/configs/config.json"
+
+  depends_on = [
+    local_file.config_file["02"]
+  ]
 
 }
 
