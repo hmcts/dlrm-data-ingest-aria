@@ -44,6 +44,7 @@ output "workspace_host" {
 #   filename = "${path.module}/config.json"
 # }
 
+
 resource "local_file" "config_file" {
   for_each = var.landing_zones
 
@@ -55,11 +56,21 @@ resource "local_file" "config_file" {
   filename = "${path.module}/config-${each.key}-${var.env}.json"
 }
 
-resource "databricks_dbfs_file" "config_file" {
-  for_each = var.landing_zones
 
+resource "databricks_dbfs_file" "config_file_sbox-00" {
+  provider = databricks.sbox-00
 
-  source = local_file.config_file[each.key].filename
-  path   = "dbfs:/configs/config.json"
-
+  source    = local_file.config_file["sbox-00"].filename
+  path      = "dbfs:/configs/config.json"
+  overwrite = true
 }
+
+resource "databricks_dbfs_file" "config_file_sbox-02" {
+  provider = databricks.sbox-00
+
+  source    = local_file.config_file["sbox-02"].filename
+  path      = "dbfs:/configs/config.json"
+  overwrite = true
+}
+
+
