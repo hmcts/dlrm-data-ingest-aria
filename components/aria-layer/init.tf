@@ -20,9 +20,6 @@ provider "azurerm" {
   features {}
 }
 
-
-
-
 provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
