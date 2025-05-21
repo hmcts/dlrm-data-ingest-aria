@@ -34,7 +34,7 @@ resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPAL-CLIENT-SECRET"
-  value        = var.client_secret_test
+  value        = var.sboxClientSecretTest
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
