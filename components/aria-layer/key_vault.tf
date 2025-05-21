@@ -3,7 +3,7 @@ resource "azurerm_key_vault_secret" "client_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
-  value        = var.sboxClientIdTest
+  value        = var.sboxClientId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -13,7 +13,7 @@ resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
-  value        = var.sboxTenantIdTest
+  value        = var.sboxTenantId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -33,7 +33,7 @@ resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
-  value        = var.sboxClientSecretTest
+  value        = var.sboxClientSecret
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
