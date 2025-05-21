@@ -2,8 +2,8 @@
 resource "azurerm_key_vault_secret" "client_id" {
   for_each = var.landing_zones
 
-  name         = "SERVICE-PRINCIPAL-CLIENT-ID"
-  value        = data.azurerm_client_config.current.client_id
+  name         = "SERVICE-PRINCIPLE-CLIENT-ID"
+  value        = var.sboxClientId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -12,8 +12,8 @@ resource "azurerm_key_vault_secret" "client_id" {
 resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
-  name         = "SERVICE-PRINCIPAL-TENANT-ID"
-  value        = data.azurerm_client_config.current.tenant_id
+  name         = "SERVICE-PRINCIPLE-TENANT-ID"
+  value        = var.sboxTenantId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -22,19 +22,18 @@ resource "azurerm_key_vault_secret" "tenant_id" {
 resource "azurerm_key_vault_secret" "tenant_url" {
   for_each = var.landing_zones
 
-  name         = "SERVICE-PRINCIPAL-TENANT-URL"
-  value        = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}/oauth2/token"
+  name         = "SERVICE-PRINCIPLE-TENANT-URL"
+  value        = var.sboxTenantURL
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
 
-# Waiting for PlatOps to resolve
 resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
-  name         = "SERVICE-PRINCIPAL-CLIENT-SECRET"
-  value        = var.sboxClientSecretTest
+  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
+  value        = var.sboxClientSecret
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags

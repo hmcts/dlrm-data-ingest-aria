@@ -62,17 +62,7 @@ stages:
         pool:
           vmImage: ${{ variables.agentImage }}
 
-        # variables:
-        #   TF_VAR_sboxClientIdTest: $(client_id_test)
-        #   TF_VAR_sboxClientSecretTest: $(client_secret_test)
-        #   TF_VAR_sboxTenantIdTest: $(tenant_id_test)
-
         steps:
-          # - script: |
-          #     echo "##vso[task.setvariable variable=TF_VAR_sboxClientIdTest]$TF_VAR_sboxClientIdTest"
-          #     echo "##vso[task.setvariable variable=TF_VAR_sboxClientSecretTest]$TF_VAR_sboxClientSecretTest"
-          #     echo "##vso[task.setvariable variable=TF_VAR_sboxTenantIdTest]$TF_VAR_sboxTenantIdTest"
-          #   displayName: Echo Variable Setup
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
               keyvaultName: infra-vault-nonprod
@@ -108,18 +98,20 @@ stages:
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
 
             variables:  # These are pipeline variables to be exported in step below before being passed into TF via template envVar input
-              sboxClientIdTest: $(client_id_test)
-              sboxClientSecretTest: $(client_secret_test)
-              sboxTenantIdTest: $(tenant_id_test)
+              sboxClientId: $(sbox_client_id)
+              sboxClientSecret: $(sbox_client_secret)
+              sboxTenantId: $(sbox_tenant_id)
+              sboxTenantURL: $(sbox_tenant_url)
 
             steps:
               - script: |
-                  echo "TF_VAR_client_id_test: $(sboxClientIdTest)"
-                  echo "TF_VAR_client_secret_test: $(sboxClientSecretTest)"
-                  echo "TF_VAR_tenant_id_test: $(sboxTenantIdTest)"
+                  echo "TF_VAR_client_id_test: $(sboxClientId)"
+                  echo "TF_VAR_client_secret_test: $(sboxClientSecret)"
+                  echo "TF_VAR_tenant_id_test: $(sboxTenantId)"
+                  echo "TF_VAR_sbox_tenant_url: $(sboxTenantURL)"
                 displayName: 'Set Terraform Variables'
 
-              - template: steps/terraform.yaml@cnp-azuredevops-libraries #clone this as a v1. Update the v1 (ARIA) repo to ensure only we use. Update naming convention at the top too.
+              - template: steps/terraform.yaml@cnp-azuredevops-libraries
                 parameters:
                   overrideAction: ${{ parameters.overrideAction }}
                   environment: ${{ deployment.environment }}
@@ -129,6 +121,7 @@ stages:
                   product: ${{ variables.product }}
                   planCommandOptions: -compact-warnings
                   terraformEnvironmentVariables:
-                    TF_VAR_sboxClientIdTest: $(sboxClientIdTest)
-                    TF_VAR_sboxClientSecretTest: $(sboxClientSecretTest)
-                    TF_VAR_sboxTenantIdTest: $(sboxTenantIdTest)
+                    TF_VAR_sboxClientIdTest: $(sboxClientId)
+                    TF_VAR_sboxClientSecretTest: $(sboxClientSecret)
+                    TF_VAR_sboxTenantIdTest: $(sboxTenantId)
+                    TF_VAR_sboxTenantURL: $(sboxTenantURL)
