@@ -32,3 +32,50 @@ output "workspace_host" {
   }
 }
 
+
+# resource "databricks_dbfs_file" "config_file" {
+#   for_each = var.landing_zones
+
+
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
+#   filename = "${path.module}/config.json"
+# }
+
+
+# resource "local_file" "config_file" {
+#   for_each = var.landing_zones
+
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
+
+#   filename = "${path.module}/config-${each.key}-${var.env}.json"
+# }
+
+resource "databricks_dbfs_file" "config_file_00" {
+  provider = databricks.sbox-00
+
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "sbox"
+    lz_key = "00"
+  }))
+
+  path = "/configs/config.json"
+}
+
+resource "databricks_dbfs_file" "config_file_02" {
+  provider = databricks.sbox-02
+
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "sbox"
+    lz_key = "02"
+  }))
+
+  path = "/configs/config.json"
+}
+
+
