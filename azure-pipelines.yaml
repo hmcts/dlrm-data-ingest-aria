@@ -80,10 +80,10 @@ stages:
               keyvaultSecret: azure-devops-sp-token
               serviceConnection: azurerm-sandbox
               overrideAction: ${{ parameters.overrideAction }}
-                terraformEnvironmentVariables:
-                  TF_VAR_sboxClientIdTest: $(client_id_test)
-                  TF_VAR_sboxClientSecretTest: $(client_secret_test)
-                  TF_VAR_sboxTenantIdTest: $(tenant_id_test)
+              terraformEnvironmentVariables:
+                TF_VAR_sboxClientIdTest: $(client_id_test)
+                TF_VAR_sboxClientSecretTest: $(client_secret_test)
+                TF_VAR_sboxTenantIdTest: $(tenant_id_test)
 
 
   - ${{ each deployment in parameters.environment_components }}:
