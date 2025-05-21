@@ -31,17 +31,30 @@ output "workspace_host" {
     }
   }
 }
-## Connect Keyvaults to Databricks as a KV backed Scope
-resource "databricks_secret_scope" "kv-scope-02" {
 
-  provider = databricks.sbox-02
-  name     = "ingest02-meta002-sbox"
 
-  keyvault_metadata {
-    resource_id = data.azurerm_key_vault.logging_vault[02].id
-    dns_name    = azurerm_key_vault.logging_vault[02].vault_uri
-  }
-}
+# resource "databricks_dbfs_file" "config_file" {
+#   for_each = var.landing_zones
+
+
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
+#   filename = "${path.module}/config.json"
+# }
+
+
+# resource "local_file" "config_file" {
+#   for_each = var.landing_zones
+
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
+
+#   filename = "${path.module}/config-${each.key}-${var.env}.json"
+# }
 
 resource "databricks_dbfs_file" "config_file_00" {
   provider = databricks.sbox-00
