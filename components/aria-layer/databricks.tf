@@ -34,6 +34,17 @@ output "workspace_host" {
 
 
 ## Connect Keyvaults to Databricks as a KV backed Scope
+resource "databricks_secret_scope" "kv-scope-00" {
+
+  provider = databricks.sbox-00
+  name     = "ingest00-meta002-sbox"
+
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["00"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
+  }
+}
+
 resource "databricks_secret_scope" "kv-scope-02" {
 
   provider = databricks.sbox-02
