@@ -40,8 +40,8 @@ resource "databricks_secret_scope" "kv-scope-02" {
   name     = "ingest02-meta002-sbox"
 
   keyvault_metadata {
-    resource_id = data.azurerm_key_vault.logging_vault[02].id
-    dns_name    = data.azurerm_key_vault.logging_vault[02].vault_uri
+    resource_id = data.azurerm_key_vault.logging_vault["02"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["02"].vault_uri
   }
 }
 
