@@ -62,29 +62,23 @@ stages:
         pool:
           vmImage: ${{ variables.agentImage }}
 
-        variables:
-          TF_VAR_sboxClientIdTest: $(client_id_test)
-          TF_VAR_sboxClientSecretTest: $(client_secret_test)
-          TF_VAR_sboxTenantIdTest: $(tenant_id_test)
+        # variables:
+        #   TF_VAR_sboxClientIdTest: $(client_id_test)
+        #   TF_VAR_sboxClientSecretTest: $(client_secret_test)
+        #   TF_VAR_sboxTenantIdTest: $(tenant_id_test)
 
         steps:
-          - script: |
-              echo "##vso[task.setvariable variable=TF_VAR_sboxClientIdTest]$TF_VAR_sboxClientIdTest"
-              echo "##vso[task.setvariable variable=TF_VAR_sboxClientSecretTest]$TF_VAR_sboxClientSecretTest"
-              echo "##vso[task.setvariable variable=TF_VAR_sboxTenantIdTest]$TF_VAR_sboxTenantIdTest"
-            displayName: Echo Variable Setup
-
+          # - script: |
+          #     echo "##vso[task.setvariable variable=TF_VAR_sboxClientIdTest]$TF_VAR_sboxClientIdTest"
+          #     echo "##vso[task.setvariable variable=TF_VAR_sboxClientSecretTest]$TF_VAR_sboxClientSecretTest"
+          #     echo "##vso[task.setvariable variable=TF_VAR_sboxTenantIdTest]$TF_VAR_sboxTenantIdTest"
+          #   displayName: Echo Variable Setup
           - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
             parameters:
               keyvaultName: infra-vault-nonprod
               keyvaultSecret: azure-devops-sp-token
               serviceConnection: azurerm-sandbox
               overrideAction: ${{ parameters.overrideAction }}
-              terraformEnvironmentVariables:
-                TF_VAR_sboxClientIdTest: $(client_id_test)
-                TF_VAR_sboxClientSecretTest: $(client_secret_test)
-                TF_VAR_sboxTenantIdTest: $(tenant_id_test)
-
 
   - ${{ each deployment in parameters.environment_components }}:
       - stage: ${{ deployment.deployment }}
