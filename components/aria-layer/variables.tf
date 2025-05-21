@@ -21,10 +21,10 @@ variable "eventhub_topic_suffixes" {
 #   type    = string
 #   default = ""
 # }
-# variable "client_secret_test" {
-#   type    = string
-#   default = ""
-# }
+variable "sboxClientSecretTest" {
+  type    = string
+  default = ""
+}
 # variable "tenant_id_test" {
 #   type    = string
 #   default = ""
