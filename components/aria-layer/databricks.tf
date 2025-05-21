@@ -45,16 +45,16 @@ output "workspace_host" {
 # }
 
 
-resource "local_file" "config_file" {
-  for_each = var.landing_zones
+# resource "local_file" "config_file" {
+#   for_each = var.landing_zones
 
-  content = templatefile("${path.module}/config.json.tmpl", {
-    env    = var.env
-    lz_key = each.key
-  })
+#   content = templatefile("${path.module}/config.json.tmpl", {
+#     env    = var.env
+#     lz_key = each.key
+#   })
 
-  filename = "${path.module}/config-${each.key}-${var.env}.json"
-}
+#   filename = "${path.module}/config-${each.key}-${var.env}.json"
+# }
 
 resource "databricks_dbfs_file" "config_file_00" {
   provider = databricks.sbox-00
@@ -67,29 +67,15 @@ resource "databricks_dbfs_file" "config_file_00" {
   path = "/configs/config.json"
 }
 
+resource "databricks_dbfs_file" "config_file_02" {
+  provider = databricks.sbox-02
 
-# resource "databricks_dbfs_file" "config_file_sbox-00" {
-#   provider = databricks.sbox-00
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "sbox"
+    lz_key = "02"
+  }))
 
-#   source = local_file.config_file["00"].filename
-#   path   = "/configs/config.json"
-
-#   depends_on = [
-#     local_file.config_file["00"]
-#   ]
-
-# }
-
-# resource "databricks_dbfs_file" "config_file_sbox-02" {
-#   provider = databricks.sbox-02
-
-#   source = local_file.config_file["02"].filename
-#   path   = "/configs/config.json"
-
-#   depends_on = [
-#     local_file.config_file["02"]
-#   ]
-
-# }
+  path = "/configs/config.json"
+}
 
 
