@@ -105,10 +105,10 @@ stages:
 
             steps:
               - script: |
-                  echo "TF_VAR_client_id_test: $(sboxClientId)"
-                  echo "TF_VAR_client_secret_test: $(sboxClientSecret)"
-                  echo "TF_VAR_tenant_id_test: $(sboxTenantId)"
-                  echo "TF_VAR_sbox_tenant_url: $(sboxTenantURL)"
+                  echo "TF_VAR_client_id: $(sboxClientId)"
+                  echo "TF_VAR_client_secret: $(sboxClientSecret)"
+                  echo "TF_VAR_tenant_id: $(sboxTenantId)"
+                  echo "TF_VAR_sbox_tenant: $(sboxTenantURL)"
                 displayName: 'Set Terraform Variables'
 
               - template: steps/terraform.yaml@cnp-azuredevops-libraries
@@ -121,7 +121,7 @@ stages:
                   product: ${{ variables.product }}
                   planCommandOptions: -compact-warnings
                   terraformEnvironmentVariables:
-                    TF_VAR_sboxClientIdTest: $(sboxClientId)
-                    TF_VAR_sboxClientSecretTest: $(sboxClientSecret)
-                    TF_VAR_sboxTenantIdTest: $(sboxTenantId)
+                    TF_VAR_sboxClientId: $(sboxClientId)
+                    TF_VAR_sboxClientSecret: $(sboxClientSecret)
+                    TF_VAR_sboxTenantId: $(sboxTenantId)
                     TF_VAR_sboxTenantURL: $(sboxTenantURL)
