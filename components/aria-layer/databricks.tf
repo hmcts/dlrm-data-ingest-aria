@@ -60,7 +60,7 @@ resource "local_file" "config_file" {
 resource "databricks_dbfs_file" "config_file_sbox-00" {
   provider = databricks.sbox-00
 
-  source = local_file.config_file["sbox-00"].filename
+  source = local_file.config_file["00"].filename
   path   = "/configs/config.json"
 
 }
@@ -68,7 +68,7 @@ resource "databricks_dbfs_file" "config_file_sbox-00" {
 resource "databricks_dbfs_file" "config_file_sbox-02" {
   provider = databricks.sbox-00
 
-  source = local_file.config_file["sbox-02"].filename
+  source = local_file.config_file["02"].filename
   path   = "/configs/config.json"
 
 }
