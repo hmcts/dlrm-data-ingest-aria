@@ -56,29 +56,40 @@ resource "local_file" "config_file" {
   filename = "${path.module}/config-${each.key}-${var.env}.json"
 }
 
-
-resource "databricks_dbfs_file" "config_file_sbox-00" {
+resource "databricks_dbfs_file" "config_file_00" {
   provider = databricks.sbox-00
 
-  source = local_file.config_file["00"].filename
-  path   = "/configs/config.json"
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "sbox"
+    lz_key = "00"
+  }))
 
-  depends_on = [
-    local_file.config_file["00"]
-  ]
-
+  path = "/configs/config.json"
 }
 
-resource "databricks_dbfs_file" "config_file_sbox-02" {
-  provider = databricks.sbox-02
 
-  source = local_file.config_file["02"].filename
-  path   = "/configs/config.json"
+# resource "databricks_dbfs_file" "config_file_sbox-00" {
+#   provider = databricks.sbox-00
 
-  depends_on = [
-    local_file.config_file["02"]
-  ]
+#   source = local_file.config_file["00"].filename
+#   path   = "/configs/config.json"
 
-}
+#   depends_on = [
+#     local_file.config_file["00"]
+#   ]
+
+# }
+
+# resource "databricks_dbfs_file" "config_file_sbox-02" {
+#   provider = databricks.sbox-02
+
+#   source = local_file.config_file["02"].filename
+#   path   = "/configs/config.json"
+
+#   depends_on = [
+#     local_file.config_file["02"]
+#   ]
+
+# }
 
 
