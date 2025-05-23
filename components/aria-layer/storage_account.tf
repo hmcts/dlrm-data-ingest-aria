@@ -56,8 +56,8 @@ data "azurerm_storage_account_sas" "curated" {
 
   resource_types {
     service   = true
-    container = false
-    object    = false
+    container = true
+    object    = true
   }
 
   services {
@@ -73,8 +73,8 @@ data "azurerm_storage_account_sas" "curated" {
   permissions {
     read    = true
     write   = true
-    delete  = false
-    list    = false
+    delete  = true
+    list    = true
     add     = true
     create  = true
     update  = false
