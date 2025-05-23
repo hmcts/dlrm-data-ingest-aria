@@ -20,7 +20,7 @@ resource "azurerm_linux_function_app" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
-    if !(var.env == "sbox" && app.lz_key == "00")
+    # if !(var.env == "sbox" && app.lz_key == "00")
   }
 
   name                       = each.value.full_name
