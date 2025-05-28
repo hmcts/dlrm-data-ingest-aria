@@ -29,8 +29,3 @@ variable "TenantURL" {
   type    = string
   default = ""
 }
-
-variable "env" {
-  type    = string
-  default = ""
-}

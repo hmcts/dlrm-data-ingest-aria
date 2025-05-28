@@ -63,6 +63,17 @@ output "workspace_host" {
 #   azure_tenant_id     = var.TenantId
 # }
 
-module "databricks_env_resources" {
-  source = "./environments/${var.env}"
+module "sbox" {
+  source = "./environments/sbox"
+  count  = var.env == "sbox" ? 1 : 0
+}
+
+module "stg" {
+  source = "./environments/stg"
+  count  = var.env == "stg" ? 1 : 0
+}
+
+module "prod" {
+  source = "./environments/prod"
+  count  = var.env == "prod" ? 1 : 0
 }
