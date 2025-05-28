@@ -96,7 +96,7 @@ provider "databricks" {
 
 # if != sbox then ignore the resource.
 resource "databricks_secret_scope" "kv-scope-sbox00" {
-  count = var.env == "sbox" ? 1 : 0
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
   name     = "ingest00-meta002-sbox"
 
@@ -107,7 +107,7 @@ resource "databricks_secret_scope" "kv-scope-sbox00" {
 }
 
 resource "databricks_secret_scope" "kv-scope-sbox01" {
-  count = var.env == "sbox" ? 1 : 0
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-01
   name     = "ingest01-meta002-sbox"
 
@@ -118,7 +118,7 @@ resource "databricks_secret_scope" "kv-scope-sbox01" {
 }
 
 resource "databricks_secret_scope" "kv-scope-sbox02" {
-  count = var.env == "sbox" ? 1 : 0
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-02
   name     = "ingest02-meta002-sbox"
 
@@ -130,7 +130,7 @@ resource "databricks_secret_scope" "kv-scope-sbox02" {
 
 ## if != stg then ignore
 resource "databricks_secret_scope" "kv-scope-stg00" {
-  count = var.env == "stg" ? 1 : 0
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
   name     = "ingest00-meta002-stg"
 
@@ -168,7 +168,7 @@ resource "databricks_dbfs_file" "config_file_sbox00" {
 }
 
 resource "databricks_dbfs_file" "config_file_sbox01" {
-  count = var.env == "stg" ? 1 : 0
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.sbox-01
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
@@ -180,7 +180,7 @@ resource "databricks_dbfs_file" "config_file_sbox01" {
 }
 
 resource "databricks_dbfs_file" "config_file_sbox02" {
-  count = var.env == "sbox" ? 1 : 0
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-02
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
