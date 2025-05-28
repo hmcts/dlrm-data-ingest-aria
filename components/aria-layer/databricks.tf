@@ -64,16 +64,16 @@ output "workspace_host" {
 # }
 
 module "sbox" {
-  source = "./environments/sbox"
+  source = "../../environments/sbox"
   count  = var.env == "sbox" ? 1 : 0
 }
 
 module "stg" {
-  source = "./environments/stg"
+  source = "../../environments/stg"
   count  = var.env == "stg" ? 1 : 0
 }
 
 module "prod" {
-  source = "./environments/prod"
+  source = "../../environments/prod"
   count  = var.env == "prod" ? 1 : 0
 }
