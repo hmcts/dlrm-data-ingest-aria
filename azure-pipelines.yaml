@@ -148,4 +148,4 @@ stages:
                     TF_VAR_ClientSecret: $(ClientSecret)
                     TF_VAR_TenantId: $(TenantId)
                     TF_VAR_TenantURL: $(TenantURL)
-                    TF_VAR_environment: ${{ deployment.environment }}
+                    TF_VAR_env: ${{ deployment.environment }}
