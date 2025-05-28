@@ -1,10 +1,3 @@
-variable "client_secret" {
-  description = "The client secret to store in Key Vault"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "segments" {
   description = "llist of segment alias for eventhubs"
   type        = list(string)
@@ -33,6 +26,11 @@ variable "TenantId" {
 }
 
 variable "TenantURL" {
+  type    = string
+  default = ""
+}
+
+variable "environment" {
   type    = string
   default = ""
 }
