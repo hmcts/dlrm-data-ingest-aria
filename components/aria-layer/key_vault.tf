@@ -1,5 +1,5 @@
 # Creating Service Principal values (client_id, client_secret, tenant_id, tenant_url)
-resource "azurerm_key_vault_secret" "sbox_client_id" {
+resource "azurerm_key_vault_secret" "client_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
@@ -9,7 +9,7 @@ resource "azurerm_key_vault_secret" "sbox_client_id" {
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "sbox_tenant_id" {
+resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
@@ -19,7 +19,7 @@ resource "azurerm_key_vault_secret" "sbox_tenant_id" {
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "sbox_tenant_url" {
+resource "azurerm_key_vault_secret" "tenant_url" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-URL"
@@ -29,7 +29,7 @@ resource "azurerm_key_vault_secret" "sbox_tenant_url" {
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "sbox_client_secret" {
+resource "azurerm_key_vault_secret" "client_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
