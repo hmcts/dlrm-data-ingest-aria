@@ -20,15 +20,14 @@ resource "azurerm_linux_function_app" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
-    # if !(var.env == "sbox" && app.lz_key == "00")
   }
 
   name                       = each.value.full_name
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
-  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name               #  azurerm_storage_account.example[each.key].name                                 
-  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key 
+  storage_account_name       = azurerm_storage_account.example[each.key].name               #       data.azurerm_storage_account.xcutting[each.value.lz_key].name                            
+  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
@@ -107,15 +106,3 @@ resource "azurerm_monitor_smart_detector_alert_rule" "example" {
 
   tags = module.ctags.common_tags
 }
-
-
-#resource "azurerm_storage_account" "this" {
-#  for_each                 = var.landing_zones
-#  name                     = "ingest${each.key}${var.env}example"
-#  resource_group_name      = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
-#  location                 = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
-#  account_tier             = "Standard"
-#  account_kind             = "StorageV2"
-#  account_replication_type = "LRS"
-#  tags                     = module.ctags.common_tags
-#}
