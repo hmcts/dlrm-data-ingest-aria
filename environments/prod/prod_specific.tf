@@ -1,6 +1,6 @@
 ## Connect Keyvaults to Databricks as a KV backed Scope - specifically for prod
 
-resource "databricks_secret_scope" "kv-scope-prod00" {
+resource "databricks_secret_scope" "kv-scope-00" {
 
   provider = databricks.prod-00
   name     = "ingest00-meta002-prod"
@@ -13,7 +13,7 @@ resource "databricks_secret_scope" "kv-scope-prod00" {
 
 # Config file specifically for sbox
 
-resource "databricks_dbfs_file" "config_file_prod00" {
+resource "databricks_dbfs_file" "config_file_00" {
   provider = databricks.prod-00
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {

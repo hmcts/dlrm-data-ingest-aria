@@ -34,7 +34,7 @@ resource "databricks_secret_scope" "kv-scope-sbox02" {
 
 # Config file specifically for sbox
 
-resource "databricks_dbfs_file" "config_file_sbox00" {
+resource "databricks_dbfs_file" "config_file_00" {
   provider = databricks.sbox-00
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
@@ -45,7 +45,7 @@ resource "databricks_dbfs_file" "config_file_sbox00" {
   path = "/configs/config.json"
 }
 
-resource "databricks_dbfs_file" "config_file_sbox01" {
+resource "databricks_dbfs_file" "config_file_01" {
   provider = databricks.sbox-01
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
@@ -56,7 +56,7 @@ resource "databricks_dbfs_file" "config_file_sbox01" {
   path = "/configs/config.json"
 }
 
-resource "databricks_dbfs_file" "config_file_sbox02" {
+resource "databricks_dbfs_file" "config_file_02" {
   provider = databricks.sbox-02
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
