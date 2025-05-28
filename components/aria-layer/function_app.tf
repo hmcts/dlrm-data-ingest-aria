@@ -20,7 +20,6 @@ resource "azurerm_linux_function_app" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
-    # if !(var.env == "sbox" && app.lz_key == "00")
   }
 
   name                       = each.value.full_name
@@ -107,15 +106,3 @@ resource "azurerm_monitor_smart_detector_alert_rule" "example" {
 
   tags = module.ctags.common_tags
 }
-
-
-#resource "azurerm_storage_account" "this" {
-#  for_each                 = var.landing_zones
-#  name                     = "ingest${each.key}${var.env}example"
-#  resource_group_name      = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
-#  location                 = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
-#  account_tier             = "Standard"
-#  account_kind             = "StorageV2"
-#  account_replication_type = "LRS"
-#  tags                     = module.ctags.common_tags
-#}

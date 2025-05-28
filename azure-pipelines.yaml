@@ -98,17 +98,40 @@ stages:
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
 
             variables:  # These are pipeline variables to be exported in step below before being passed into TF via template envVar input
-              sboxClientId: $(sbox_client_id)
-              sboxClientSecret: $(sbox_client_secret)
-              sboxTenantId: $(sbox_tenant_id)
-              sboxTenantURL: $(sbox_tenant_url)
+              - ${{ if eq(deployment.environment, 'sbox') }}:
+                - name: ClientId
+                  value: $(sbox_client_id)
+                - name: ClientSecret
+                  value: $(sbox_client_secret)
+                - name: TenantId
+                  value: $(sbox_tenant_id)
+                - name: TenantURL
+                  value: $(sbox_tenant_url)
+              - ${{ elseif eq(deployment.environment, 'stg') }}:
+                - name: ClientId
+                  value: $(stg_client_id)
+                - name: ClientSecret
+                  value: $(stg_client_secret)
+                - name: TenantId
+                  value: $(stg_tenant_id)
+                - name: TenantURL
+                  value: $(stg_tenant_url)
+              - ${{ elseif eq(deployment.environment, 'prod') }}:
+                - name: ClientId
+                  value: $(prod_client_id)
+                - name: ClientSecret
+                  value: $(prod_client_secret)
+                - name: TenantId
+                  value: $(prod_tenant_id)
+                - name: TenantURL
+                  value: $(prod_tenant_url)
 
             steps:
               - script: |
-                  echo "TF_VAR_client_id: $(sboxClientId)"
-                  echo "TF_VAR_client_secret: $(sboxClientSecret)"
-                  echo "TF_VAR_tenant_id: $(sboxTenantId)"
-                  echo "TF_VAR_sbox_tenant: $(sboxTenantURL)"
+                  echo "TF_VAR_client_id: $(ClientId)"
+                  echo "TF_VAR_client_secret: $(ClientSecret)"
+                  echo "TF_VAR_tenant_id: $(TenantId)"
+                  echo "TF_VAR_sbox_tenant: $(TenantURL)"
                 displayName: 'Set Terraform Variables'
 
               - template: steps/terraform.yaml@cnp-azuredevops-libraries
@@ -121,7 +144,8 @@ stages:
                   product: ${{ variables.product }}
                   planCommandOptions: -compact-warnings
                   terraformEnvironmentVariables:
-                    TF_VAR_sboxClientId: $(sboxClientId)
-                    TF_VAR_sboxClientSecret: $(sboxClientSecret)
-                    TF_VAR_sboxTenantId: $(sboxTenantId)
-                    TF_VAR_sboxTenantURL: $(sboxTenantURL)
+                    TF_VAR_ClientId: $(ClientId)
+                    TF_VAR_ClientSecret: $(ClientSecret)
+                    TF_VAR_TenantId: $(TenantId)
+                    TF_VAR_TenantURL: $(TenantURL)
+                    TF_VAR_environment: ${{ deployment.environment }}

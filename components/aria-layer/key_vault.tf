@@ -1,39 +1,39 @@
 # Creating Service Principal values (client_id, client_secret, tenant_id, tenant_url)
-resource "azurerm_key_vault_secret" "client_id" {
+resource "azurerm_key_vault_secret" "sbox_client_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
-  value        = var.sboxClientId
+  value        = var.ClientId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "tenant_id" {
+resource "azurerm_key_vault_secret" "sbox_tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
-  value        = var.sboxTenantId
+  value        = var.TenantId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "tenant_url" {
+resource "azurerm_key_vault_secret" "sbox_tenant_url" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-URL"
-  value        = var.sboxTenantURL
+  value        = var.TenantURL
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_key_vault_secret" "client_secret" {
+resource "azurerm_key_vault_secret" "sbox_client_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
-  value        = var.sboxClientSecret
+  value        = var.ClientSecret
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags

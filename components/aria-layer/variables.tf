@@ -17,22 +17,22 @@ variable "eventhub_topic_suffixes" {
   default     = ["pub", "ack", "dl"]
 }
 
-variable "sboxClientId" {
+variable "ClientId" {
   type    = string
   default = ""
 }
 
-variable "sboxClientSecret" {
+variable "ClientSecret" {
   type    = string
   default = ""
 }
 
-variable "sboxTenantId" {
+variable "TenantId" {
   type    = string
   default = ""
 }
 
-variable "sboxTenantURL" {
+variable "TenantURL" {
   type    = string
   default = ""
 }
