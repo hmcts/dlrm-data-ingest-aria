@@ -115,6 +115,8 @@ resource "databricks_secret_scope" "kv-scope-sbox02" {
   }
 }
 
+## access policies and vnets for azure functions 
+
 # resource "databricks_secret_scope" "kv-scope-stg00" {
 #   count    = var.env == "stg" ? 1 : 0
 #   provider = databricks.stg-00
