@@ -38,13 +38,13 @@ data "azurerm_storage_account" "curated" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
-resource "azurerm_storage_container" "curated_extra" {
-  for_each = local.container_matrix
+# resource "azurerm_storage_container" "curated_extra" {
+#   for_each = local.container_matrix
 
-  name                  = each.value.container_name
-  storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
-  container_access_type = "private"
-}
+#   name                  = each.value.container_name
+#   storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
+#   container_access_type = "private"
+# }
 
 
 data "azurerm_storage_account_sas" "curated" {
@@ -84,7 +84,7 @@ data "azurerm_storage_account_sas" "curated" {
   }
 }
 
-# add in containers for landing
+# # add in containers for landing
 
 data "azurerm_storage_account" "landing" {
   for_each = var.landing_zones
@@ -93,29 +93,29 @@ data "azurerm_storage_account" "landing" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
-resource "azurerm_storage_container" "landing" {
-  for_each = {
-    for combo in flatten([
-      for lz_key, _ in var.landing_zones : [
-        for container in ["html-template", "landing"] : {
-          key       = "${lz_key}-${container}"
-          lz_key    = lz_key
-          container = container
-        }
-      ]
-    ]) :
-    combo.key => combo
-    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "02"))
-  }
+# resource "azurerm_storage_container" "landing" {
+#   for_each = {
+#     for combo in flatten([
+#       for lz_key, _ in var.landing_zones : [
+#         for container in ["html-template", "landing"] : {
+#           key       = "${lz_key}-${container}"
+#           lz_key    = lz_key
+#           container = container
+#         }
+#       ]
+#     ]) :
+#     combo.key => combo
+#     if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "02"))
+#   }
 
-  name                  = each.value.container
-  storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
-  container_access_type = "private"
+#   name                  = each.value.container
+#   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
+#   container_access_type = "private"
 
 
-}
+# }
 
-# add in containers for external
+# # add in containers for external
 
 
 data "azurerm_storage_account" "external" {
@@ -125,17 +125,17 @@ data "azurerm_storage_account" "external" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
-resource "azurerm_storage_container" "external" {
-  for_each = {
-    for lz_key in keys(var.landing_zones) :
-    lz_key => {
-      lz_key = lz_key
-    }
-    if lz_key != "00"
-  }
+# resource "azurerm_storage_container" "external" {
+#   for_each = {
+#     for lz_key in keys(var.landing_zones) :
+#     lz_key => {
+#       lz_key = lz_key
+#     }
+#     if lz_key != "00"
+#   }
 
-  name                  = "external-csv"
-  storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
-  container_access_type = "private"
-}
+#   name                  = "external-csv"
+#   storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
+#   container_access_type = "private"
+# }
 
