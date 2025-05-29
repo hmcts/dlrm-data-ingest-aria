@@ -10,7 +10,7 @@ locals {
       lz_key         = pair[0]
       container_name = pair[1]
     }
-    if !(var.env == "sbox" && var.landing_zines == "01")
+    if !(var.env == "sbox" && var.landing_zones == "01")
   }
 }
 
