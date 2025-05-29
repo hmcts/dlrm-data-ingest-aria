@@ -8,7 +8,11 @@ resource "local_file" "config" {
 }
 
 resource "azurerm_storage_blob" "config_json" {
-  for_each = var.landing_zones
+  for_each = {
+    for k, v in var.landing_zones :
+    k => v
+    if k != "01"
+  }
 
   name = "configs/env_config.json"
 
@@ -17,6 +21,4 @@ resource "azurerm_storage_blob" "config_json" {
   source                 = local_file.config[each.key].filename
   storage_account_name   = data.azurerm_storage_account.curated[each.key].name
   storage_container_name = azurerm_storage_container.curated_extra["${each.key}-bronze"].name
-
-
 }
