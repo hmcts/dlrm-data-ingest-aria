@@ -1,7 +1,7 @@
 resource "azurerm_key_vault_access_policy" "example-principal" {
   for_each = azurerm_linux_function_app.example
 
-  key_vault_id = data.azurerm_key_vault.logging_vault[each.value.lz_key].id
+  key_vault_id = data.azurerm_key_vault.logging_vault[split("-", each.key)[0]].id
   tenant_id    = var.TenantId
   object_id    = each.value.identity[0].principal_id
 
