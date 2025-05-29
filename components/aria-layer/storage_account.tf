@@ -10,7 +10,6 @@ locals {
       lz_key         = pair[0]
       container_name = pair[1]
     }
-    if !(var.env == "sbox" && var.landing_zones == "01")
   }
 }
 
@@ -27,6 +26,8 @@ resource "azurerm_storage_account" "example" {
   account_replication_type = "LRS"
 
   tags = module.ctags.common_tags
+
+  if !(var.env == "sbox" && app.lz_key == "01")
 }
 
 data "azurerm_storage_account" "curated" {
