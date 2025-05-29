@@ -10,7 +10,7 @@ locals {
       lz_key         = pair[0]
       container_name = pair[1]
     }
-    # if pair[0] != "00"
+    if !(var.env == "sbox" && var.landing_zines == "01")
   }
 }
 
@@ -18,7 +18,6 @@ resource "azurerm_storage_account" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
-    #    if !(var.env == "sbox" && app.lz_key == "00")
   }
 
   name                     = replace(each.value.full_name, "-", "")
@@ -44,7 +43,7 @@ resource "azurerm_storage_container" "curated_extra" {
   name                  = each.value.container_name
   storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
   container_access_type = "private"
-}
+  }
 
 
 data "azurerm_storage_account_sas" "curated" {
@@ -105,7 +104,7 @@ resource "azurerm_storage_container" "landing" {
       ]
     ]) :
     combo.key => combo
-    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "02"))
+    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "01" || combo.lz_key == "02"))
   }
 
   name                  = each.value.container
@@ -131,7 +130,7 @@ resource "azurerm_storage_container" "external" {
     lz_key => {
       lz_key = lz_key
     }
-    if lz_key != "00"
+    if lz_key != "00" && lz_key != "01"
   }
 
   name                  = "external-csv"
