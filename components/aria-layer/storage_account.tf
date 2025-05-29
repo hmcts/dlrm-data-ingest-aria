@@ -30,112 +30,112 @@ resource "azurerm_storage_account" "example" {
   tags = module.ctags.common_tags
 }
 
-data "azurerm_storage_account" "curated" {
+# data "azurerm_storage_account" "curated" {
 
-  for_each = var.landing_zones
+#   for_each = var.landing_zones
 
-  name                = "ingest${each.key}curated${var.env}"
-  resource_group_name = "ingest${each.key}-main-${var.env}"
-}
+#   name                = "ingest${each.key}curated${var.env}"
+#   resource_group_name = "ingest${each.key}-main-${var.env}"
+# }
 
-resource "azurerm_storage_container" "curated_extra" {
-  for_each = local.container_matrix
+# resource "azurerm_storage_container" "curated_extra" {
+#   for_each = local.container_matrix
 
-  name                  = each.value.container_name
-  storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
-  container_access_type = "private"
-}
-
-
-data "azurerm_storage_account_sas" "curated" {
-  for_each = var.landing_zones
-
-  connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
-
-  https_only = true
-
-  resource_types {
-    service   = true
-    container = true
-    object    = true
-  }
-
-  services {
-    blob  = true
-    queue = false
-    table = false
-    file  = false
-  }
-
-  start  = "2025-03-21T00:00:00Z"
-  expiry = "2026-03-21T00:00:00Z"
-
-  permissions {
-    read    = true
-    write   = true
-    delete  = true
-    list    = true
-    add     = true
-    create  = true
-    update  = false
-    process = false
-    tag     = false
-    filter  = false
-  }
-}
-
-# add in containers for landing
-
-data "azurerm_storage_account" "landing" {
-  for_each = var.landing_zones
-
-  name                = "ingest${each.key}landing${var.env}"
-  resource_group_name = "ingest${each.key}-main-${var.env}"
-}
-
-resource "azurerm_storage_container" "landing" {
-  for_each = {
-    for combo in flatten([
-      for lz_key, _ in var.landing_zones : [
-        for container in ["html-template", "landing"] : {
-          key       = "${lz_key}-${container}"
-          lz_key    = lz_key
-          container = container
-        }
-      ]
-    ]) :
-    combo.key => combo
-    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "02"))
-  }
-
-  name                  = each.value.container
-  storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
-  container_access_type = "private"
+#   name                  = each.value.container_name
+#   storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
+#   container_access_type = "private"
+# }
 
 
-}
+# data "azurerm_storage_account_sas" "curated" {
+#   for_each = var.landing_zones
 
-# add in containers for external
+#   connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
+
+#   https_only = true
+
+#   resource_types {
+#     service   = true
+#     container = true
+#     object    = true
+#   }
+
+#   services {
+#     blob  = true
+#     queue = false
+#     table = false
+#     file  = false
+#   }
+
+#   start  = "2025-03-21T00:00:00Z"
+#   expiry = "2026-03-21T00:00:00Z"
+
+#   permissions {
+#     read    = true
+#     write   = true
+#     delete  = true
+#     list    = true
+#     add     = true
+#     create  = true
+#     update  = false
+#     process = false
+#     tag     = false
+#     filter  = false
+#   }
+# }
+
+# # add in containers for landing
+
+# data "azurerm_storage_account" "landing" {
+#   for_each = var.landing_zones
+
+#   name                = "ingest${each.key}landing${var.env}"
+#   resource_group_name = "ingest${each.key}-main-${var.env}"
+# }
+
+# resource "azurerm_storage_container" "landing" {
+#   for_each = {
+#     for combo in flatten([
+#       for lz_key, _ in var.landing_zones : [
+#         for container in ["html-template", "landing"] : {
+#           key       = "${lz_key}-${container}"
+#           lz_key    = lz_key
+#           container = container
+#         }
+#       ]
+#     ]) :
+#     combo.key => combo
+#     if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "02"))
+#   }
+
+#   name                  = each.value.container
+#   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
+#   container_access_type = "private"
 
 
-data "azurerm_storage_account" "external" {
-  for_each = var.landing_zones
+# }
 
-  name                = "ingest${each.key}external${var.env}"
-  resource_group_name = "ingest${each.key}-main-${var.env}"
-}
+# # add in containers for external
 
-resource "azurerm_storage_container" "external" {
-  for_each = {
-    for lz_key in keys(var.landing_zones) :
-    lz_key => {
-      lz_key = lz_key
-    }
-    if lz_key != "00"
-  }
 
-  name                  = "external-csv"
-  storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
-  container_access_type = "private"
-}
+# data "azurerm_storage_account" "external" {
+#   for_each = var.landing_zones
+
+#   name                = "ingest${each.key}external${var.env}"
+#   resource_group_name = "ingest${each.key}-main-${var.env}"
+# }
+
+# resource "azurerm_storage_container" "external" {
+#   for_each = {
+#     for lz_key in keys(var.landing_zones) :
+#     lz_key => {
+#       lz_key = lz_key
+#     }
+#     if lz_key != "00"
+#   }
+
+#   name                  = "external-csv"
+#   storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
+#   container_access_type = "private"
+# }
 
