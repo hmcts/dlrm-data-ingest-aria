@@ -18,5 +18,3 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
     "Backup", "Delte", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
   ] #Backup, Delete, DeleteSAS, Get, GetSAS, List, ListSAS, Purge, Recover, RegenerateKey, Restore, Set, SetSAS and Update.
 }
-
-data "azurerm_client_config" "current" {}
