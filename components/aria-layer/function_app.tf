@@ -46,6 +46,10 @@ resource "azurerm_linux_function_app" "example" {
     WEBSITE_RUN_FROM_PACKAGE                              = "1"
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   site_config {
     application_stack {
       python_version = "3.10"
