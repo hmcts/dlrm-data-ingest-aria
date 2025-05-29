@@ -1,5 +1,4 @@
 resource "azurerm_key_vault_access_policy" "example-principal" {
-
   for_each = azurerm_linux_function_app.example
 
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
@@ -15,6 +14,6 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
   ] #Backup, Delete, Get, List, Purge, Recover, Restore and Set
 
   storage_permissions = [
-    "Backup", "Delte", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
+    "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
   ] #Backup, Delete, DeleteSAS, Get, GetSAS, List, ListSAS, Purge, Recover, RegenerateKey, Restore, Set, SetSAS and Update.
 }
