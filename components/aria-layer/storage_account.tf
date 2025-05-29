@@ -17,6 +17,7 @@ resource "azurerm_storage_account" "example" {
   for_each = {
     for app in local.flattened_function_apps :
     "${app.lz_key}-${app.base_name}" => app
+    if !(var.env == "sbox" && app.lz_key == "01")
   }
 
   name                     = replace(each.value.full_name, "-", "")
@@ -27,7 +28,6 @@ resource "azurerm_storage_account" "example" {
 
   tags = module.ctags.common_tags
 
-  if !(var.env == "sbox" && app.lz_key == "01")
 }
 
 data "azurerm_storage_account" "curated" {
