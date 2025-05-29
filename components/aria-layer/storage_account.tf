@@ -30,13 +30,13 @@ resource "azurerm_storage_account" "example" {
   tags = module.ctags.common_tags
 }
 
-# data "azurerm_storage_account" "curated" {
+data "azurerm_storage_account" "curated" {
 
-#   for_each = var.landing_zones
+  for_each = var.landing_zones
 
-#   name                = "ingest${each.key}curated${var.env}"
-#   resource_group_name = "ingest${each.key}-main-${var.env}"
-# }
+  name                = "ingest${each.key}curated${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
 
 # resource "azurerm_storage_container" "curated_extra" {
 #   for_each = local.container_matrix
@@ -47,51 +47,51 @@ resource "azurerm_storage_account" "example" {
 # }
 
 
-# data "azurerm_storage_account_sas" "curated" {
-#   for_each = var.landing_zones
+data "azurerm_storage_account_sas" "curated" {
+  for_each = var.landing_zones
 
-#   connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
+  connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
 
-#   https_only = true
+  https_only = true
 
-#   resource_types {
-#     service   = true
-#     container = true
-#     object    = true
-#   }
+  resource_types {
+    service   = true
+    container = true
+    object    = true
+  }
 
-#   services {
-#     blob  = true
-#     queue = false
-#     table = false
-#     file  = false
-#   }
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
 
-#   start  = "2025-03-21T00:00:00Z"
-#   expiry = "2026-03-21T00:00:00Z"
+  start  = "2025-03-21T00:00:00Z"
+  expiry = "2026-03-21T00:00:00Z"
 
-#   permissions {
-#     read    = true
-#     write   = true
-#     delete  = true
-#     list    = true
-#     add     = true
-#     create  = true
-#     update  = false
-#     process = false
-#     tag     = false
-#     filter  = false
-#   }
-# }
+  permissions {
+    read    = true
+    write   = true
+    delete  = true
+    list    = true
+    add     = true
+    create  = true
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
+}
 
 # # add in containers for landing
 
-# data "azurerm_storage_account" "landing" {
-#   for_each = var.landing_zones
+data "azurerm_storage_account" "landing" {
+  for_each = var.landing_zones
 
-#   name                = "ingest${each.key}landing${var.env}"
-#   resource_group_name = "ingest${each.key}-main-${var.env}"
-# }
+  name                = "ingest${each.key}landing${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
 
 # resource "azurerm_storage_container" "landing" {
 #   for_each = {
@@ -118,12 +118,12 @@ resource "azurerm_storage_account" "example" {
 # # add in containers for external
 
 
-# data "azurerm_storage_account" "external" {
-#   for_each = var.landing_zones
+data "azurerm_storage_account" "external" {
+  for_each = var.landing_zones
 
-#   name                = "ingest${each.key}external${var.env}"
-#   resource_group_name = "ingest${each.key}-main-${var.env}"
-# }
+  name                = "ingest${each.key}external${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
 
 # resource "azurerm_storage_container" "external" {
 #   for_each = {
