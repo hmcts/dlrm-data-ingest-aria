@@ -10,7 +10,7 @@ locals {
       lz_key         = pair[0]
       container_name = pair[1]
     }
-    if !contains("01", pair[0]) #exclude deploying to 01 as resources exist. State file was locked and is confused / wont destroy or create. Easy work-around as we don't need for other envs
+    if !contains(["01"], pair[0]) #exclude deploying to 01 as resources exist. State file was locked and is confused / wont destroy or create. Easy work-around as we don't need for other envs
   }
 }
 
