@@ -3,7 +3,7 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
 
   key_vault_id = data.azurerm_key_vault.logging_vault[split("-", each.key)[0]].id
   tenant_id    = var.TenantId
-  object_id    = each.value.identity[0].principal_id
+  object_id    = azurerm_linux_function_app.example[each.key].identity[0].principal_id
 
   key_permissions = [
     "Get", "List", "Encrypt", "Decrypt", "Backup", "Create", "Delete", "Import", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", "Release", "Rotate"
