@@ -93,16 +93,16 @@ resource "databricks_secret_scope" "kv-scope-sbox00" {
   }
 }
 
-resource "databricks_secret_scope" "kv-scope-sbox01" {
-  count    = var.env == "sbox" ? 1 : 0
-  provider = databricks.sbox-01
-  name     = "ingest01-meta002-sbox"
+# resource "databricks_secret_scope" "kv-scope-sbox01" {
+#   count    = var.env == "sbox" ? 1 : 0
+#   provider = databricks.sbox-01
+#   name     = "ingest01-meta002-sbox"
 
-  keyvault_metadata {
-    resource_id = data.azurerm_key_vault.logging_vault["01"].id
-    dns_name    = data.azurerm_key_vault.logging_vault["01"].vault_uri
-  }
-}
+#   keyvault_metadata {
+#     resource_id = data.azurerm_key_vault.logging_vault["01"].id
+#     dns_name    = data.azurerm_key_vault.logging_vault["01"].vault_uri
+#   }
+# }
 
 resource "databricks_secret_scope" "kv-scope-sbox02" {
   count    = var.env == "sbox" ? 1 : 0
