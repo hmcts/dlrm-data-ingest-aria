@@ -43,7 +43,7 @@ resource "azurerm_storage_container" "curated_extra" {
   name                  = each.value.container_name
   storage_account_name  = data.azurerm_storage_account.curated[each.value.lz_key].name
   container_access_type = "private"
-  }
+}
 
 
 data "azurerm_storage_account_sas" "curated" {
