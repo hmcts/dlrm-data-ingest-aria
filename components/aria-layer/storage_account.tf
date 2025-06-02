@@ -156,8 +156,7 @@ resource "azurerm_storage_container" "xcutting" {
         }
       ]
     ]) :
-    combo.key => combo
-  if !(var.env == "sbox" && (combo.lz_key == "00")) }
+  combo.key => combo }
 
   name                  = each.value.container
   storage_account_name  = data.azurerm_storage_account.xcutting[each.value.lz_key].name
