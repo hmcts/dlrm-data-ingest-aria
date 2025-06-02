@@ -117,7 +117,6 @@ resource "azurerm_storage_container" "landing" {
 
 # # add in containers for external
 
-
 data "azurerm_storage_account" "external" {
   for_each = var.landing_zones
 
@@ -139,3 +138,28 @@ resource "azurerm_storage_container" "external" {
   container_access_type = "private"
 }
 
+data "azurerm_storage_account" "xcutting" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}external${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+resource "azurerm_storage_container" "xcutting" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for container in ["db-ack-checkpoint", "db-rsp-checkpoint"] : {
+          key       = "${lz_key}-${container}"
+          lz_key    = lz_key
+          container = container
+        }
+      ]
+    ]) :
+    combo.key => combo
+  if !(var.env == "sbox" && (combo.lz_key == "00")) }
+
+  name                  = each.value.container
+  storage_account_name  = data.azurerm_storage_account.xcutting[each.value.lz_key].name
+  container_access_type = "private"
+}
