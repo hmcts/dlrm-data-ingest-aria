@@ -67,9 +67,8 @@ resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
 resource "azurerm_key_vault_secret" "curated_sas_token" {
   for_each = var.landing_zones
 
-  name  = "CURATED-${var.env}-SAS-TOKEN"
-  value = data.azurerm_storage_account_sas.curated[each.key].sas
-  # value        = "BlobEndpoint=${data.azurerm_storage_account.curated[each.key].primary_blob_endpoint};SharedAccessSignature=${data.azurerm_storage_account_sas.curated[each.key].sas}"
+  name         = "CURATED-${var.env}-SAS-TOKEN"
+  value        = "BlobEndpoint=${data.azurerm_storage_account.curated[each.key].primary_blob_endpoint};SharedAccessSignature=${data.azurerm_storage_account_sas.curated[each.key].sas}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
