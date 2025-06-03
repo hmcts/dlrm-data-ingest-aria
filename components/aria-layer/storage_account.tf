@@ -84,6 +84,21 @@ data "azurerm_storage_account_sas" "curated" {
   }
 }
 
+resource "azurerm_storage_account_sas" "curated" {
+  for_each = var.landing_zones
+
+  connection_string = data.azurerm_storage_account.curated[each.key].primary_connection_string
+
+  https_only      = true
+  start           = "2025-03-21T00:00:00Z"
+  expiry          = "2026-03-21T00:00:00Z"
+  signed_protocol = "https"
+
+  services       = ["b"]
+  resource_types = ["container"]
+  permissions    = "rwdlac"
+}
+
 # # add in containers for landing
 
 data "azurerm_storage_account" "landing" {
