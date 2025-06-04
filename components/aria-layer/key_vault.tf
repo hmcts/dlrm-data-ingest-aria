@@ -76,7 +76,7 @@ resource "azurerm_key_vault_secret" "curated_sas_token_test" {
   for_each = var.landing_zones
 
   name         = "CURATED-${var.env}-SAS-TOKEN-TEST"
-  value        = data.azurerm_storage_account_sas.curated[each.key].sas
+  value        = replace(data.azurerm_storage_account_sas.curated[each.key].sas, "?", "")
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
