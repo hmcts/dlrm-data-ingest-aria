@@ -55,7 +55,7 @@ data "azurerm_storage_account_sas" "curated" {
   https_only = true
 
   resource_types {
-    service   = false
+    service   = true
     container = true
     object    = true
   }
