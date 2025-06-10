@@ -14,6 +14,13 @@ data "azurerm_subnet" "lz" {
   virtual_network_name = data.azurerm_virtual_network.lz[each.value.lz_key].name
   resource_group_name  = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-network-${var.env}"].name
   name                 = each.value.name
+  delegation {
+    name = "Microsoft.Web.serverFarms"
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }
 
 #pull through log analytics workspace from landing zone
