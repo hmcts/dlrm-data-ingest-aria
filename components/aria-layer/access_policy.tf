@@ -17,5 +17,5 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
     "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
   ] #Backup, Delete, DeleteSAS, Get, GetSAS, List, ListSAS, Purge, Recover, RegenerateKey, Restore, Set, SetSAS and Update.
 
-  depends_on = [azurerm_linux_function_app.example] #principal_id may not be created yet. ensure functions are created before trying to assign poilicy
+  depends_on = [azurerm_linux_function_app.example]
 }
