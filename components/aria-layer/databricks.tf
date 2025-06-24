@@ -59,15 +59,15 @@ provider "databricks" {
   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
-# provider "databricks" {
-#   alias                       = "stg-00"
-#   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
-#   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
+provider "databricks" {
+  alias                       = "stg-00"
+  azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
+  host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
 
-#   azure_client_id     = data.azurerm_client_config.current.client_id
-#   azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
-#   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
-# }
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+}
 
 # provider "databricks" {
 #   alias                       = "prod-00"
