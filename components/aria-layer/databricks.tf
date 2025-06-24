@@ -35,8 +35,8 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
-  azure_tenant_id     = data.azurerm_client_config.current.tenant
+  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
 provider "databricks" {
@@ -45,8 +45,8 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
-  azure_tenant_id     = data.azurerm_client_config.current.tenant
+  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
 provider "databricks" {
@@ -55,8 +55,8 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
-  azure_tenant_id     = data.azurerm_client_config.current.tenant
+  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
 provider "databricks" {
@@ -65,8 +65,8 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
-  azure_tenant_id     = data.azurerm_client_config.current.tenant
+  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
 # provider "databricks" {
