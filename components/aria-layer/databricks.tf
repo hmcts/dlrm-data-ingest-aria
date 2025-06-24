@@ -31,6 +31,7 @@ output "workspace_host" {
 
 provider "databricks" {
   alias                       = "sbox-00"
+  count                       = var.env == "sbox" && contains(keys(var.landing_zones), "00") ? 1 : 0
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
 
@@ -41,6 +42,7 @@ provider "databricks" {
 
 provider "databricks" {
   alias                       = "sbox-01"
+  count                       = var.env == "sbox" && contains(keys(var.landing_zones), "01") ? 1 : 0
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-01"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url
 
@@ -51,6 +53,7 @@ provider "databricks" {
 
 provider "databricks" {
   alias                       = "sbox-02"
+  count                       = var.env == "sbox" && contains(keys(var.landing_zones), "02") ? 1 : 0
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-02"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
 
@@ -61,6 +64,7 @@ provider "databricks" {
 
 provider "databricks" {
   alias                       = "stg-00"
+  count                       = var.env == "stg" && contains(keys(var.landing_zones), "00") ? 1 : 0
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
 
