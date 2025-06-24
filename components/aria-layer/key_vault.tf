@@ -94,21 +94,35 @@ resource "azurerm_key_vault_secret" "lz" {
 
 #Retrieve Client Secret and push into KV
 
+locals {
+  control_kv_name = (
+    var.env == "sbox" ? "cdf72bb305eb87473ddb3kv" :
+    var.env == "stg" ? "cda8a21e56bdadf9103f8kv" :
+    var.env == "prod" ? "ce96749381917658e468ckv" :
+    (throw("Unsupported environment: ${var.env}"))
+  )
+}
+
+# Read KV depending on environment
+data "azurerm_key_vault" "control_kv" {
+  provider            = azurerm.hmcts-control
+  name                = local.control_kv_name
+  resource_group_name = "azure-control-${var.env}-rg"
+}
+
 # Data sources for each env secret (adjust names and KV ids accordingly)
-data "azurerm_key_vault_secret" "sbox_client_secret" {
+data "azurerm_key_vault_secret" "client_secret" {
   provider     = azurerm.hmcts-control
   name         = "sp-token"
-  key_vault_id = "cdf72bb305eb87473ddb3kv"
+  key_vault_id = data.azurerm_key_vault.control_kv.id
 }
 
-data "azurerm_key_vault_secret" "stg_client_secret" {
-  provider     = azurerm.hmcts-control
-  name         = "sp-token"
-  key_vault_id = "cda8a21e56bdadf9103f8kv"
-}
+resource "azurerm_key_vault_secret" "client_secret_copy" {
+  for_each = var.landing_zones
 
-data "azurerm_key_vault_secret" "prod_client_secret" {
-  provider     = azurerm.hmcts-control
-  name         = "sp-token"
-  key_vault_id = "ce96749381917658e468ckv"
+  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
+  value        = data.azurerm_key_vault_secret.client_secret.value
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
 }
