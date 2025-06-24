@@ -4,7 +4,7 @@ resource "azurerm_key_vault_secret" "client_id" {
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
   value        = var.ClientId
-  key_vault_id = data.azurerm_client_config.client_id #data.azurerm_key_vault.logging_vault[each.key].id
+  key_vault_id = data.azurerm_client_config.current.client_id #data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
@@ -13,7 +13,7 @@ resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
-  value        = data.azurerm_client_config.tenant_id #var.TenantId
+  value        = data.azurerm_client_config.current.tenant_id #var.TenantId
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -120,7 +120,7 @@ resource "azurerm_key_vault_secret" "copied_secret" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
-  value        = data.azurerm_key_vault_secret.sp_token.value
+  value        = data.azurerm_key_vault_secret.client_secret.value
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
