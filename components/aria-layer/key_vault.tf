@@ -3,8 +3,8 @@ resource "azurerm_key_vault_secret" "client_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
-  value        = var.ClientId
-  key_vault_id = data.azurerm_client_config.current.client_id #data.azurerm_key_vault.logging_vault[each.key].id
+  value        = data.azurerm_client_config.current.client_id
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
