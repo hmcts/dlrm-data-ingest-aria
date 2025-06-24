@@ -13,31 +13,11 @@ resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
-  value        = data.azurerm_client_config.current.tenant_id #var.TenantId
+  value        = data.azurerm_client_config.current.tenant_id
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
 }
-
-# resource "azurerm_key_vault_secret" "tenant_url" {
-#   for_each = var.landing_zones
-
-#   name         = "SERVICE-PRINCIPLE-TENANT-URL"
-#   value        = var.TenantURL
-#   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
-
-#   tags = module.ctags.common_tags
-# }
-
-# resource "azurerm_key_vault_secret" "client_secret" {
-#   for_each = var.landing_zones
-
-#   name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
-#   value        = var.ClientSecret
-#   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
-
-#   tags = module.ctags.common_tags
-# }
 
 resource "azurerm_key_vault_secret" "eh_root_key" {
   for_each = var.landing_zones
