@@ -29,13 +29,22 @@ output "workspace_host" {
   }
 }
 
+# Local picks correct secret value based on environment
+locals {
+  client_secret_value = (var.env == "sbox" ? data.azurerm_key_vault_secret.sbox_client_secret.value :
+    var.env == "stg" ? data.azurerm_key_vault_secret.stg_client_secret.value :
+    var.env == "prod" ? data.azurerm_key_vault_secret.prod_client_secret.value :
+    (throw("Unsupported environment: ${var.env}"))
+  )
+}
+
 provider "databricks" {
   alias                       = "sbox-00"
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_client_secret = local.client_secret_value
   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
@@ -45,7 +54,7 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_client_secret = local.client_secret_value
   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
@@ -55,7 +64,7 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_client_secret = local.client_secret_value
   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
@@ -65,7 +74,7 @@ provider "databricks" {
   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
 
   azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = azurerm_key_vault_secret.copied_secret[each.key]
+  azure_client_secret = local.client_secret_value
   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 }
 
@@ -75,7 +84,7 @@ provider "databricks" {
 #   host                        = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_url
 
 #   azure_client_id     = var.ClientId
-#   azure_client_secret = var.ClientSecret # TODO: for prod, request client secret value from platops
+#   azure_client_secret = local.client_secret_value
 #   azure_tenant_id     = var.TenantId
 # }
 
