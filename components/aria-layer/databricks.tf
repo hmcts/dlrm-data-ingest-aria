@@ -34,9 +34,9 @@ provider "databricks" {
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant
 }
 
 provider "databricks" {
@@ -44,9 +44,9 @@ provider "databricks" {
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-01"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant
 }
 
 provider "databricks" {
@@ -54,20 +54,20 @@ provider "databricks" {
   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-02"].id
   host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant
 }
 
-# provider "databricks" {
-#   alias                       = "stg-00"
-#   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
-#   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
+provider "databricks" {
+  alias                       = "stg-00"
+  azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
+  host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
 
-#   azure_client_id     = var.ClientId
-#   azure_client_secret = var.ClientSecret # TODO: for prod, request client secret value from platops
-#   azure_tenant_id     = var.TenantId
-# }
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = azurerm_key_vault_secret.copied_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant
+}
 
 # provider "databricks" {
 #   alias                       = "prod-00"
@@ -117,16 +117,16 @@ resource "databricks_secret_scope" "kv-scope-sbox02" {
 
 ## access policies and vnets for azure functions 
 
-# resource "databricks_secret_scope" "kv-scope-stg00" {
-#   count    = var.env == "stg" ? 1 : 0
-#   provider = databricks.stg-00
-#   name     = "ingest00-meta002-stg"
+resource "databricks_secret_scope" "kv-scope-stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+  name     = "ingest00-meta002-stg"
 
-#   keyvault_metadata {
-#     resource_id = data.azurerm_key_vault.logging_vault["00"].id
-#     dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
-#   }
-# }
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["00"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
+  }
+}
 
 # resource "databricks_secret_scope" "kv-scope-prod00" {
 
@@ -181,16 +181,16 @@ resource "databricks_dbfs_file" "config_file_sbox02" {
 
 # Config file specifically for sbox
 
-# resource "databricks_dbfs_file" "config_file_stg00" {
-#   provider = databricks.stg-00
+resource "databricks_dbfs_file" "config_file_stg00" {
+  provider = databricks.stg-00
 
-#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-#     env    = "stg"
-#     lz_key = "00"
-#   }))
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "stg"
+    lz_key = "00"
+  }))
 
-#   path = "/configs/config.json"
-# }
+  path = "/configs/config.json"
+}
 
 # Config file specifically for sbox
 
