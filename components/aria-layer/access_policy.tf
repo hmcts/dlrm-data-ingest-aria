@@ -71,7 +71,7 @@ resource "azurerm_role_assignment" "rbac_owner" {
     "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
-  role_definition_name = "Storage Blob Data Owner"
+  role_definition_name = "Storage Blob Data Reader"
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
