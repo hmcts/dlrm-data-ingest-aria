@@ -42,6 +42,7 @@ resource "azurerm_linux_function_app" "example" {
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     XDG_CACHE_HOME                                        = "/tmp/.cache"
+    WEBSITE_CONTENTSHARE                                  = each.value.full_name
     WEBSITE_CONTENTOVERVNET                               = "1"
     WEBSITE_RUN_FROM_PACKAGE                              = "1"
   }
@@ -80,35 +81,35 @@ resource "azurerm_application_insights" "example" {
 }
 
 # Define an action group to use in the smart_detector
-resource "azurerm_monitor_action_group" "example" {
-  for_each = {
-    for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.base_name}" => app
-  }
-  name                = each.value.full_name
-  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  short_name          = element(split("-", each.value.full_name), 1)
+# resource "azurerm_monitor_action_group" "example" {
+#   for_each = {
+#     for app in local.flattened_function_apps :
+#     "${app.lz_key}-${app.base_name}" => app
+#   }
+#   name                = each.value.full_name
+#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+#   short_name          = element(split("-", each.value.full_name), 1)
 
-  tags = module.ctags.common_tags
-}
+#   tags = module.ctags.common_tags
+# }
 
 
-resource "azurerm_monitor_smart_detector_alert_rule" "example" {
-  for_each = {
-    for app in local.flattened_function_apps :
-    "${app.lz_key}-${app.base_name}" => app
-  }
+# resource "azurerm_monitor_smart_detector_alert_rule" "example" {
+#   for_each = {
+#     for app in local.flattened_function_apps :
+#     "${app.lz_key}-${app.base_name}" => app
+#   }
 
-  name                = each.value.full_name
-  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  severity            = "Sev3"
-  scope_resource_ids  = [azurerm_application_insights.example[each.key].id]
-  frequency           = "PT1M"
-  detector_type       = "FailureAnomaliesDetector"
+#   name                = each.value.full_name
+#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+#   severity            = "Sev3"
+#   scope_resource_ids  = [azurerm_application_insights.example[each.key].id]
+#   frequency           = "PT1M"
+#   detector_type       = "FailureAnomaliesDetector"
 
-  action_group {
-    ids = [azurerm_monitor_action_group.example[each.key].id]
-  }
+#   action_group {
+#     ids = [azurerm_monitor_action_group.example[each.key].id]
+#   }
 
-  tags = module.ctags.common_tags
-}
+#   tags = module.ctags.common_tags
+# }

@@ -90,7 +90,7 @@ data "azurerm_key_vault" "control_kv" {
   resource_group_name = "azure-control-${var.env}-rg"
 }
 
-# Data sources for each env secret (adjust names and KV ids accordingly)
+# Data sources for each env secret
 data "azurerm_key_vault_secret" "client_secret" {
   provider     = azurerm.hmcts-control
   name         = "sp-token"
