@@ -139,7 +139,7 @@ resource "databricks_dbfs_file" "config_file_sbox00" {
 }
 
 resource "databricks_dbfs_file" "config_file_sbox01" {
-  count    = var.env == "stg" ? 1 : 0
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-01
 
   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
