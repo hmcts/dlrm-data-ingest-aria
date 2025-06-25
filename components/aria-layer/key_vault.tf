@@ -106,21 +106,3 @@ resource "azurerm_key_vault_secret" "client_secret_copy" {
 
   tags = module.ctags.common_tags
 }
-
-# Backup: add in KV admin privilidges to the SP
-
-resource "azurerm_role_assignment" "kv_admin" {
-  for_each = var.landing_zones
-
-  scope                = data.azurerm_key_vault.logging_vault[each.key].id
-  role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
-
-resource "azurerm_role_assignment" "kv_officer" {
-  for_each = var.landing_zones
-
-  scope                = data.azurerm_key_vault.logging_vault[each.key].id
-  role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
