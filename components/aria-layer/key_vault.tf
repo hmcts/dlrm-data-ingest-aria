@@ -100,7 +100,7 @@ data "azurerm_key_vault_secret" "client_secret" {
 resource "azurerm_key_vault_secret" "client_secret_copy" {
   for_each = var.landing_zones
 
-  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET1" # to uncomment one changes made and put name back to SP-CS
+  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
   value        = data.azurerm_key_vault_secret.client_secret.value
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
