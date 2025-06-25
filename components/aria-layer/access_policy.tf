@@ -39,7 +39,7 @@ resource "azurerm_role_assignment" "rbac_write" {
     ]) : combo.key => combo
   }
 
-  # Assign scope per LZ, use current_config as run in CICD, giving SP the permissions required for Databricks       NOTE KEYVAULT ADMIN TOO
+  # Assign scope per LZ, use current_config as run in CICD, giving SP the permissions required for Databricks
   scope = {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
