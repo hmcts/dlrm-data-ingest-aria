@@ -12,3 +12,4 @@ landing_zones = {
     use_microsoft_ip_kit_structure = true
   }
 }
+

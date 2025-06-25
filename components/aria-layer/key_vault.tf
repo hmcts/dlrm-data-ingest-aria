@@ -3,7 +3,7 @@ resource "azurerm_key_vault_secret" "client_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-CLIENT-ID"
-  value        = var.ClientId
+  value        = data.azurerm_client_config.current.client_id
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -13,27 +13,7 @@ resource "azurerm_key_vault_secret" "tenant_id" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-ID"
-  value        = var.TenantId
-  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
-
-  tags = module.ctags.common_tags
-}
-
-resource "azurerm_key_vault_secret" "tenant_url" {
-  for_each = var.landing_zones
-
-  name         = "SERVICE-PRINCIPLE-TENANT-URL"
-  value        = var.TenantURL
-  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
-
-  tags = module.ctags.common_tags
-}
-
-resource "azurerm_key_vault_secret" "client_secret" {
-  for_each = var.landing_zones
-
-  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
-  value        = var.ClientSecret
+  value        = data.azurerm_client_config.current.tenant_id
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
@@ -90,4 +70,39 @@ resource "azurerm_key_vault_secret" "lz" {
   value        = "lz${each.key}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
+}
+
+#Retrieve Client Secret and push into KV
+
+locals {
+  control_kv_name = (
+    var.env == "sbox" ? "cdf72bb305eb87473ddb3kv" :
+    var.env == "stg" ? "cda8a21e56bdadf9103f8kv" :
+    var.env == "prod" ? "ce96749381917658e468ckv" :
+    (throw("Unsupported environment: ${var.env}"))
+  )
+}
+
+# Read KV depending on environment
+data "azurerm_key_vault" "control_kv" {
+  provider            = azurerm.hmcts-control
+  name                = local.control_kv_name
+  resource_group_name = "azure-control-${var.env}-rg"
+}
+
+# Data sources for each env secret (adjust names and KV ids accordingly)
+data "azurerm_key_vault_secret" "client_secret" {
+  provider     = azurerm.hmcts-control
+  name         = "sp-token"
+  key_vault_id = data.azurerm_key_vault.control_kv.id
+}
+
+resource "azurerm_key_vault_secret" "client_secret_copy" {
+  for_each = var.landing_zones
+
+  name         = "SERVICE-PRINCIPLE-CLIENT-SECRET"
+  value        = data.azurerm_key_vault_secret.client_secret.value
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
 }

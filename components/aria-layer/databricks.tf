@@ -31,57 +31,65 @@ output "workspace_host" {
 
 provider "databricks" {
   alias                       = "sbox-00"
-  azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
-  host                        = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-00"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_url, null)
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+
+  skip_verify = var.env != "sbox"
 }
 
 provider "databricks" {
   alias                       = "sbox-01"
-  azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-01"].id
-  host                        = data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-01"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-01"].workspace_url, null)
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+
+  skip_verify = var.env != "sbox"
 }
 
 provider "databricks" {
   alias                       = "sbox-02"
-  azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["sbox-02"].id
-  host                        = data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url, null)
 
-  azure_client_id     = var.ClientId
-  azure_client_secret = var.ClientSecret
-  azure_tenant_id     = var.TenantId
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+
+  skip_verify = var.env != "sbox"
 }
 
-# provider "databricks" {
-#   alias                       = "stg-00"
-#   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["stg-00"].id
-#   host                        = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url
+provider "databricks" {
+  alias                       = "stg-00"
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["stg-00"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_url, null)
 
-#   azure_client_id     = var.ClientId
-#   azure_client_secret = var.ClientSecret # TODO: for prod, request client secret value from platops
-#   azure_tenant_id     = var.TenantId
-# }
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 
-# provider "databricks" {
-#   alias                       = "prod-00"
-#   azure_workspace_resource_id = data.azurerm_databricks_workspace.db_ws["prod-00"].id
-#   host                        = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_url
+  skip_verify = var.env != "stg"
+}
 
-#   azure_client_id     = var.ClientId
-#   azure_client_secret = var.ClientSecret # TODO: for prod, request client secret value from platops
-#   azure_tenant_id     = var.TenantId
-# }
 
-## Connect Keyvaults to Databricks as a KV backed Scope - specifically for sbox
+provider "databricks" {
+  alias                       = "prod-00"
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["prod-00"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_url, null)
 
-#if != sbox then ignore the resource.
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+
+  skip_verify = var.env != "prod"
+}
+
 resource "databricks_secret_scope" "kv-scope-sbox00" {
   count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
@@ -114,31 +122,6 @@ resource "databricks_secret_scope" "kv-scope-sbox02" {
     dns_name    = data.azurerm_key_vault.logging_vault["02"].vault_uri
   }
 }
-
-## access policies and vnets for azure functions 
-
-# resource "databricks_secret_scope" "kv-scope-stg00" {
-#   count    = var.env == "stg" ? 1 : 0
-#   provider = databricks.stg-00
-#   name     = "ingest00-meta002-stg"
-
-#   keyvault_metadata {
-#     resource_id = data.azurerm_key_vault.logging_vault["00"].id
-#     dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
-#   }
-# }
-
-# resource "databricks_secret_scope" "kv-scope-prod00" {
-
-#   count = var.env == "prod" ? 1 : 0
-#   provider = databricks.prod-00
-#   name     = "ingest00-meta002-prod"
-
-#   keyvault_metadata {
-#     resource_id = data.azurerm_key_vault.logging_vault["00"].id
-#     dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
-#   }
-# }
 
 # Config file specifically for sbox
 
@@ -179,28 +162,51 @@ resource "databricks_dbfs_file" "config_file_sbox02" {
   path = "/configs/config.json"
 }
 
-# Config file specifically for sbox
+resource "databricks_dbfs_file" "config_file_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
 
-# resource "databricks_dbfs_file" "config_file_stg00" {
-#   provider = databricks.stg-00
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "stg"
+    lz_key = "00"
+  }))
 
-#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-#     env    = "stg"
-#     lz_key = "00"
-#   }))
+  path = "/configs/config.json"
+}
 
-#   path = "/configs/config.json"
-# }
+## access policies and vnets for azure functions 
 
-# Config file specifically for sbox
+resource "databricks_secret_scope" "kv-scope-stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+  name     = "ingest00-meta002-stg"
 
-# resource "databricks_dbfs_file" "config_file_prod00" {
-#   provider = databricks.prod-00
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["00"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
+  }
+}
 
-#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-#     env    = "prod"
-#     lz_key = "00"
-#   }))
+resource "databricks_secret_scope" "kv-scope-prod00" {
 
-#   path = "/configs/config.json"
-# }
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+  name     = "ingest00-meta002-prod"
+
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["00"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
+  }
+}
+
+resource "databricks_dbfs_file" "config_file_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "prod"
+    lz_key = "00"
+  }))
+
+  path = "/configs/config.json"
+}
