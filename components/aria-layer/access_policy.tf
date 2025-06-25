@@ -19,3 +19,59 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
 
   depends_on = [azurerm_linux_function_app.example]
 }
+
+
+# Below assigns RBAC permissions to use the Service Principle (object_id) access to Contribute/Own permissions to the storage accounts highlighted in locals below.
+locals {
+  storage_accounts = ["landing", "curated", "external", "xcutting"]
+}
+
+resource "azurerm_role_assignment" "rbac_write" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for sa in local.storage_accounts : {
+          key             = "${lz_key}-${sa}"
+          lz_key          = lz_key
+          storage_account = sa
+        }
+      ]
+    ]) : combo.key => combo
+  }
+
+  # Assign scope per LZ, use current_config as run in CICD, giving SP the permissions required for Databricks
+  scope = {
+    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+  }[each.value.storage_account]
+
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "rbac_owner" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for sa in local.storage_accounts : {
+          key             = "${lz_key}-${sa}"
+          lz_key          = lz_key
+          storage_account = sa
+        }
+      ]
+    ]) : combo.key => combo
+  }
+
+  scope = {
+    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+  }[each.value.storage_account]
+
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
