@@ -61,6 +61,11 @@ resource "azurerm_linux_function_app" "example" {
     ftps_state                  = "FtpsOnly"
   }
 
+  timeouts {
+    read   = "10m"
+    update = "40m"
+  }
+
   tags = module.ctags.common_tags
 }
 
