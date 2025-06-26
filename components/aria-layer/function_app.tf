@@ -66,13 +66,6 @@ resource "azurerm_linux_function_app" "example" {
     update = "40m"
   }
 
-  lifecycle {
-    ignore_changes = [
-      site_config[0].application_logs,
-      site_config[0].http_logs
-    ]
-  }
-
   tags = module.ctags.common_tags
 }
 

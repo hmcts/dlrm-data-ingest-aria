@@ -75,3 +75,14 @@ resource "azurerm_role_assignment" "rbac_owner" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+
+resource "azurerm_role_assignment" "terraform_subnet" {
+  for_each = {
+    for app in local.flattened_function_apps :
+    "${app.lz_key}-${app.base_name}" => app
+  }
+
+  scope                = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
+  role_definition_name = "Network Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
