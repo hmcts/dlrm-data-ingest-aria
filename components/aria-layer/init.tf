@@ -24,4 +24,9 @@ provider "azurerm" {
 
 provider "azurerm" {
   features {}
+
+  retry {
+    max_attempts       = 3
+    min_retry_interval = 15
+  }
 }
