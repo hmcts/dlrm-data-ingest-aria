@@ -24,4 +24,6 @@ provider "azurerm" {
 
 provider "azurerm" {
   features {}
+
+  client_timeout_seconds = 300
 }
