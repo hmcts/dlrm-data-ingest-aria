@@ -37,6 +37,7 @@ resource "azurerm_linux_function_app" "example" {
     ENABLE_ORYX_BUILD                                     = true
     ENVIRONMENT                                           = var.env
     FUNCTIONS_WORKER_RUNTIME                              = "python"
+    FUNCTIONS_EXTENSION_VERSION                           = "~4"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
@@ -55,7 +56,7 @@ resource "azurerm_linux_function_app" "example" {
     application_stack {
       python_version = "3.10"
     }
-    always_on = false
+    always_on = true
 
     scm_use_main_ip_restriction = false
     ftps_state                  = "FtpsOnly"
