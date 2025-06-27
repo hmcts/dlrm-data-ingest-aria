@@ -19,7 +19,7 @@ removed {
   from = azurerm_linux_function_app.example
 
   lifecycle {
-    destroy = false
+    destroy = true
   }
 }
 
