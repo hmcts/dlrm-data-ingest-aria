@@ -53,8 +53,8 @@ resource "azurerm_linux_function_app" "example" {
     XDG_CACHE_HOME                                        = "/tmp/.cache"
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = azurerm_storage_account.example[each.key].primary_connection_string
     WEBSITE_CONTENTSHARE                                  = each.value.full_name
-    WEBSITE_CONTENTOVERVNET  = "1"
-    WEBSITE_RUN_FROM_PACKAGE = "1"
+    WEBSITE_CONTENTOVERVNET                               = "1"
+    WEBSITE_RUN_FROM_PACKAGE                              = "1"
   }
 
   identity {
