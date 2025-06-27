@@ -1,19 +1,19 @@
 
 # Creating service plan for function app - looping over each function_app per landing zone
-# resource "azurerm_service_plan" "example" {
-#   for_each = {
-#     for app in local.flattened_function_apps :
-#     "${app.lz_key}-${app.base_name}" => app
-#   }
+resource "azurerm_service_plan" "example" {
+  for_each = {
+    for app in local.flattened_function_apps :
+    "${app.lz_key}-${app.base_name}" => app
+  }
 
-#   name                = each.value.full_name # pulls function_app names from locals
-#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-#   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-#   os_type             = "Linux"
-#   sku_name            = "EP1"
+  name                = each.value.full_name # pulls function_app names from locals
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+  location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
+  os_type             = "Linux"
+  sku_name            = "EP1"
 
-#   tags = module.ctags.common_tags
-# }
+  tags = module.ctags.common_tags
+}
 
 removed {
   from = azurerm_linux_function_app.example
@@ -82,20 +82,20 @@ removed {
 # }
 
 
-# resource "azurerm_application_insights" "example" {
-#   for_each = {
-#     for app in local.flattened_function_apps :
-#     "${app.lz_key}-${app.base_name}" => app
-#   }
+resource "azurerm_application_insights" "example" {
+  for_each = {
+    for app in local.flattened_function_apps :
+    "${app.lz_key}-${app.base_name}" => app
+  }
 
-#   name                = each.value.full_name
-#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-#   location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-#   workspace_id        = data.azurerm_log_analytics_workspace.lz[each.value.lz_key].id
-#   application_type    = "web"
+  name                = each.value.full_name
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+  location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
+  workspace_id        = data.azurerm_log_analytics_workspace.lz[each.value.lz_key].id
+  application_type    = "web"
 
-#   tags = module.ctags.common_tags
-# }
+  tags = module.ctags.common_tags
+}
 
 # Define an action group to use in the smart_detector
 # resource "azurerm_monitor_action_group" "example" {
