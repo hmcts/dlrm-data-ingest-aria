@@ -1,24 +1,24 @@
-resource "azurerm_key_vault_access_policy" "example-principal" {
-  for_each = azurerm_linux_function_app.example
+# resource "azurerm_key_vault_access_policy" "example-principal" {
+#   for_each = azurerm_linux_function_app.example
 
-  key_vault_id = data.azurerm_key_vault.logging_vault[split("-", each.key)[0]].id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = each.value.identity[0].principal_id
+#   key_vault_id = data.azurerm_key_vault.logging_vault[split("-", each.key)[0]].id
+#   tenant_id    = data.azurerm_client_config.current.tenant_id
+#   object_id    = each.value.identity[0].principal_id
 
-  key_permissions = [
-    "Get", "List", "Encrypt", "Decrypt", "Backup", "Create", "Delete", "Import", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", "Release", "Rotate"
-  ] #Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify, WrapKey, Release, Rotate, GetRotationPolicy and SetRotationPolicy.
+#   key_permissions = [
+#     "Get", "List", "Encrypt", "Decrypt", "Backup", "Create", "Delete", "Import", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", "Release", "Rotate"
+#   ] #Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify, WrapKey, Release, Rotate, GetRotationPolicy and SetRotationPolicy.
 
-  secret_permissions = [
-    "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
-  ] #Backup, Delete, Get, List, Purge, Recover, Restore and Set
+#   secret_permissions = [
+#     "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
+#   ] #Backup, Delete, Get, List, Purge, Recover, Restore and Set
 
-  storage_permissions = [
-    "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
-  ] #Backup, Delete, DeleteSAS, Get, GetSAS, List, ListSAS, Purge, Recover, RegenerateKey, Restore, Set, SetSAS and Update.
+#   storage_permissions = [
+#     "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
+#   ] #Backup, Delete, DeleteSAS, Get, GetSAS, List, ListSAS, Purge, Recover, RegenerateKey, Restore, Set, SetSAS and Update.
 
-  depends_on = [azurerm_linux_function_app.example]
-}
+#   depends_on = [azurerm_linux_function_app.example]
+# }
 
 
 # Below assigns RBAC permissions to use the Service Principle (object_id) access to Contribute/Own permissions to the storage accounts highlighted in locals below.
@@ -75,3 +75,14 @@ resource "azurerm_role_assignment" "rbac_owner" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+
+# resource "azurerm_role_assignment" "terraform_subnet" {
+#   for_each = {
+#     for app in local.flattened_function_apps :
+#     "${app.lz_key}-${app.base_name}" => app
+#   }
+
+#   scope                = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
+#   role_definition_name = "Network Contributor"
+#   principal_id         = data.azurerm_client_config.current.object_id
+# }

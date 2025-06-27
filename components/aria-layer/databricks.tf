@@ -174,7 +174,7 @@ resource "databricks_dbfs_file" "config_file_stg00" {
   path = "/configs/config.json"
 }
 
-## access policies and vnets for azure functions 
+## access policies and vnets for azure functions
 
 resource "databricks_secret_scope" "kv-scope-stg00" {
   count    = var.env == "stg" ? 1 : 0
