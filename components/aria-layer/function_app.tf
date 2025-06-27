@@ -47,14 +47,14 @@ resource "azurerm_linux_function_app" "example" {
     FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
-    PYTHON_ENABLE_WORKER_EXTENSIONS                       = "1"
+    PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
-    SCM_DO_BUILD_DURING_DEPLOYMENT                        = "1"
+    SCM_DO_BUILD_DURING_DEPLOYMENT                        = true
     XDG_CACHE_HOME                                        = "/tmp/.cache"
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = azurerm_storage_account.example[each.key].primary_connection_string
-    WEBSITE_CONTENTSHARE                                  = each.value.full_name
-    WEBSITE_CONTENTOVERVNET                               = "1"
-    WEBSITE_RUN_FROM_PACKAGE                              = "1"
+    # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = azurerm_storage_account.example[each.key].primary_connection_string
+    # WEBSITE_CONTENTSHARE                                  = each.value.full_name
+    WEBSITE_CONTENTOVERVNET  = "1"
+    WEBSITE_RUN_FROM_PACKAGE = "1"
   }
 
   identity {
