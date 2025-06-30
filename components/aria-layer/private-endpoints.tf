@@ -10,23 +10,13 @@ data "azurerm_private_dns_zone" "webapps" {
 }
 
 # Reference existing vnet and create link between DNS and vnet
-data "azurerm_private_dns_zone_virtual_network_link" "webapps_sbox" {
-  name                  = "ingest00-vnet-sbox"
+data "azurerm_private_dns_zone_virtual_network_link" "webapps_sbox00" {
+  name                  = "b42dd139fa457"
   resource_group_name   = "ingest00-network-sbox"
   private_dns_zone_name = "privatelink.azurewebsites.net"
 }
 
-
-#Reference non-delegated subnet
-data "azurerm_subnet" "pe" {
-  for_each = var.landing_zones
-
-  name                 = "ingest${each.key}-services${var.env}"
-  virtual_network_name = "ingest${each.key}-vnet-${var.env}"
-  resource_group_name  = "ingest${each.key}-network-${var.env}"
-}
-
-
+# Create vnet link for all but sbox00 as already exists
 resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
   for_each = var.landing_zones
 
@@ -36,9 +26,19 @@ resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
 
   registration_enabled = false
+  if !(each.key = "00" and var.env = "sbox")
 }
 
-# Create Private endpoint for functionapp
+#Reference non-delegated subnet
+data "azurerm_subnet" "pe" {
+  for_each = var.landing_zones
+
+  name                 = "ingest${each.key}-services-${var.env}"
+  virtual_network_name = "ingest${each.key}-vnet-${var.env}"
+  resource_group_name  = "ingest${each.key}-network-${var.env}"
+}
+
+# Create Private endpoint for functionapp for all but sbox00 as vnet link already exists
 resource "azurerm_private_endpoint" "functionapp" {
   for_each = var.landing_zones
 
@@ -58,4 +58,28 @@ resource "azurerm_private_endpoint" "functionapp" {
     name                 = "default"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
+  if !(each.key = "00" and var.env = "sbox")
+}
+
+# Create pe for sbox and 00 seperately
+resource "azurerm_private_endpoint" "functionapp00" {
+  for_each = var.landing_zones
+
+  name                = "pe-${each.key}-functionapp"
+  location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
+  subnet_id           = data.azurerm_subnet.pe[each.key].id
+
+  private_service_connection {
+    name                           = "psc-${each.key}-blob"
+    private_connection_resource_id = data.azurerm_storage_account.xcutting[each.key].id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name                 = "default"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
+  }
+  if (each.key = "00" and var.env = "sbox")
 }
