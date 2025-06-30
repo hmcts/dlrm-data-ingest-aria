@@ -1,78 +1,46 @@
-# # Create DNS zones
-# resource "azurerm_private_dns_zone" "blob" {
-#   name                = "privatelink.blob.core.windows.net"
-#   resource_group_name = "ingest00-main-sbox"
-# }
+# create a private endpoint in same region as vnet
+# approve pe on storage acc if manual approval required
+# vnet configure dns to resolve .blob.windows.core
+# fnctionapp needs to be intergated
 
-# resource "azurerm_private_dns_zone" "file" {
-#   name                = "privatelink.file.core.windows.net"
-#   resource_group_name = "ingest00-main-sbox"
-# }
+# Create DNS zones using existing DNS zone
+data "azurerm_private_dns_zone" "webapps" {
+for_each = var.landing_zones
 
-# # Link DNS zones to vnet
-# resource "azurerm_private_dns_zone_virtual_network_link" "blob_link" {
-#   for_each = var.landing_zones
+name = "privatelink.azurewebsites.net"
+resource_group_name = "ingest${each.key}-network-${var.env}"
+}
 
-#   name                  = "blob-link-${each.key}"
-#   resource_group_name   = "ingest00-main-sbox"
-#   private_dns_zone_name = azurerm_private_dns_zone.blob.name
-#   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
-# }
+# Reference existing vnet and create link between DNS and vnet
+resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
+  for_each = var.landing_zones
 
+  name                  = "vnet-link-${each.key}-webapps"
+  resource_group_name   = data.azurerm_private_dns_zone.webapps[each.key].resource_group_name
+  private_dns_zone_name = data.azurerm_private_dns_zone.webapps[each.key].name
+  virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
 
-# #Link DNS zones to vnet
-# resource "azurerm_private_dns_zone_virtual_network_link" "file_link" {
-#   for_each = var.landing_zones
+  registration_enabled = false
+}
 
-#   name                  = "link-file-${each.key}"
-#   resource_group_name   = "ingest00-main-sbox"
-#   private_dns_zone_name = azurerm_private_dns_zone.file.name
-#   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
-# }
+# Create Private endpoint for functionapp
+resource "azurerm_private_endpoint" "functionapp" {
+  for_each = var.landing_zones
 
-# #Private endpoint for blob storage (per app)
-# resource "azurerm_private_endpoint" "storage_blob" {
-#   for_each = var.landing_zones
+  name                = "pe-${each.key}-functionapp"
+  location            = var.location
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
+  subnet_id           = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
-#   name                = "pe-${each.key}-blob"
-#   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
-#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
-#   subnet_id           = data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id
+  private_service_connection {
+    name                           = "psc-${each.key}-blob"
+    private_connection_resource_id = data.azurerm_storage_account.xcutting[each.key].id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
 
-#   private_service_connection {
-#     name                           = "psc-${each.key}-blob"
-#     private_connection_resource_id = data.azurerm_storage_account.xcutting[each.key].id
-#     subresource_names              = ["blob"]
-#     is_manual_connection           = false
-#   }
-
-#   private_dns_zone_group {
-#     name                 = "default"
-#     private_dns_zone_ids = [azurerm_private_dns_zone.blob.id]
-#   }
-
-#   tags = module.ctags.common_tags
-# }
-
-# resource "azurerm_private_endpoint" "storage_file" {
-#   for_each = var.landing_zones
-
-#   name                = "pe-${each.key}-file"
-#   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
-#   resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
-#   subnet_id           = data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id
-
-#   private_service_connection {
-#     name                           = "psc-${each.key}-file"
-#     private_connection_resource_id = data.azurerm_storage_account.xcutting[each.key].id
-#     subresource_names              = ["file"]
-#     is_manual_connection           = false
-#   }
-
-#   private_dns_zone_group {
-#     name                 = "default"
-#     private_dns_zone_ids = [azurerm_private_dns_zone.file.id]
-#   }
-
-#   tags = module.ctags.common_tags
-# }
+  private_dns_zone_group {
+    name                 = "default"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps[each.key].id]
+  }
+}

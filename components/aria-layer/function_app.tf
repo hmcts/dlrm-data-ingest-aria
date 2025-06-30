@@ -15,6 +15,9 @@ resource "azurerm_service_plan" "example" {
   tags = module.ctags.common_tags
 }
 
+# log analytics workspace - query via platops - needs permissions to read from the 
+#azure cant access logs via app service and is timing out
+
 # Define the function app 
 resource "azurerm_linux_function_app" "example" {
   for_each = {
