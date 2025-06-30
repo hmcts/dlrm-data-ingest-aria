@@ -5,10 +5,10 @@
 
 # Create DNS zones using existing DNS zone
 data "azurerm_private_dns_zone" "webapps" {
-for_each = var.landing_zones
+  for_each = var.landing_zones
 
-name = "privatelink.azurewebsites.net"
-resource_group_name = "ingest${each.key}-network-${var.env}"
+  name                = "privatelink.azurewebsites.net"
+  resource_group_name = "ingest${each.key}-network-${var.env}"
 }
 
 # Reference existing vnet and create link between DNS and vnet
