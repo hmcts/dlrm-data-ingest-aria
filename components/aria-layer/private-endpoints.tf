@@ -16,9 +16,23 @@ data "azurerm_private_dns_zone_virtual_network_link" "webapps_sbox00" {
   private_dns_zone_name = "privatelink.azurewebsites.net"
 }
 
+locals {
+  dns_links_to_create01 = {
+    for k, v in var.landing_zones :
+    k => v
+    if !(k == "00" && var.env == "sbox")
+  }
+
+  dns_links_to_create00 = {
+    for k, v in var.landing_zones :
+    k => v
+    if(k == "00" && var.env == "sbox")
+  }
+}
+
 # Create vnet link for all but sbox00 as already exists
 resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
-  for_each = var.landing_zones
+  for_each = var.dns_links_to_create01
 
   name                  = "vnet-link-${each.key}-webapps"
   resource_group_name   = data.azurerm_private_dns_zone.webapps.resource_group_name
@@ -26,7 +40,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
 
   registration_enabled = false
-  if !(each.key == "00" and var.env == "sbox")
 }
 
 #Reference non-delegated subnet
@@ -40,7 +53,7 @@ data "azurerm_subnet" "pe" {
 
 # Create Private endpoint for functionapp for all but sbox00 as vnet link already exists
 resource "azurerm_private_endpoint" "functionapp" {
-  for_each = var.landing_zones
+  for_each = var.dns_links_to_create01
 
   name                = "pe-${each.key}-functionapp"
   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
@@ -58,12 +71,11 @@ resource "azurerm_private_endpoint" "functionapp" {
     name                 = "default"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
-  if !(each.key == "00" and var.env == "sbox")
 }
 
 # Create pe for sbox and 00 seperately
 resource "azurerm_private_endpoint" "functionapp00" {
-  for_each = var.landing_zones
+  for_each = var.dns_links_to_create00
 
   name                = "pe-${each.key}-functionapp"
   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
@@ -81,5 +93,4 @@ resource "azurerm_private_endpoint" "functionapp00" {
     name                 = "default"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
-  if (each.key == "00" and var.env == "sbox")
 }
