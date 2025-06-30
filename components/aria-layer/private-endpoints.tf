@@ -5,10 +5,8 @@
 
 # Create DNS zones using existing DNS zone
 data "azurerm_private_dns_zone" "webapps" {
-  for_each = var.landing_zones
-
   name                = "privatelink.azurewebsites.net"
-  resource_group_name = "ingest${each.key}-network-${var.env}"
+  resource_group_name = "ingest00-network-sbox"
 }
 
 # Reference existing vnet and create link between DNS and vnet
@@ -16,8 +14,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
   for_each = var.landing_zones
 
   name                  = "vnet-link-${each.key}-webapps"
-  resource_group_name   = data.azurerm_private_dns_zone.webapps[each.key].resource_group_name
-  private_dns_zone_name = data.azurerm_private_dns_zone.webapps[each.key].name
+  resource_group_name   = data.azurerm_private_dns_zone.webapps.resource_group_name
+  private_dns_zone_name = data.azurerm_private_dns_zone.webapps.name
   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
 
   registration_enabled = false
@@ -41,6 +39,6 @@ resource "azurerm_private_endpoint" "functionapp" {
 
   private_dns_zone_group {
     name                 = "default"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps[each.key].id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
 }
