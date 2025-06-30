@@ -32,7 +32,7 @@ locals {
 
 # Create vnet link for all but sbox00 as already exists
 resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
-  for_each = var.dns_links_to_create01
+  for_each = local.dns_links_to_create01
 
   name                  = "vnet-link-${each.key}-webapps"
   resource_group_name   = data.azurerm_private_dns_zone.webapps.resource_group_name
@@ -53,7 +53,7 @@ data "azurerm_subnet" "pe" {
 
 # Create Private endpoint for functionapp for all but sbox00 as vnet link already exists
 resource "azurerm_private_endpoint" "functionapp" {
-  for_each = var.dns_links_to_create01
+  for_each = local.dns_links_to_create01
 
   name                = "pe-${each.key}-functionapp"
   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
@@ -75,7 +75,7 @@ resource "azurerm_private_endpoint" "functionapp" {
 
 # Create pe for sbox and 00 seperately
 resource "azurerm_private_endpoint" "functionapp00" {
-  for_each = var.dns_links_to_create00
+  for_each = local.dns_links_to_create00
 
   name                = "pe-${each.key}-functionapp"
   location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
