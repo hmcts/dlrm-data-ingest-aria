@@ -11,7 +11,7 @@ data "azurerm_private_dns_zone" "webapps" {
 
 # Reference existing vnet and create link between DNS and vnet
 data "azurerm_private_dns_zone_virtual_network_link" "webapps_sbox" {
-  name                  = "ingest00-vnet-sbox" 
+  name                  = "ingest00-vnet-sbox"
   resource_group_name   = "ingest00-network-sbox"
   private_dns_zone_name = "privatelink.azurewebsites.net"
 }
