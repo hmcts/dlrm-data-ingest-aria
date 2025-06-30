@@ -26,7 +26,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "webapps" {
   virtual_network_id    = data.azurerm_virtual_network.lz[each.key].id
 
   registration_enabled = false
-  if !(each.key = "00" and var.env = "sbox")
+  if !(each.key == "00" and var.env == "sbox")
 }
 
 #Reference non-delegated subnet
@@ -58,7 +58,7 @@ resource "azurerm_private_endpoint" "functionapp" {
     name                 = "default"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
-  if !(each.key = "00" and var.env = "sbox")
+  if !(each.key == "00" and var.env == "sbox")
 }
 
 # Create pe for sbox and 00 seperately
@@ -81,5 +81,5 @@ resource "azurerm_private_endpoint" "functionapp00" {
     name                 = "default"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.webapps.id]
   }
-  if (each.key = "00" and var.env = "sbox")
+  if (each.key == "00" and var.env == "sbox")
 }
