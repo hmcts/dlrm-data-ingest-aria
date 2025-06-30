@@ -24,8 +24,8 @@ locals {
 
 # import files below
 import {
-  for_each = local.function_apps
+  for_each = local.function_apps_import
 
-  to = azurerm_linux_function_app.example[each.key]
   id = each.value
+  to = azurerm_linux_function_app.example[each.key]
 }
