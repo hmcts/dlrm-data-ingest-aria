@@ -28,7 +28,7 @@ resource "azurerm_private_endpoint" "functionapp" {
   for_each = var.landing_zones
 
   name                = "pe-${each.key}-functionapp"
-  location            = var.location
+  location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].name
   subnet_id           = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
