@@ -21,6 +21,7 @@ locals {
     "00-af-joh"    = "/subscriptions/df72bb30-d6fb-47bd-82ee-5eb87473ddb3/resourceGroups/ingest00-main-sbox/providers/Microsoft.Web/sites/af-joh-sbox00-uks-dlrm-01"
   }
 }
+
 import {
   for_each = local.function_apps_import
   to       = azurerm_linux_function_app.example[each.key]
