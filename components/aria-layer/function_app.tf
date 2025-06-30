@@ -15,14 +15,6 @@ resource "azurerm_service_plan" "example" {
   tags = module.ctags.common_tags
 }
 
-# removed {
-#   from = azurerm_linux_function_app.example
-
-#   lifecycle {
-#     destroy = false
-#   }
-# }
-
 # Define the function app 
 resource "azurerm_linux_function_app" "example" {
   for_each = {
