@@ -84,6 +84,52 @@ data "azurerm_storage_account_sas" "curated" {
   }
 }
 
+#reference xcutting SA
+data "azurerm_storage_account" "xcutting" {
+
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}xcutting${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+#reference SAS token for the functionapp for the data container in each xcutting
+data "azurerm_storage_account_sas" "xcutting" {
+  for_each = var.landing_zones
+
+  connection_string = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
+  https_only        = true
+
+  resource_types {
+    service   = false
+    container = false
+    object    = true
+  }
+
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
+
+  start  = "2024-01-01T00:00:00Z"
+  expiry = "2027-12-31T23:59:59Z"
+
+  permissions {
+    read    = true
+    write   = true
+    delete  = false
+    list    = false
+    add     = false
+    create  = true
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
+}
+
 # # add in containers for landing
 
 data "azurerm_storage_account" "landing" {
@@ -136,13 +182,6 @@ resource "azurerm_storage_container" "external" {
   name                  = "external-csv"
   storage_account_name  = data.azurerm_storage_account.external[each.value.lz_key].name
   container_access_type = "private"
-}
-
-data "azurerm_storage_account" "xcutting" {
-  for_each = var.landing_zones
-
-  name                = "ingest${each.key}xcutting${var.env}"
-  resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
 resource "azurerm_storage_container" "xcutting" {
