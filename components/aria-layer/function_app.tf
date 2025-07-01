@@ -26,8 +26,8 @@ resource "azurerm_linux_function_app" "example" {
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
-  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name                         #azurerm_storage_account.example[each.key].name                                                           
-  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key           #azurerm_storage_account.example[each.key].primary_access_key                                        
+  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name                       #azurerm_storage_account.example[each.key].name                                                           
+  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key         #azurerm_storage_account.example[each.key].primary_access_key                                        
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id #ingest02-data-product-001-sbox
 
   app_settings = {
@@ -46,9 +46,9 @@ resource "azurerm_linux_function_app" "example" {
     #WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string #azurerm_storage_account.example[each.key].primary_connection_string
     #WEBSITE_CONTENTSHARE                                  = each.value.full_name
     #WEBSITE_CONTENTOVERVNET  = "1"
-    WESBITE_VNET_ROUTE_ALL = "1"
+    WESBITE_VNET_ROUTE_ALL   = "1"
     WEBSITE_RUN_FROM_PACKAGE = "1"
-    WEBSITE_DNS_SERVER                                    = "168.63.129.16"
+    WEBSITE_DNS_SERVER       = "168.63.129.16"
   }
 
   identity {
@@ -65,9 +65,9 @@ resource "azurerm_linux_function_app" "example" {
     ftps_state                  = "FtpsOnly"
 
     # runtime_scale_monitoring_enabled = true
-    vnet_route_all_enabled = true
-    use_32_bit_worker_process   = false
-    remote_debugging_enabled    = false
+    vnet_route_all_enabled    = true
+    use_32_bit_worker_process = false
+    remote_debugging_enabled  = false
   }
 
   timeouts {
