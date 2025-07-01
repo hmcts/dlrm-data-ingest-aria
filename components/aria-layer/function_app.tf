@@ -31,22 +31,22 @@ resource "azurerm_linux_function_app" "example" {
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
   app_settings = {
-    APPLICATIONINSIGHTS_CONNECTION_STRING                   = azurerm_application_insights.example[each.key].connection_string
-    AzureWebJobsFeatureFlags                                = "EnableWorkerIndexing"
-    BUILD_FLAGS                                             = "UseExpressBuild"
-    ENABLE_ORYX_BUILD                                       = "true"   
-    ENVIRONMENT                                             = var.env
-    FUNCTIONS_EXTENSION_VERSION                             = "~4"
-    FUNCTIONS_WORKER_RUNTIME                                = "python"
-    LZ_KEY                                                  = each.value.lz_key
-    PYTHON_ENABLE_WORKER_EXTENSIONS                         = "1"
-    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB  = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
-    SCM_DO_BUILD_DURING_DEPLOYMENT                          = "true"
-    XDG_CACHE_HOME                                          = "/tmp/.cache"
-    WEBSITE_RUN_FROM_PACKAGE                                = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${coalesce(data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas, "")}"
-    WEBSITE_CONTENTOVERVNET                                 = "1"
-    WEBSITE_CONTENTSHARE                                    = each.value.full_name
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING                = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
+    APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
+    AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
+    BUILD_FLAGS                                           = "UseExpressBuild"
+    ENABLE_ORYX_BUILD                                     = "true"
+    ENVIRONMENT                                           = var.env
+    FUNCTIONS_EXTENSION_VERSION                           = "~4"
+    FUNCTIONS_WORKER_RUNTIME                              = "python"
+    LZ_KEY                                                = each.value.lz_key
+    PYTHON_ENABLE_WORKER_EXTENSIONS                       = "1"
+    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
+    SCM_DO_BUILD_DURING_DEPLOYMENT                        = "true"
+    XDG_CACHE_HOME                                        = "/tmp/.cache"
+    WEBSITE_RUN_FROM_PACKAGE                              = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${coalesce(data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas, "")}"
+    WEBSITE_CONTENTOVERVNET                               = "1"
+    WEBSITE_CONTENTSHARE                                  = each.value.full_name
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
   }
 
   identity {
@@ -58,14 +58,14 @@ resource "azurerm_linux_function_app" "example" {
       python_version = "3.11"
     }
 
-    always_on             = true
+    always_on                   = true
     scm_use_main_ip_restriction = false
-    ftps_state            = "FtpsOnly"
-    vnet_route_all_enabled = true     
-    client_cert_mode      = "Required"  
+    ftps_state                  = "FtpsOnly"
+    vnet_route_all_enabled      = true
+    client_cert_mode            = "Required"
   }
 
-  https_only = true       
+  https_only = true
 
   tags = module.ctags.common_tags
 }
