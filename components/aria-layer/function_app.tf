@@ -47,7 +47,7 @@ resource "azurerm_linux_function_app" "example" {
     WEBSITE_RUN_FROM_PACKAGE                              = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas}"
     # WEBSITE_VNET_ROUTE_ALL                                = "1"
     # WEBSITE_DNS_SERVER                                    = "168.63.129.16"
-    WEBSITE_CONTENTOVERVNET = "1"
+    # WEBSITE_CONTENTOVERVNET = "1"
   }
 
   identity {
