@@ -34,7 +34,7 @@ resource "azurerm_linux_function_app" "example" {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
     BUILD_FLAGS                                           = "UseExpressBuild"
-    ENABLE_ORYX_BUILD                                     = "false"
+    ENABLE_ORYX_BUILD                                     = "true"
     ENVIRONMENT                                           = var.env
     FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
