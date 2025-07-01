@@ -62,7 +62,6 @@ resource "azurerm_linux_function_app" "example" {
     scm_use_main_ip_restriction = false
     ftps_state                  = "FtpsOnly"
     vnet_route_all_enabled      = true
-    client_cert_mode            = "Required"
   }
 
   https_only = true
