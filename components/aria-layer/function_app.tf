@@ -30,6 +30,7 @@ resource "azurerm_linux_function_app" "example" {
   storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
   #virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
+
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
@@ -43,9 +44,12 @@ resource "azurerm_linux_function_app" "example" {
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = true
     XDG_CACHE_HOME                                        = "/tmp/.cache"
-    WEBSITE_RUN_FROM_PACKAGE                              = "1"
-    # WEBSITE_VNET_ROUTE_ALL                                = "1"
-    # WEBSITE_DNS_SERVER                                    = "168.63.129.16"
+    #WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string #azurerm_storage_account.example[each.key].primary_connection_string
+    #WEBSITE_CONTENTSHARE                                  = each.value.full_name
+    #WEBSITE_CONTENTOVERVNET  = "1"
+    WESBITE_VNET_ROUTE_ALL   = "1"
+    WEBSITE_RUN_FROM_PACKAGE = "1"
+    WEBSITE_DNS_SERVER       = "168.63.129.16"
   }
 
   identity {
@@ -56,6 +60,7 @@ resource "azurerm_linux_function_app" "example" {
     application_stack {
       python_version = "3.11"
     }
+
     always_on                   = true
     scm_use_main_ip_restriction = false
     ftps_state                  = "FtpsOnly"
