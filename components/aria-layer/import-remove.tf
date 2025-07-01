@@ -1,10 +1,10 @@
-# removed {
-#   from = azurerm_linux_function_app.example
+removed {
+  from = azurerm_linux_function_app.example
 
-#   lifecycle {
-#     destroy = false
-#   }
-# }
+  lifecycle {
+    destroy = true
+  }
+}
 
 #Define TF resources to import to state
 # locals {
