@@ -99,7 +99,7 @@ data "azurerm_storage_account_sas" "xcutting" {
 
   connection_string = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
   https_only        = true
-  
+
   resource_types {
     service   = false
     container = false
