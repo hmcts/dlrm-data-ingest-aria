@@ -26,9 +26,9 @@ resource "azurerm_linux_function_app" "example" {
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
-  storage_account_name       = azurerm_storage_account.example[each.key].name               # data.azurerm_storage_account.xcutting[each.value.lz_key].name
-  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key
-  #virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
+  storage_account_name       = data.azurerm_storage_account.xcutting[each.value.lz_key].name               # azurerm_storage_account.example[each.key].name
+  storage_account_access_key = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key # azurerm_storage_account.example[each.key].primary_access_key
+  virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
@@ -43,9 +43,10 @@ resource "azurerm_linux_function_app" "example" {
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = true
     XDG_CACHE_HOME                                        = "/tmp/.cache"
-    WEBSITE_RUN_FROM_PACKAGE                              = "1"
+    # WEBSITE_RUN_FROM_PACKAGE                              = "1"
     # WEBSITE_VNET_ROUTE_ALL                                = "1"
     # WEBSITE_DNS_SERVER                                    = "168.63.129.16"
+    WEBSITE_CONTENTOVERVNET = "1"
   }
 
   identity {
@@ -60,11 +61,6 @@ resource "azurerm_linux_function_app" "example" {
     scm_use_main_ip_restriction = false
     ftps_state                  = "FtpsOnly"
     #vnet_route_all_enabled      = true
-  }
-
-  timeouts {
-    read   = "10m"
-    update = "40m"
   }
 
   tags = module.ctags.common_tags
@@ -84,35 +80,4 @@ resource "azurerm_application_insights" "example" {
   application_type    = "web"
 
   tags = module.ctags.common_tags
-}
-
-
-###### test €€€€€€
-
-
-# Check what your storage account data source is returning
-output "storage_debug" {
-  value = {
-    for key, storage in data.azurerm_storage_account.xcutting : key => {
-      name                          = storage.name
-      public_network_access_enabled = storage.public_network_access_enabled
-      shared_access_key_enabled     = storage.shared_access_key_enabled
-      account_tier                  = storage.account_tier
-      account_replication_type      = storage.account_replication_type
-      network_rules                 = storage.network_rules
-    }
-  }
-}
-
-# If using local storage accounts, check those too:
-output "local_storage_debug" {
-  value = {
-    for key, storage in azurerm_storage_account.example : key => {
-      name                          = storage.name
-      public_network_access_enabled = storage.public_network_access_enabled
-      shared_access_key_enabled     = storage.shared_access_key_enabled
-      account_tier                  = storage.account_tier
-      account_replication_type      = storage.account_replication_type
-    }
-  }
 }
