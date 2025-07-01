@@ -41,7 +41,7 @@ resource "azurerm_linux_function_app" "example" {
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = "1"
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
-    SCM_DO_BUILD_DURING_DEPLOYMENT                        = "false"
+    SCM_DO_BUILD_DURING_DEPLOYMENT                        = "1"
     XDG_CACHE_HOME                                        = "/tmp/.cache"
     WEBSITE_RUN_FROM_PACKAGE                              = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${coalesce(data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas, "")}"
     WEBSITE_CONTENTOVERVNET                               = "1"
