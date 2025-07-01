@@ -75,9 +75,8 @@ resource "azurerm_linux_function_app" "example" {
     ignore_changes = [
       app_settings["WEBSITE_CONTENTSHARE"]
     ]
-
-    tags = module.ctags.common_tags
   }
+  tags = module.ctags.common_tags
 }
 
 
