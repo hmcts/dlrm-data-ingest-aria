@@ -59,13 +59,11 @@ resource "azurerm_linux_function_app" "example" {
     application_stack {
       python_version = "3.11"
     }
-    always_on = true
 
+    always_on                   = true
     scm_use_main_ip_restriction = false
     ftps_state                  = "FtpsOnly"
-
-    # runtime_scale_monitoring_enabled = true
-    vnet_route_all_enabled = true
+    #vnet_route_all_enabled      = true
   }
 
   timeouts {
