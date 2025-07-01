@@ -36,14 +36,14 @@ resource "azurerm_linux_function_app" "example" {
     BUILD_FLAGS                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                     = true
     ENVIRONMENT                           = var.env
-    #FUNCTIONS_EXTENSION_VERSION                           = "~4"
+    FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = true
     XDG_CACHE_HOME                                        = "/tmp/.cache"
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = azurerm_storage_account.example[each.key].primary_connection_string #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
     WEBSITE_CONTENTSHARE                                  = each.value.full_name
     WEBSITE_CONTENTOVERVNET                               = "1"
     WEBSITE_RUN_FROM_PACKAGE                              = "1"
@@ -63,7 +63,7 @@ resource "azurerm_linux_function_app" "example" {
     ftps_state                  = "FtpsOnly"
 
     # runtime_scale_monitoring_enabled = true
-    # vnet_route_all_enabled           = true
+    vnet_route_all_enabled           = true
   }
 
   timeouts {
