@@ -66,8 +66,6 @@ resource "azurerm_linux_function_app" "example" {
 
     # runtime_scale_monitoring_enabled = true
     vnet_route_all_enabled    = true
-    use_32_bit_worker_process = false
-    remote_debugging_enabled  = false
   }
 
   timeouts {
