@@ -65,7 +65,7 @@ resource "azurerm_linux_function_app" "example" {
     ftps_state                  = "FtpsOnly"
 
     # runtime_scale_monitoring_enabled = true
-    vnet_route_all_enabled    = true
+    vnet_route_all_enabled = true
   }
 
   timeouts {
