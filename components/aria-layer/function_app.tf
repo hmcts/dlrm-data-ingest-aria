@@ -36,7 +36,7 @@ resource "azurerm_linux_function_app" "example" {
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
     ENVIRONMENT                                           = var.env
-    FUNCTIONS_EXTENSION_VERSION                           = "~3"
+    FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
