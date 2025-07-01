@@ -85,3 +85,34 @@ resource "azurerm_application_insights" "example" {
 
   tags = module.ctags.common_tags
 }
+
+
+###### test €€€€€€
+
+
+# Check what your storage account data source is returning
+output "storage_debug" {
+  value = {
+    for key, storage in data.azurerm_storage_account.xcutting : key => {
+      name                              = storage.name
+      public_network_access_enabled     = storage.public_network_access_enabled
+      shared_access_key_enabled         = storage.shared_access_key_enabled
+      account_tier                      = storage.account_tier
+      account_replication_type          = storage.account_replication_type
+      network_rules                     = storage.network_rules
+    }
+  }
+}
+
+# If using local storage accounts, check those too:
+output "local_storage_debug" {
+  value = {
+    for key, storage in azurerm_storage_account.example : key => {
+      name                              = storage.name
+      public_network_access_enabled     = storage.public_network_access_enabled
+      shared_access_key_enabled         = storage.shared_access_key_enabled
+      account_tier                      = storage.account_tier
+      account_replication_type          = storage.account_replication_type
+    }
+  }
+}
