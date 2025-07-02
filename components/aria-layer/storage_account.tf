@@ -92,9 +92,9 @@ data "azurerm_storage_account" "xcutting" {
   name                = "ingest${each.key}xcutting${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
 
-  network_rules {
-    virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id]
-  }
+  # network_rules {
+  #   virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id]
+  # }
 }
 
 #reference SAS token for the functionapp for the data container in each xcutting
