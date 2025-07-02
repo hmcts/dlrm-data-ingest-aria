@@ -31,12 +31,12 @@ resource "azurerm_linux_function_app" "example" {
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
   app_settings = {
-    APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
-    AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
-    BUILD_FLAGS                                           = "UseExpressBuild"
-    ENABLE_ORYX_BUILD                                     = "true"
-    ENVIRONMENT                                           = var.env
-    FUNCTIONS_EXTENSION_VERSION                           = "~4"
+    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.example[each.key].connection_string
+    AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
+    BUILD_FLAGS                           = "UseExpressBuild"
+    ENABLE_ORYX_BUILD                     = "true"
+    ENVIRONMENT                           = var.env
+    #FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = "1"
