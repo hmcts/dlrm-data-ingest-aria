@@ -44,7 +44,7 @@ resource "azurerm_linux_function_app" "test" {
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.key].primary_connection_string
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
-    WEBSITE_RUN_FROM_PACKAGE                              = 1
+    WEBSITE_RUN_FROM_PACKAGE = 1
     # WEBSITE_CONTENTOVERVNET                               = 1
     # WEBSITE_CONTENTSHARE                                  = each.value.full_name
     # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
@@ -58,7 +58,7 @@ resource "azurerm_linux_function_app" "test" {
       python_version = "3.11"
     }
 
-    ftpsState = "FtpsOnly"
+    ftpsState               = "FtpsOnly"
     vnetContentShareEnabled = true
   }
 
