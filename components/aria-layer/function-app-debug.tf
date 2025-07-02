@@ -45,9 +45,9 @@ resource "azurerm_linux_function_app" "test11" {
     SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
     WEBSITE_RUN_FROM_PACKAGE = 1
-    WEBSITE_CONTENTOVERVNET  = 1
+    # WEBSITE_CONTENTOVERVNET  = 1
     # WEBSITE_CONTENTSHARE                                  = each.value.full_name
-    # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
+    # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.key].primary_connection_string 
   }
   identity {
     type = "SystemAssigned"
