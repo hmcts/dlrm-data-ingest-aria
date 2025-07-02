@@ -92,7 +92,7 @@ data "azurerm_storage_account" "xcutting" {
   name                = "ingest${each.key}xcutting${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
 
-  
+
 }
 
 #reference SAS token for the functionapp for the data container in each xcutting
