@@ -2,7 +2,7 @@ locals {
   functionapp_00 = {
     for k, v in var.landing_zones :
     k => v
-    if !contains(["01","02"], k)
+    if !contains(["01", "02"], k)
   }
 }
 
@@ -61,10 +61,8 @@ resource "azurerm_linux_function_app" "test" {
     ftps_state             = "FtpsOnly"
     vnet_route_all_enabled = true
   }
-
   https_only = true
-
-  tags = module.ctags.common_tags
+  tags       = module.ctags.common_tags
 }
 
 
