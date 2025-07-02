@@ -112,12 +112,12 @@ resource "azurerm_linux_function_app" "example1" {
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example1[each.key].id
-  storage_account_name       = azurerm_storage_account.example1[each.key].name               #data.azurerm_storage_account.xcutting[each.value.lz_key].name                                     
-  storage_account_access_key = azurerm_storage_account.example1[each.key].primary_access_key #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key 
+  storage_account_name       = azurerm_storage_account.example[each.key].name               #data.azurerm_storage_account.xcutting[each.value.lz_key].name                                     
+  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #data.azurerm_storage_account.xcutting[each.value.lz_key].primary_access_key 
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
   app_settings = {
-    APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example1[each.key].connection_string
+    APPLICATIONINSIGHTS_CONNECTION_STRING                 = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags                              = "EnableWorkerIndexing"
     BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = true
@@ -148,3 +148,4 @@ resource "azurerm_linux_function_app" "example1" {
 
   tags = module.ctags.common_tags
 }
+
