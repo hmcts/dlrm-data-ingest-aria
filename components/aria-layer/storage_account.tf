@@ -14,21 +14,21 @@ locals {
   }
 }
 
-# resource "azurerm_storage_account" "example" {
-#   for_each = {
-#     for app in local.flattened_function_apps :
-#     "${app.lz_key}-${app.base_name}" => app
-#   }
+resource "azurerm_storage_account" "example" {
+  for_each = {
+    for app in local.flattened_function_apps :
+    "${app.lz_key}-${app.base_name}" => app
+  }
 
-#   name                     = replace(each.value.full_name, "-", "")
-#   resource_group_name      = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-#   location                 = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-#   account_tier             = "Standard"
-#   account_replication_type = "LRS"
+  name                     = replace(each.value.full_name, "-", "")
+  resource_group_name      = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+  location                 = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 
-#   tags = module.ctags.common_tags
+  tags = module.ctags.common_tags
 
-# }
+}
 
 data "azurerm_storage_account" "curated" {
 
@@ -91,6 +91,8 @@ data "azurerm_storage_account" "xcutting" {
 
   name                = "ingest${each.key}xcutting${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
+
+
 }
 
 #reference SAS token for the functionapp for the data container in each xcutting
