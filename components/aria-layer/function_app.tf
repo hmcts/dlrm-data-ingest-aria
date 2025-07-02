@@ -46,9 +46,9 @@ resource "azurerm_linux_function_app" "example" {
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
     # WEBSITE_RUN_FROM_PACKAGE                              = 1
     # WEBSITE_RUN_FROM_PACKAGE                              = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${coalesce(data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas, "")}"
-    # WEBSITE_CONTENTOVERVNET                               = "1"
-    # WEBSITE_CONTENTSHARE                                  = each.value.full_name
-    # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING              = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
+    WEBSITE_CONTENTOVERVNET                  = 1
+    WEBSITE_CONTENTSHARE                     = each.value.full_name
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
   }
 
   # identity {
