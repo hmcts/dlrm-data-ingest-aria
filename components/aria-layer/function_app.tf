@@ -33,9 +33,17 @@ resource "azurerm_linux_function_app" "example" {
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
-    BUILD_FLAGS                           = "UseExpressBuild"
-    ENABLE_ORYX_BUILD                     = "true"
-    ENVIRONMENT                           = var.env
+    AzureWebJobsStorage                   = <<EOT
+                          BlobEndpoint=https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/;
+                          QueueEndpoint=https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.queue.core.windows.net/;
+                          FileEndpoint=https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.file.core.windows.net/;
+                          TableEndpoint=https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.table.core.windows.net/;
+                          SharedAccessSignature=${data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas}
+                        EOT
+
+    BUILD_FLAGS       = "UseExpressBuild"
+    ENABLE_ORYX_BUILD = "true"
+    ENVIRONMENT       = var.env
     #FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
