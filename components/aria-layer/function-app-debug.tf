@@ -2,7 +2,7 @@ locals {
   functionapp_00 = {
     for k, v in var.landing_zones :
     k => v
-    if !(k == "01" && k == "02")
+    if !contains(["01","02"], k)
   }
 }
 
