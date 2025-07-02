@@ -123,7 +123,7 @@ resource "azurerm_role_assignment" "rbac_table" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-resource "azurerm_role_assignment" "rbac_table" {
+resource "azurerm_role_assignment" "rbac_account" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
