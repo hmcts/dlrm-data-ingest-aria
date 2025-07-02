@@ -59,7 +59,7 @@ resource "azurerm_linux_function_app" "test11" {
     }
 
     ftps_state             = "FtpsOnly"
-    vnet_route_all_enabled = true
+    # vnet_route_all_enabled = true
   }
   https_only = true
   tags       = module.ctags.common_tags
