@@ -26,8 +26,8 @@ resource "azurerm_linux_function_app" "test11" {
   resource_group_name        = "ingest${each.key}-main-${var.env}"
   location                   = "UK South"
   service_plan_id            = azurerm_service_plan.test[each.key].id
-  storage_account_name       = data.azurerm_storage_account.xcutting[each.key].name
-  storage_account_access_key = data.azurerm_storage_account.xcutting[each.key].primary_access_key
+  storage_account_name       = azurerm_storage_account.example[each.key].name               #data.azurerm_storage_account.xcutting[each.key].name
+  storage_account_access_key = azurerm_storage_account.example[each.key].primary_access_key #data.azurerm_storage_account.xcutting[each.key].primary_access_key
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id
 
   app_settings = {
