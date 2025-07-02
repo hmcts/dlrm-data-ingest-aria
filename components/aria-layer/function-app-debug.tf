@@ -58,7 +58,7 @@ resource "azurerm_linux_function_app" "test11" {
       python_version = "3.11"
     }
 
-    ftps_state             = "FtpsOnly"
+    ftps_state = "FtpsOnly"
     # vnet_route_all_enabled = true
   }
   https_only = true
