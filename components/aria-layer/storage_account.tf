@@ -100,34 +100,34 @@ data "azurerm_storage_account_sas" "xcutting" {
   connection_string = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
   https_only        = true
 
-  resource_types {
-    service   = false
-    container = false
-    object    = true
-  }
-
   services {
     blob  = true
-    queue = false
-    table = false
-    file  = false
+    file  = true
+    queue = true
+    table = true
   }
 
-  start  = "2024-01-01T00:00:00Z"
-  expiry = "2027-12-31T23:59:59Z"
+  resource_types {
+    service   = true
+    container = true
+    object    = true
+  }
 
   permissions {
     read    = true
     write   = true
-    delete  = false
-    list    = false
-    add     = false
+    delete  = true
+    list    = true
+    add     = true
     create  = true
-    update  = false
-    process = false
-    tag     = false
+    update  = true
+    process = true
+    tag     = true
     filter  = false
   }
+
+  start  = "2024-01-01T00:00:00Z"
+  expiry = "2027-12-31T23:59:59Z"
 }
 
 # # add in containers for landing
