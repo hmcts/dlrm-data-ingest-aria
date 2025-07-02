@@ -125,6 +125,9 @@ data "azurerm_storage_account_sas" "xcutting" {
     tag     = true
     filter  = false
   }
+
+  start  = "2024-01-01T00:00:00Z"
+  expiry = "2027-12-31T23:59:59Z"
 }
 
 # # add in containers for landing
