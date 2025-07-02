@@ -19,7 +19,7 @@ resource "azurerm_service_plan" "test" {
   tags = module.ctags.common_tags
 }
 
-resource "azurerm_linux_function_app" "test" {
+resource "azurerm_linux_function_app" "test11" {
   for_each = local.functionapp_00
 
   name                       = "test-function"
