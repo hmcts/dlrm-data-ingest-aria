@@ -22,7 +22,7 @@ resource "azurerm_service_plan" "test" {
 resource "azurerm_linux_function_app" "test11" {
   for_each = local.functionapp_00
 
-  name                       = "test-function"
+  name                       = "test-function345"
   resource_group_name        = "ingest${each.key}-main-${var.env}"
   location                   = "UK South"
   service_plan_id            = azurerm_service_plan.test[each.key].id
