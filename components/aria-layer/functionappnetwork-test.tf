@@ -27,14 +27,14 @@ resource "azurerm_linux_function_app" "example" {
   resource_group_name        = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
   location                   = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
   service_plan_id            = azurerm_service_plan.example[each.key].id
-  storage_account_name       = azurerm_storage_account.example1[each.value.lz_key].name               #azurerm_storage_account.example[each.key].name               
-  storage_account_access_key = azurerm_storage_account.example1[each.value.lz_key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key 
+  storage_account_name       = azurerm_storage_account.example1[each.key].name               #azurerm_storage_account.example[each.key].name               
+  storage_account_access_key = azurerm_storage_account.example1[each.key].primary_access_key #azurerm_storage_account.example[each.key].primary_access_key 
   virtual_network_subnet_id  = data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
-    # AzureWebJobsStorage                   = azurerm_storage_account.example1[each.value.lz_key].primary_connection_string
+    AzureWebJobsStorage                   = azurerm_storage_account.example1[each.key].primary_connection_string
     # BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = "true"
     ENVIRONMENT                                           = var.env
@@ -42,7 +42,7 @@ resource "azurerm_linux_function_app" "example" {
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
-    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
+    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.key].primary_connection_string
     # SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
     # WEBSITE_RUN_FROM_PACKAGE                              = 1
