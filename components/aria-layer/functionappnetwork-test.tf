@@ -66,4 +66,8 @@ resource "azurerm_linux_function_app" "example" {
   # https_only = true
 
   tags = module.ctags.common_tags
+
+  depends_on = [
+    azurerm_storage_account.example1
+  ]
 }
