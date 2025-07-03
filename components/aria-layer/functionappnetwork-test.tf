@@ -68,6 +68,6 @@ resource "azurerm_linux_function_app" "example" {
   tags = module.ctags.common_tags
 
   depends_on = [
-    azurerm_storage_account.example1
+    azurerm_storage_account.zcutting
   ]
 }
