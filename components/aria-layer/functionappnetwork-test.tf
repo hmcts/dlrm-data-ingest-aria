@@ -4,7 +4,7 @@ resource "azurerm_storage_account" "example1" {
     "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = "test-function-app-12345${each.value.lz_key}"
+  name                = "testfunctionapp12345${each.value.lz_key}"
   resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
 
   location                 = "UK South"
