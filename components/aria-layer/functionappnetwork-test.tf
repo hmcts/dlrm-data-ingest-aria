@@ -33,14 +33,14 @@ resource "azurerm_linux_function_app" "example" {
     AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
     AzureWebJobsStorage                   = azurerm_storage_account.zcutting[each.value.lz_key].primary_connection_string
     # BUILD_FLAGS                                           = "UseExpressBuild"
-    ENABLE_ORYX_BUILD                                     = "true"
+    ENABLE_ORYX_BUILD                                     = true
     ENVIRONMENT                                           = var.env
     FUNCTIONS_EXTENSION_VERSION                           = "~4"
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
     sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
-    # SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
+    SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
     # WEBSITE_RUN_FROM_PACKAGE                              = 1
     # WEBSITE_RUN_FROM_PACKAGE                              = "https://${data.azurerm_storage_account.xcutting[each.value.lz_key].name}.blob.core.windows.net/data/af-zip/${each.value.base_name}.zip${coalesce(data.azurerm_storage_account_sas.xcutting[each.value.lz_key].sas, "")}"
