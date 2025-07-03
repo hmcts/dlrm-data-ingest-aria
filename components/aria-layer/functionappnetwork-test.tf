@@ -34,7 +34,7 @@ resource "azurerm_linux_function_app" "example" {
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.example[each.key].connection_string
     AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
-    AzureWebJobsStorage                   = azurerm_storage_account.example1[each.value.lz_key].primary_connection_string
+    # AzureWebJobsStorage                   = azurerm_storage_account.example1[each.value.lz_key].primary_connection_string
     # BUILD_FLAGS                                           = "UseExpressBuild"
     ENABLE_ORYX_BUILD                                     = "true"
     ENVIRONMENT                                           = var.env
