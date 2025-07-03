@@ -5,7 +5,7 @@ resource "azurerm_storage_account" "example1" {
   }
 
   name                = "test-function-app-12345${each.value.lz_key}"
-  resource_group_name = data.azurerm_resource_group.lz["ingest${var.landing_zones}-main-${var.env}"].name
+  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
 
   location                 = "UK South"
   account_tier             = "Standard"
@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "example1" {
 
   network_rules {
     default_action             = "Deny"
-    virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${var.landing_zones}-data-product-001-${var.env}"].id]
+    virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id]
   }
 }
 
