@@ -42,7 +42,7 @@ resource "azurerm_linux_function_app" "example" {
     FUNCTIONS_WORKER_RUNTIME                              = "python"
     LZ_KEY                                                = each.value.lz_key
     PYTHON_ENABLE_WORKER_EXTENSIONS                       = 1
-    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.key].primary_connection_string
+    sboxdlrmeventhubns_RootManageSharedAccessKey_EVENTHUB = data.azurerm_eventhub_namespace_authorization_rule.lz[each.value.lz_key].primary_connection_string
     # SCM_DO_BUILD_DURING_DEPLOYMENT                        = 1
     # XDG_CACHE_HOME                                        = "/tmp/.cache"
     # WEBSITE_RUN_FROM_PACKAGE                              = 1
