@@ -9,8 +9,8 @@ resource "azurerm_storage_account" "example1" {
   account_replication_type = "LRS"
 
   network_rules {
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id]
+    default_action             = "Allow"
+    virtual_network_subnet_ids = [] #data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id]
   }
 }
 
