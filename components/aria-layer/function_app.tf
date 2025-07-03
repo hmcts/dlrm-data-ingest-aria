@@ -33,7 +33,7 @@ resource "azurerm_service_plan" "example" {
 #   app_settings = {
 #     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.example[each.key].connection_string
 #     AzureWebJobsFeatureFlags              = "EnableWorkerIndexing"
-#     AzureWebJobsStorage                   = data.azurerm_storage_account.curated[each.value.lz_key].primary_connection_string
+#     AzureWebJobsStorage                   = data.azurerm_storage_account.xcutting[each.value.lz_key].primary_connection_string
 #     # BUILD_FLAGS                                           = "UseExpressBuild"
 #     ENABLE_ORYX_BUILD                                     = "true"
 #     ENVIRONMENT                                           = var.env
