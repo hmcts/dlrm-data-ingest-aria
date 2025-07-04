@@ -6,6 +6,21 @@
 # #   }
 # # }
 
+locals {
+  secret_tenant_url_import = {
+    "00" = "https://ingest00-meta002-sbox.vault.azure.net/secrets/SERVICE-PRINCIPLE-TENANT-URL/e623487e48a74ff18657a43b524deaf9"
+    "01" = "https://ingest01-meta002-sbox.vault.azure.net/secrets/SERVICE-PRINCIPLE-TENANT-URL/253ac1f3f32842979103f7d1397f10cb"
+    "02" = "https://ingest02-meta002-sbox.vault.azure.net/secrets/SERVICE-PRINCIPLE-TENANT-URL/e4889f4f11c04c8985f7600c2319f750"
+  }
+}
+
+import {
+  for_each = local.secret_tenant_url_import
+  to       = azurerm_key_vault_secret.tenant_URL[each.key]
+  id       = each.value
+}
+
+
 # #Define TF resources to import to state
 # # locals {
 # #   function_apps_import = {
