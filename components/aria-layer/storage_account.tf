@@ -101,7 +101,7 @@ data "azurerm_storage_account" "xcutting" {
 data "azurerm_storage_account_sas" "zcutting" {
   for_each = var.landing_zones
 
-  connection_string = data.azurerm_storage_account.zcutting[each.key].primary_connection_string
+  connection_string = azurerm_storage_account.zcutting[each.key].primary_connection_string
   https_only        = true
 
   services {
@@ -239,7 +239,7 @@ resource "azurerm_storage_container" "zcutting" {
   combo.key => combo }
 
   name                  = each.value.container
-  storage_account_name  = data.azurerm_storage_account.zcutting[each.value.lz_key].name
+  storage_account_name  = azurerm_storage_account.zcutting[each.value.lz_key].name
   container_access_type = "private"
 }
 
