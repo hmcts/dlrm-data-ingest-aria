@@ -161,12 +161,12 @@ import {
 }
 
 import {
-  to = azurerm_storage_container.curated_extra["00-db-ack-checkpoint"]
+  to = azurerm_storage_container.xcutting["00-db-ack-checkpoint"]
   id = "https://ingest00xcuttingstg.blob.core.windows.net/db-ack-checkpoint"
 }
 
 import {
-  to = azurerm_storage_container.curated_extra["00-db-rsp-checkpoint"]
+  to = azurerm_storage_container.xcutting["00-db-rsp-checkpoint"]
   id = "https://ingest00xcuttingstg.blob.core.windows.net/db-rsp-checkpoint"
 }
 
