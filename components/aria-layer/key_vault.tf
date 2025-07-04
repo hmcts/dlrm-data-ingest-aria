@@ -62,7 +62,7 @@ resource "azurerm_key_vault_secret" "curated_sas_token" {
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
-resource "azurerm_key_vault_secret" "curated_sas_token" {
+resource "azurerm_key_vault_secret" "curated_sas_token1" {
   for_each = var.landing_zones
 
   name         = "CURATED-SAS-TOKEN"
