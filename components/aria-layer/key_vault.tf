@@ -19,6 +19,16 @@ resource "azurerm_key_vault_secret" "tenant_id" {
   tags = module.ctags.common_tags
 }
 
+resource "azurerm_key_vault_secret" "tenant_URL" {
+  for_each = var.landing_zones
+
+  name         = "SERVICE-PRINCIPLE-TENANT-ID"
+  value        = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}"
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
+}
+
 resource "azurerm_key_vault_secret" "eh_root_key" {
   for_each = var.landing_zones
 
@@ -48,6 +58,14 @@ resource "azurerm_key_vault_secret" "curated_sas_token" {
   for_each = var.landing_zones
 
   name         = "CURATED-${var.env}-SAS-TOKEN"
+  value        = "BlobEndpoint=${data.azurerm_storage_account.curated[each.key].primary_blob_endpoint};SharedAccessSignature=${data.azurerm_storage_account_sas.curated[each.key].sas}"
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+}
+
+resource "azurerm_key_vault_secret" "curated_sas_token1" {
+  for_each = var.landing_zones
+
+  name         = "CURATED-SAS-TOKEN"
   value        = "BlobEndpoint=${data.azurerm_storage_account.curated[each.key].primary_blob_endpoint};SharedAccessSignature=${data.azurerm_storage_account_sas.curated[each.key].sas}"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
