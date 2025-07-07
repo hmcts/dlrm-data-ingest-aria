@@ -23,7 +23,7 @@ resource "azurerm_key_vault_secret" "tenant_URL" {
   for_each = var.landing_zones
 
   name         = "SERVICE-PRINCIPLE-TENANT-URL"
-  value        = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}"
+  value        = "https://login.microsoftonline.com/${data.azurerm_client_config.current.tenant_id}/oauth2/token"
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 
   tags = module.ctags.common_tags
