@@ -128,17 +128,17 @@ resource "azurerm_storage_container" "xcutting" {
 
 
 resource "azurerm_storage_account" "xcutting1" {
-  for_each = var.landing_zones
+  for_each                 = var.landing_zones
   name                     = "ingest${each.key}xcutting1${var.env}"
   resource_group_name      = "ingest${each.key}-main-${var.env}"
   location                 = "UK South"
   account_tier             = "Standard"
   account_replication_type = "GRS"
 
-#   network_rules {
-#     default_action             = "Allow"
-#     virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id]
-# }
+  #   network_rules {
+  #     default_action             = "Allow"
+  #     virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id]
+  # }
 }
 
 
