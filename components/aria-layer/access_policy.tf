@@ -41,10 +41,10 @@ resource "azurerm_role_assignment" "rbac_write" {
 
   # Assign scope per LZ, use current_config as run in CICD, giving SP the permissions required for Databricks
   scope = {
-    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
-    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
-    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "landing"   = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"   = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external"  = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting"  = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "xcutting1" = azurerm_storage_account.xcutting1[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -66,10 +66,10 @@ resource "azurerm_role_assignment" "rbac_owner" {
   }
 
   scope = {
-    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
-    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
-    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "landing"   = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"   = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external"  = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting"  = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "xcutting1" = azurerm_storage_account.xcutting1[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -91,10 +91,10 @@ resource "azurerm_role_assignment" "rbac_queue" {
   }
 
   scope = {
-    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
-    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
-    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "landing"   = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"   = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external"  = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting"  = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "xcutting1" = azurerm_storage_account.xcutting1[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -116,10 +116,10 @@ resource "azurerm_role_assignment" "rbac_table" {
   }
 
   scope = {
-    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
-    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
-    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "landing"   = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"   = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external"  = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting"  = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "xcutting1" = azurerm_storage_account.xcutting1[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -141,10 +141,10 @@ resource "azurerm_role_assignment" "rbac_account" {
   }
 
   scope = {
-    "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
-    "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
-    "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "landing"   = data.azurerm_storage_account.landing[each.value.lz_key].id
+    "curated"   = data.azurerm_storage_account.curated[each.value.lz_key].id
+    "external"  = data.azurerm_storage_account.external[each.value.lz_key].id
+    "xcutting"  = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "xcutting1" = azurerm_storage_account.xcutting1[each.value.lz_key].id
   }[each.value.storage_account]
 
