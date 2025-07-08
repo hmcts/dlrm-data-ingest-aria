@@ -1,10 +1,18 @@
-# # removed {
-# #   from = azurerm_linux_function_app.example
+removed {
+  from = azurerm_storage_container.db-ack-checkpoint
 
-# #   lifecycle {
-# #     destroy = false
-# #   }
-# # }
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = azurerm_storage_container.db-rsp-checkpoint
+
+  lifecycle {
+    destroy = false
+  }
+}
 
 # locals {
 #   secret_tenant_url_import = {
