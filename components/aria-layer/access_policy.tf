@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "rbac_write" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    # "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "zcutting" = azurerm_storage_account.zcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -69,7 +69,7 @@ resource "azurerm_role_assignment" "rbac_owner" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    # "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "zcutting" = azurerm_storage_account.zcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -94,7 +94,7 @@ resource "azurerm_role_assignment" "rbac_queue" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    # "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "zcutting" = azurerm_storage_account.zcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -119,7 +119,7 @@ resource "azurerm_role_assignment" "rbac_table" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    # "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "zcutting" = azurerm_storage_account.zcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
@@ -144,7 +144,7 @@ resource "azurerm_role_assignment" "rbac_account" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    # "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
     "zcutting" = azurerm_storage_account.zcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
