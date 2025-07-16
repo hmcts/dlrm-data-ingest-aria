@@ -23,9 +23,7 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
 
 # Below assigns RBAC permissions to use the Service Principle (object_id) access to Contribute/Own permissions to the storage accounts highlighted in locals below.
 locals {
-  storage_accounts = ["landing", "curated", "external", 
-  "zcutting"
-  ]
+  storage_accounts = ["landing", "curated", "external", "zcutting"]
 }
 
 resource "azurerm_role_assignment" "rbac_write" {
