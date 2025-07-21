@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "rbac_write" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "xcutting" = azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
   role_definition_name = "Storage Blob Data Contributor"
@@ -68,7 +68,7 @@ resource "azurerm_role_assignment" "rbac_owner" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "xcutting" = azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
   role_definition_name = "Storage Blob Data Reader"
@@ -92,7 +92,7 @@ resource "azurerm_role_assignment" "rbac_queue" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "xcutting" = azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
   role_definition_name = "Storage Queue Data Contributor"
@@ -116,7 +116,7 @@ resource "azurerm_role_assignment" "rbac_table" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "xcutting" = azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
   role_definition_name = "Storage Table Data Contributor"
@@ -140,7 +140,7 @@ resource "azurerm_role_assignment" "rbac_account" {
     "landing"  = data.azurerm_storage_account.landing[each.value.lz_key].id
     "curated"  = data.azurerm_storage_account.curated[each.value.lz_key].id
     "external" = data.azurerm_storage_account.external[each.value.lz_key].id
-    "xcutting" = data.azurerm_storage_account.xcutting[each.value.lz_key].id
+    "xcutting" = azurerm_storage_account.xcutting[each.value.lz_key].id
   }[each.value.storage_account]
 
   role_definition_name = "Storage Account Contributor"
