@@ -14,22 +14,6 @@ locals {
   }
 }
 
-# resource "azurerm_storage_account" "example" {
-#   for_each = {
-#     for app in local.flattened_function_apps :
-#     "${app.lz_key}-${app.base_name}" => app
-#   }
-
-#   name                     = replace(each.value.full_name, "-", "")
-#   resource_group_name      = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-#   location                 = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-#   account_tier             = "Standard"
-#   account_replication_type = "LRS"
-
-#   tags = module.ctags.common_tags
-
-# }
-
 data "azurerm_storage_account" "curated" {
 
   for_each = var.landing_zones
@@ -84,24 +68,11 @@ data "azurerm_storage_account_sas" "curated" {
   }
 }
 
-# #reference xcutting SA
-# data "azurerm_storage_account" "xcutting" {
-
-#   for_each = var.landing_zones
-
-#   name                = "ingest${each.key}xcutting${var.env}"
-#   resource_group_name = "ingest${each.key}-main-${var.env}"
-
-#   # network_rules {
-#   #   virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.value.lz_key}-data-product-001-${var.env}"].id]
-#   # }
-# }
-
-#reference SAS token for the functionapp for the data container in each xcutting -> zcutting
-data "azurerm_storage_account_sas" "zcutting" {
+#reference SAS token for the functionapp for the data container in each xcutting
+data "azurerm_storage_account_sas" "xcutting" {
   for_each = var.landing_zones
 
-  connection_string = azurerm_storage_account.zcutting[each.key].primary_connection_string
+  connection_string = azurerm_storage_account.xcutting[each.key].primary_connection_string
   https_only        = true
 
   services {
@@ -134,43 +105,6 @@ data "azurerm_storage_account_sas" "zcutting" {
   expiry = "2027-12-31T23:59:59Z"
 }
 
-# data "azurerm_storage_account_sas" "xcutting" {
-#   for_each = var.landing_zones
-
-#   connection_string = data.azurerm_storage_account.xcutting[each.key].primary_connection_string
-#   https_only        = true
-
-#   services {
-#     blob  = true
-#     file  = true
-#     queue = true
-#     table = true
-#   }
-
-#   resource_types {
-#     service   = true
-#     container = true
-#     object    = true
-#   }
-
-#   permissions {
-#     read    = true
-#     write   = true
-#     delete  = true
-#     list    = true
-#     add     = true
-#     create  = true
-#     update  = true
-#     process = true
-#     tag     = true
-#     filter  = false
-#   }
-
-#   start  = "2024-01-01T00:00:00Z"
-#   expiry = "2027-12-31T23:59:59Z"
-# }
-
-
 # # add in containers for landing
 
 data "azurerm_storage_account" "landing" {
@@ -180,27 +114,27 @@ data "azurerm_storage_account" "landing" {
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
-# resource "azurerm_storage_container" "landing" {
-#   for_each = {
-#     for combo in flatten([
-#       for lz_key, _ in var.landing_zones : [
-#         for container in ["html-template"] : {
-#           key       = "${lz_key}-${container}"
-#           lz_key    = lz_key
-#           container = container
-#         }
-#       ]
-#     ]) :
-#     combo.key => combo
-#     if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "01" || combo.lz_key == "02"))
-#   }
+resource "azurerm_storage_container" "landing" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for container in ["html-template"] : {
+          key       = "${lz_key}-${container}"
+          lz_key    = lz_key
+          container = container
+        }
+      ]
+    ]) :
+    combo.key => combo
+    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "01" || combo.lz_key == "02"))
+  }
 
-#   name                  = each.value.container
-#   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
-#   container_access_type = "private"
+  name                  = each.value.container
+  storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
+  container_access_type = "private"
 
 
-# }
+}
 
 # # add in containers for external
 
@@ -225,7 +159,7 @@ resource "azurerm_storage_container" "external" {
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "zcutting" {
+resource "azurerm_storage_container" "xcutting" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
@@ -239,24 +173,6 @@ resource "azurerm_storage_container" "zcutting" {
   combo.key => combo }
 
   name                  = each.value.container
-  storage_account_name  = azurerm_storage_account.zcutting[each.value.lz_key].name
+  storage_account_name  = azurerm_storage_account.xcutting[each.value.lz_key].name
   container_access_type = "private"
 }
-
-# resource "azurerm_storage_container" "xcutting" {
-#   for_each = {
-#     for combo in flatten([
-#       for lz_key, _ in var.landing_zones : [
-#         for container in ["db-ack-checkpoint", "db-rsp-checkpoint"] : {
-#           key       = "${lz_key}-${container}"
-#           lz_key    = lz_key
-#           container = container
-#         }
-#       ]
-#     ]) :
-#   combo.key => combo }
-
-#   name                  = each.value.container
-#   storage_account_name  = data.azurerm_storage_account.xcutting[each.value.lz_key].name
-#   container_access_type = "private"
-# }
