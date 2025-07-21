@@ -26,8 +26,8 @@ resource "azurerm_storage_account" "xcutting" {
   account_replication_type = "LRS"
 
   network_rules {
-    default_action             = "Allow" #Deny
-    virtual_network_subnet_ids = []      #data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id] 
+    default_action             = "Deny"                                                                       #Allow
+    virtual_network_subnet_ids = [data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id] #data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id] 
   }
 }
 
