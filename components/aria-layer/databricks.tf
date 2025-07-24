@@ -112,16 +112,7 @@ resource "databricks_secret_scope" "kv-scope-sbox00" {
 #   }
 # }
 
-# resource "databricks_secret_scope" "kv-scope-sbox02" {
-#   count    = var.env == "sbox" ? 1 : 0
-#   provider = databricks.sbox-02
-#   name     = "ingest02-meta002-sbox"
 
-#   keyvault_metadata {
-#     resource_id = data.azurerm_key_vault.logging_vault["02"].id
-#     dns_name    = data.azurerm_key_vault.logging_vault["02"].vault_uri
-#   }
-# }
 
 # Config file specifically for sbox
 
@@ -149,18 +140,6 @@ resource "databricks_dbfs_file" "config_file_sbox01" {
 
   path = "/configs/config.json"
 }
-
-# resource "databricks_dbfs_file" "config_file_sbox02" {
-#   count    = var.env == "sbox" ? 1 : 0
-#   provider = databricks.sbox-02
-
-#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-#     env    = "sbox"
-#     lz_key = "02"
-#   }))
-
-#   path = "/configs/config.json"
-# }
 
 resource "databricks_dbfs_file" "config_file_stg00" {
   count    = var.env == "stg" ? 1 : 0
