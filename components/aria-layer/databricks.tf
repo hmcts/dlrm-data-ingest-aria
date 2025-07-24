@@ -53,17 +53,17 @@ provider "databricks" {
   skip_verify = var.env != "sbox"
 }
 
-# provider "databricks" {
-#   alias                       = "sbox-02"
-#   azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].id, null)
-#   host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url, null)
+provider "databricks" {
+  alias                       = "sbox-02"
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url, null)
 
-#   azure_client_id     = data.azurerm_client_config.current.client_id
-#   azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
-#   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 
-#   skip_verify = var.env != "sbox"
-# }
+  skip_verify = var.env != "sbox"
+}
 
 provider "databricks" {
   alias                       = "stg-00"
