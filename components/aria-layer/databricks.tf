@@ -53,17 +53,17 @@ provider "databricks" {
   skip_verify = var.env != "sbox"
 }
 
-provider "databricks" {
-  alias                       = "sbox-02"
-  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].id, null)
-  host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url, null)
+# provider "databricks" {
+#   alias                       = "sbox-02"
+#   azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].id, null)
+#   host                        = try(data.azurerm_databricks_workspace.db_ws["sbox-02"].workspace_url, null)
 
-  azure_client_id     = data.azurerm_client_config.current.client_id
-  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
-  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+#   azure_client_id     = data.azurerm_client_config.current.client_id
+#   azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+#   azure_tenant_id     = data.azurerm_client_config.current.tenant_id
 
-  skip_verify = var.env != "sbox"
-}
+#   skip_verify = var.env != "sbox"
+# }
 
 provider "databricks" {
   alias                       = "stg-00"
@@ -112,16 +112,16 @@ resource "databricks_secret_scope" "kv-scope-sbox00" {
 #   }
 # }
 
-resource "databricks_secret_scope" "kv-scope-sbox02" {
-  count    = var.env == "sbox" ? 1 : 0
-  provider = databricks.sbox-02
-  name     = "ingest02-meta002-sbox"
+# resource "databricks_secret_scope" "kv-scope-sbox02" {
+#   count    = var.env == "sbox" ? 1 : 0
+#   provider = databricks.sbox-02
+#   name     = "ingest02-meta002-sbox"
 
-  keyvault_metadata {
-    resource_id = data.azurerm_key_vault.logging_vault["02"].id
-    dns_name    = data.azurerm_key_vault.logging_vault["02"].vault_uri
-  }
-}
+#   keyvault_metadata {
+#     resource_id = data.azurerm_key_vault.logging_vault["02"].id
+#     dns_name    = data.azurerm_key_vault.logging_vault["02"].vault_uri
+#   }
+# }
 
 # Config file specifically for sbox
 
@@ -150,17 +150,17 @@ resource "databricks_dbfs_file" "config_file_sbox01" {
   path = "/configs/config.json"
 }
 
-resource "databricks_dbfs_file" "config_file_sbox02" {
-  count    = var.env == "sbox" ? 1 : 0
-  provider = databricks.sbox-02
+# resource "databricks_dbfs_file" "config_file_sbox02" {
+#   count    = var.env == "sbox" ? 1 : 0
+#   provider = databricks.sbox-02
 
-  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-    env    = "sbox"
-    lz_key = "02"
-  }))
+#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+#     env    = "sbox"
+#     lz_key = "02"
+#   }))
 
-  path = "/configs/config.json"
-}
+#   path = "/configs/config.json"
+# }
 
 resource "databricks_dbfs_file" "config_file_stg00" {
   count    = var.env == "stg" ? 1 : 0
