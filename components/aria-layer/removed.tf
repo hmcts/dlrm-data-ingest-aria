@@ -1,10 +1,10 @@
-# removed {
-#   from = databricks_dbfs_file.config_file_sbox02
+removed {
+  from = azurerm_storage_container.xcutting
 
-#   lifecycle {
-#     destroy = false
-#   }
-# }
+  lifecycle {
+    destroy = false
+  }
+}
 
 # removed {
 #   from = databricks_secret_scope.kv-scope-sbox02

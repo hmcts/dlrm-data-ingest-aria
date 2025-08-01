@@ -157,23 +157,23 @@ resource "azurerm_storage_container" "external" {
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "xcutting" {
-  for_each = {
-    for combo in flatten([
-      for lz_key, _ in var.landing_zones : [
-        for container in ["db-ack-checkpoint", "db-rsp-checkpoint"] : {
-          key       = "${lz_key}-${container}"
-          lz_key    = lz_key
-          container = container
-        }
-      ]
-    ]) :
-  combo.key => combo }
+# resource "azurerm_storage_container" "xcutting" {
+#   for_each = {
+#     for combo in flatten([
+#       for lz_key, _ in var.landing_zones : [
+#         for container in ["db-ack-checkpoint", "db-rsp-checkpoint"] : {
+#           key       = "${lz_key}-${container}"
+#           lz_key    = lz_key
+#           container = container
+#         }
+#       ]
+#     ]) :
+#   combo.key => combo }
 
-  name                  = each.value.container
-  storage_account_name  = azurerm_storage_account.xcutting[each.value.lz_key].name
-  container_access_type = "private"
-}
+#   name                  = each.value.container
+#   storage_account_name  = azurerm_storage_account.xcutting[each.value.lz_key].name
+#   container_access_type = "private"
+# }
 
 
 #Add raw storage container to raw storage account
