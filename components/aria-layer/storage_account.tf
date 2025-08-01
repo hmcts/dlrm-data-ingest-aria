@@ -176,3 +176,33 @@ resource "azurerm_storage_container" "xcutting" {
   storage_account_name  = azurerm_storage_account.xcutting[each.value.lz_key].name
   container_access_type = "private"
 }
+
+
+#Add raw storage container to raw storage account
+
+data "azurerm_storage_account" "raw" {
+  for_each = var.landing_zones
+
+  name                = "ingest${each.key}raw${var.env}"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+}
+
+
+resource "azurerm_storage_container" "landing" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for container in ["raw"] : {
+          key       = "${lz_key}-${container}"
+          lz_key    = lz_key
+          container = container
+        }
+      ]
+    ]) :
+    combo.key => combo
+  }
+
+  name                  = each.value.container
+  storage_account_name  = data.azurerm_storage_account.raw[each.value.lz_key].name
+  container_access_type = "private"
+}
