@@ -200,6 +200,7 @@ resource "azurerm_storage_container" "landing" {
       ]
     ]) :
     combo.key => combo
+    !(if var.env == "sbox")
   }
 
   name                  = each.value.container
