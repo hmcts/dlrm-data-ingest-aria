@@ -132,8 +132,6 @@ resource "azurerm_storage_container" "landing" {
   name                  = each.value.container
   storage_account_name  = data.azurerm_storage_account.landing[each.value.lz_key].name
   container_access_type = "private"
-
-
 }
 
 # # add in containers for external
@@ -188,7 +186,7 @@ data "azurerm_storage_account" "raw" {
 }
 
 
-resource "azurerm_storage_container" "landing" {
+resource "azurerm_storage_container" "raw" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
@@ -200,7 +198,7 @@ resource "azurerm_storage_container" "landing" {
       ]
     ]) :
     combo.key => combo
-    !(if var.env == "sbox")
+    if !(var.env == "sbox")
   }
 
   name                  = each.value.container
