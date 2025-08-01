@@ -1,10 +1,10 @@
-removed {
-  from = azurerm_storage_container.xcutting
+# removed {
+#   from = azurerm_storage_container.xcutting
 
-  lifecycle {
-    destroy = false
-  }
-}
+#   lifecycle {
+#     destroy = false
+#   }
+# }
 
 # removed {
 #   from = databricks_secret_scope.kv-scope-sbox02
