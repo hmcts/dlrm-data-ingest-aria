@@ -75,6 +75,20 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
   manage = true
 }
 
+#Active aria topic
+resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
+  for_each = azurerm_eventhub.aria_active_topic
+
+  name                = "aria_manage_sas"
+  namespace_name      = each.value.namespace_name
+  eventhub_name       = each.value.name
+  resource_group_name = each.value.resource_group_name
+
+  listen = true
+  send   = true
+  manage = true
+}
+
 output "eventhub_sas_keys" {
   value = {
     for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :
@@ -87,6 +101,8 @@ output "eventhub_sas_keys" {
   description = "Connection string for eventhubs to be stored in key vaults"
 
 }
+
+
 
 
 # data "azure_eventhub_namespace" "aria_eventhub_ns" {
