@@ -36,10 +36,10 @@ resource "azurerm_eventhub" "aria_active_topic" {
     for combination in flatten([
       for lz_key in keys(var.landing_zones) : [
         for suffix in var.eventhub_active_topic_suffixes : {
-          key     = "${lz_key}-active-${suffix}"
-          lz_key  = lz_key
-          name    = "evh-active-${suffix}-${lz_key}-uks-dlrm-01"
-          suffix  = suffix
+          key    = "${lz_key}-active-${suffix}"
+          lz_key = lz_key
+          name   = "evh-active-${suffix}-${lz_key}-uks-dlrm-01"
+          suffix = suffix
         }
       ]]
     ) : combination.key => combination

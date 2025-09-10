@@ -29,7 +29,7 @@ locals {
     "af-td",
     "af-active-ccd" # Active Azure Function APP
   ]
-  
+
 
   flattened_function_apps = flatten([
     for lz_key, lz in var.landing_zones : [ # 00, 02 in sbox
