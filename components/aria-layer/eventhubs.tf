@@ -30,6 +30,29 @@ resource "azurerm_eventhub" "aria_topic" {
   #   tags = module.ctags.common_tags
 }
 
+# Active EventHub Topics
+resource "azurerm_eventhub" "aria_active_topic" {
+  for_each = {
+    for combination in flatten([
+      for lz_key in keys(var.landing_zones) : [
+        for suffix in var.eventhub_active_topic_suffixes : {
+          key    = "${lz_key}-active-${suffix}"
+          lz_key = lz_key
+          name   = "evh-active-${suffix}-${lz_key}-uks-dlrm-01"
+          suffix = suffix
+        }
+      ]]
+    ) : combination.key => combination
+  }
+  name                = each.value.name
+  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
+  resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
+  partition_count     = 2
+  message_retention   = 1
+
+  #   tags = module.ctags.common_tags
+}
+
 
 data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   for_each = var.landing_zones
@@ -41,6 +64,20 @@ data "azurerm_eventhub_namespace_authorization_rule" "lz" {
 
 resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
   for_each = azurerm_eventhub.aria_topic
+
+  name                = "aria_manage_sas"
+  namespace_name      = each.value.namespace_name
+  eventhub_name       = each.value.name
+  resource_group_name = each.value.resource_group_name
+
+  listen = true
+  send   = true
+  manage = true
+}
+
+#Active aria topic
+resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
+  for_each = azurerm_eventhub.aria_active_topic
 
   name                = "aria_manage_sas"
   namespace_name      = each.value.namespace_name
@@ -64,6 +101,8 @@ output "eventhub_sas_keys" {
   description = "Connection string for eventhubs to be stored in key vaults"
 
 }
+
+
 
 
 # data "azure_eventhub_namespace" "aria_eventhub_ns" {
