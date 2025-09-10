@@ -10,6 +10,12 @@ variable "eventhub_topic_suffixes" {
   default     = ["pub", "ack", "dl"]
 }
 
+variable "eventhub_active_topic_suffixes" {
+  description = "list of suffixs to add per segment for an eventhub"
+  type        = list(string)
+  default     = ["pub", "ack"]
+}
+
 variable "ClientId" {
   type    = string
   default = ""
