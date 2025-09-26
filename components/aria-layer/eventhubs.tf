@@ -77,7 +77,7 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
 
 #Active aria topic
 resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
-  for_each = azurerm_eventhub.active_aria_topic
+  for_each = azurerm_eventhub.aria_active_topic
 
   name                = "aria_manage_sas"
   namespace_name      = each.value.namespace_name
