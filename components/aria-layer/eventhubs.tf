@@ -47,7 +47,7 @@ resource "azurerm_eventhub" "aria_active_topic" {
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
-  partition_count     = 2
+  partition_count     = 8
   message_retention   = 7
 
   #   tags = module.ctags.common_tags
