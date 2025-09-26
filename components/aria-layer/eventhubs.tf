@@ -108,3 +108,14 @@ output "eventhub_sas_keys" {
 #     name = "ingest${each.key}-integration-eventHubNamspace001-${var.env}"
 #     resource_group_name = ""
 # }
+
+
+import {
+  id = "/subscriptions/df72bb30-d6fb-47bd-82ee-5eb87473ddb3/resourceGroups/ingest01-main-sbox/providers/Microsoft.EventHub/namespaces/ingest01-integration-eventHubNamespace001-sbox/eventhubs/evh-active-ack-01-uks-dlrm-01"
+  to = azurerm_eventhub.aria_active_topic["01-ack"]
+}
+ 
+import {
+  id = "/subscriptions/df72bb30-d6fb-47bd-82ee-5eb87473ddb3/resourceGroups/ingest00-main-sbox/providers/Microsoft.EventHub/namespaces/ingest00-integration-eventHubNamespace001-sbox/eventhubs/evh-active-pub-00-uks-dlrm-01"
+  to = azurerm_eventhub.aria_active_topic["00-pub"]
+}
