@@ -31,14 +31,14 @@ resource "azurerm_eventhub" "aria_topic" {
 }
 
 #active EventHubs
-resource "azurerm_eventhub" "active_aria_topic" {
+resource "azurerm_eventhub" "aria_active_topic" {
   for_each = {
     for combination in flatten([
       for lz_key in keys(var.landing_zones) : [
         for suffix in ["ack", "pub"] : {
-          key    = "${lz_key}-${segment}-${suffix}"
+          key    = "${lz_key}-${suffix}"
           lz_key = lz_key
-          name   = "evh-active-${segment}-${suffix}-${lz_key}-uks-dlrm-01"
+          name   = "evh-active-${suffix}-${lz_key}-uks-dlrm-01"
           suffix = suffix
         }
       ]]
@@ -76,7 +76,7 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
 }
 
 #Active aria topic
-resource "azurerm_eventhub_authorization_rule" "active_aria_topic_sas" {
+resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
   for_each = azurerm_eventhub.active_aria_topic
 
   name                = "aria_manage_sas"
