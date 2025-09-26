@@ -24,7 +24,7 @@ resource "azurerm_eventhub" "aria_topic" {
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
-  partition_count     = 2
+  partition_count     = 8
   message_retention   = 1
 
   #   tags = module.ctags.common_tags
@@ -77,7 +77,7 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
 
 #Active aria topic
 resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
-  for_each = azurerm_eventhub.active_aria_topic
+  for_each = azurerm_eventhub.aria_active_topic
 
   name                = "aria_manage_sas"
   namespace_name      = each.value.namespace_name
