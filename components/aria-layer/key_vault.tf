@@ -62,6 +62,14 @@ resource "azurerm_key_vault_secret" "curated_sas_token" {
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
+resource "azurerm_key_vault_secret" "curated_azurefunction_sas_token" {
+  for_each = var.landing_zones
+
+  name         = "CURATED-AZUREFUNCTION-${var.env}-SAS-TOKEN"
+  value        = data.azurerm_storage_account_sas.curated[each.key].sas
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+}
+
 resource "azurerm_key_vault_secret" "eventhub_active_topic_secrets" {
   for_each = {
     for k, v in azurerm_eventhub_authorization_rule.aria_active_topic_sas :
