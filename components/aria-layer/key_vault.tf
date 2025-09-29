@@ -66,7 +66,7 @@ resource "azurerm_key_vault_secret" "curated_azurefunction_sas_token" {
   for_each = var.landing_zones
 
   name         = "CURATED-AZUREFUNCTION-${var.env}-SAS-TOKEN"
-  value        = data.azurerm_storage_account_sas.curated[each.key].sas
+  value        = replace(data.azurerm_storage_account_sas.curated[each.key].sas, "?", "") # Remove the ? from the start of the SAS token
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
