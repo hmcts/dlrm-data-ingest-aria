@@ -24,7 +24,7 @@ resource "azurerm_eventhub" "aria_topic" {
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
-  partition_count     = 16
+  partition_count     = 32 if each.value.segment == "td" else 16
   message_retention   = 1
 
   #   tags = module.ctags.common_tags
