@@ -57,8 +57,8 @@ resource "azurerm_eventhub" "aria_active_topic" {
 data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   for_each = var.landing_zones
 
-  name         = "RootManageSharedAccessKey"
-  namespace_id = data.azurerm_eventhub_namespace.lz[each.key].id
+  name                = "RootManageSharedAccessKey"
+  namespace_name      = "ingest${each.key}-integration-eventHubNamespace001-${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
 }
 
@@ -66,7 +66,7 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
   for_each = azurerm_eventhub.aria_topic
 
   name                = "aria_manage_sas"
-  namespace_id        = each.value.id
+  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   eventhub_name       = each.value.name
   resource_group_name = each.value.resource_group_name
 
@@ -80,7 +80,7 @@ resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
   for_each = azurerm_eventhub.aria_active_topic
 
   name                = "aria_manage_sas"
-  namespace_id        = each.value.id
+  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   eventhub_name       = each.value.name
   resource_group_name = each.value.resource_group_name
 
