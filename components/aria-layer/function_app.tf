@@ -15,7 +15,6 @@ resource "azurerm_service_plan" "example" {
   tags                         = module.ctags.common_tags
 }
 
-
 resource "azurerm_storage_account" "xcutting" {
   for_each = var.landing_zones
 
