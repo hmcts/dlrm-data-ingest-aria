@@ -80,7 +80,7 @@ resource "azurerm_key_vault_secret" "eventhub_active_topic_secrets" {
     }
   }
 
-  name         = "${each.value.name}-key"
+  name         = "${each.value.name}_key"
   value        = each.value.value
   key_vault_id = data.azurerm_key_vault.logging_vault[each.value.lz_key].id
 
