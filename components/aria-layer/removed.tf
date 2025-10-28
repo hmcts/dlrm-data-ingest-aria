@@ -14,10 +14,10 @@
 #   }
 # }
 
-removed {
-  from = azurerm_eventhub.aria_active_topic
+# removed {
+#   from = azurerm_eventhub.aria_active_topic
 
-  lifecycle {
-    destroy = true
-  }
-}
+#   lifecycle {
+#     destroy = true
+#   }
+# }
