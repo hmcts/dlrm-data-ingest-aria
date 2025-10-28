@@ -104,3 +104,4 @@ stages:
                   terraformInitSubscription: ${{ variables.terraformInitSubscription }}
                   product: ${{ variables.product }}
                   planCommandOptions: -compact-warnings
+                  savePlanResultsServiceConnection: DTS-CFTPTL-INTSVC-DLRM
