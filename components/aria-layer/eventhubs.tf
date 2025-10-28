@@ -31,27 +31,27 @@ resource "azurerm_eventhub" "aria_topic" {
 }
 
 #active EventHubs
-# resource "azurerm_eventhub" "aria_active_topic" {
-#   for_each = {
-#     for combination in flatten([
-#       for lz_key in keys(var.landing_zones) : [
-#         for suffix in ["res", "pub"] : {
-#           key    = "${lz_key}-${suffix}"
-#           lz_key = lz_key
-#           name   = "evh-active-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
-#           suffix = suffix
-#         }
-#       ]]
-#     ) : combination.key => combination
-#   }
-#   name                = each.value.name
-#   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
-#   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
-#   partition_count     = 8
-#   message_retention   = 7
+resource "azurerm_eventhub" "aria_active_topic" {
+  for_each = {
+    for combination in flatten([
+      for lz_key in keys(var.landing_zones) : [
+        for suffix in ["res", "pub"] : {
+          key    = "${lz_key}-${suffix}"
+          lz_key = lz_key
+          name   = "evh-active-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
+          suffix = suffix
+        }
+      ]]
+    ) : combination.key => combination
+  }
+  name                = each.value.name
+  namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
+  resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
+  partition_count     = 8
+  message_retention   = 7
 
-#   #   tags = module.ctags.common_tags
-# }
+  #   tags = module.ctags.common_tags
+}
 
 
 data "azurerm_eventhub_namespace_authorization_rule" "lz" {
@@ -76,18 +76,18 @@ resource "azurerm_eventhub_authorization_rule" "aria_topic_sas" {
 }
 
 #Active aria topic
-# resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
-#   for_each = azurerm_eventhub.aria_active_topic
+resource "azurerm_eventhub_authorization_rule" "aria_active_topic_sas" {
+  for_each = azurerm_eventhub.aria_active_topic
 
-#   name                = "aria_manage_sas"
-#   namespace_name      = each.value.namespace_name
-#   eventhub_name       = each.value.name
-#   resource_group_name = each.value.resource_group_name
+  name                = "aria_manage_sas"
+  namespace_name      = each.value.namespace_name
+  eventhub_name       = each.value.name
+  resource_group_name = each.value.resource_group_name
 
-#   listen = true
-#   send   = true
-#   manage = true
-# }
+  listen = true
+  send   = true
+  manage = true
+}
 
 output "eventhub_sas_keys" {
   value = {
