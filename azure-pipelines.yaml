@@ -91,10 +91,7 @@ stages:
             displayName: Terraform Plan Apply
             dependsOn: waitForValidation
             pool:
-              ${{ if eq(deployment.environment, 'sbox') }}:
-                name: hmcts-sds-ptlsbox
-              ${{ else }}:
-                name: hmcts-sds-ptl
+              name: hmcts-sds-ptl
             timeoutInMinutes: ${{ variables.timeoutInMinutes }}
 
             steps:

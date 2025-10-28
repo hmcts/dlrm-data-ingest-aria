@@ -35,10 +35,10 @@ resource "azurerm_eventhub" "aria_active_topic" {
   for_each = {
     for combination in flatten([
       for lz_key in keys(var.landing_zones) : [
-        for suffix in ["ack", "pub"] : {
+        for suffix in ["res", "pub"] : {
           key    = "${lz_key}-${suffix}"
           lz_key = lz_key
-          name   = "evh-active-${suffix}-${lz_key}-uks-dlrm-01"
+          name   = "evh-active-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
           suffix = suffix
         }
       ]]

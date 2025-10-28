@@ -6,13 +6,13 @@ resource "azurerm_service_plan" "example" {
     "${app.lz_key}-${app.base_name}" => app
   }
 
-  name                = each.value.full_name
-  resource_group_name = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
-  location            = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
-  os_type             = "Linux"
-  sku_name            = "EP1"
-
-  tags = module.ctags.common_tags
+  name                         = each.value.full_name
+  resource_group_name          = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].name
+  location                     = data.azurerm_resource_group.lz["ingest${each.value.lz_key}-main-${var.env}"].location
+  os_type                      = "Linux"
+  sku_name                     = "EP1"
+  maximum_elastic_worker_count = 50
+  tags                         = module.ctags.common_tags
 }
 
 resource "azurerm_storage_account" "xcutting" {
