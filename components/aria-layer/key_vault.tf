@@ -37,22 +37,22 @@ resource "azurerm_key_vault_secret" "eh_root_key" {
   key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
 }
 
-# resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
-#   for_each = {
-#     for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :
-#     k => {
-#       name   = v.eventhub_name
-#       value  = v.primary_connection_string
-#       lz_key = split("-", k)[0]
-#     }
-#   }
+resource "azurerm_key_vault_secret" "eventhub_topic_secrets" {
+  for_each = {
+    for k, v in azurerm_eventhub_authorization_rule.aria_topic_sas :
+    k => {
+      name   = v.eventhub_name
+      value  = v.primary_connection_string
+      lz_key = split("-", k)[0]
+    }
+  }
 
-#   name         = "${each.value.name}-key"
-#   value        = each.value.value
-#   key_vault_id = data.azurerm_key_vault.logging_vault[each.value.lz_key].id
+  name         = "${each.value.name}-key"
+  value        = each.value.value
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.value.lz_key].id
 
-#   tags = module.ctags.common_tags
-# }
+  tags = module.ctags.common_tags
+}
 
 resource "azurerm_key_vault_secret" "curated_sas_token" {
   for_each = var.landing_zones
