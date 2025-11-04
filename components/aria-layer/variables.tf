@@ -1,7 +1,7 @@
 variable "segments" {
   description = "llist of segment alias for eventhubs"
   type        = list(string)
-  default     = ["sbl", "joh", "aplfta", "apluta", "aplfpa", "td"]
+  default     = ["bl", "sbl", "joh", "aplfta", "apluta", "aplfpa", "td"]
 }
 
 variable "eventhub_topic_suffixes" {
