@@ -30,7 +30,7 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
         for func_key, func in azurerm_linux_function_app.example : {
-          key      = "${lz_key}-${app}"
+          key      = "${lz_key}-${func}"
           lz_key   = lz_key
           func_key = func_key
         }
@@ -48,7 +48,7 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_contributor" {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
         for func_key, func in azurerm_linux_function_app.example : {
-          key     = "${lz_key}-${app}"
+          key     = "${lz_key}-${func}"
           lz_key  = lz_key
           func_key = func_key
         }
