@@ -29,10 +29,10 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
-        for app in azurerm_linux_function_app.example : {
-          key     = "${lz_key}-${app}"
-          lz_key  = lz_key
-          app_key = app_key
+        for func_key, func in azurerm_linux_function_app.example : {
+          key      = "${lz_key}-${app}"
+          lz_key   = lz_key
+          func_key = func_key
         }
       ]
     ]) : combo.key => combo
@@ -40,17 +40,17 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
 
   scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
   role_definition_name = "Storage Blob Data Reader"
-  principal_id         = azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
+  principal_id         = azurerm_linux_function_app.example[each.value.func_key].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "xcutting_funcapp_blob_contributor" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
-        for app in azurerm_linux_function_app.example : {
+        for func_key, func in azurerm_linux_function_app.example : {
           key     = "${lz_key}-${app}"
           lz_key  = lz_key
-          app_key = app_key
+          func_key = func_key
         }
       ]
     ]) : combo.key => combo
@@ -58,7 +58,7 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_contributor" {
 
   scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
+  principal_id         = azurerm_linux_function_app.example[each.value.func_key].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "rbac_write" {
