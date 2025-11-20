@@ -20,10 +20,45 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
   depends_on = [azurerm_linux_function_app.example]
 }
 
-
 # Below assigns RBAC permissions to use the Service Principle (object_id) access to Contribute/Own permissions to the storage accounts highlighted in locals below.
 locals {
   storage_accounts = ["landing", "curated", "external", "xcutting", "raw"]
+}
+
+resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for app in azurerm_linux_function_app.example : {
+          key     = "${lz_key}-${app}"
+          lz_key  = lz_key
+          app_key = app_key
+        }
+      ]
+    ]) : combo.key => combo
+  }
+
+  scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
+  role_definition_name = "Storage Blob Data Reader"
+  principal_id         = azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
+  for_each = {
+    for combo in flatten([
+      for lz_key, _ in var.landing_zones : [
+        for app in azurerm_linux_function_app.example : {
+          key     = "${lz_key}-${app}"
+          lz_key  = lz_key
+          app_key = app_key
+        }
+      ]
+    ]) : combo.key => combo
+  }
+
+  scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "rbac_write" {
@@ -151,3 +186,25 @@ resource "azurerm_role_assignment" "rbac_account" {
   role_definition_name = "Storage Account Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }
+
+# data "azurerm_linux_function_app" "example" {
+#   for_each = azurerm_linux_function_app.example
+
+#   name                = each.value.name
+#   resource_group_name = each.value.resource_group_name
+# }
+
+# resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
+#   for_each = {
+#     for lz_key, _ in var.landing_zones :
+#     for app_key, app in data.azurerm_linux_function_app.example :
+#     "${lz_key}-${app_key}" => {
+#       lz_key   = lz_key
+#       app_key  = app_key
+#     }
+#   }
+
+#   scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
+#   role_definition_name = "Storage Blob Data Reader"
+#   principal_id         = data.azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
+# }
