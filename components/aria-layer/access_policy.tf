@@ -194,6 +194,7 @@ resource "azurerm_role_assignment" "rbac_account" {
 #   resource_group_name = each.value.resource_group_name
 # }
 
+
 # resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
 #   for_each = {
 #     for lz_key, _ in var.landing_zones :
