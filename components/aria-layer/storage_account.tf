@@ -161,7 +161,7 @@ resource "azurerm_storage_container" "xcutting" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
-        for container in ["db-ack-checkpoint", "db-rsp-checkpoint"] : {
+        for container in ["db-ack-checkpoint", "db-rsp-checkpoint", "af-idempotency"] : {
           key       = "${lz_key}-${container}"
           lz_key    = lz_key
           container = container
