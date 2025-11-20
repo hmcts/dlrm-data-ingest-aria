@@ -43,7 +43,7 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
   principal_id         = azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
 }
 
-resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
+resource "azurerm_role_assignment" "xcutting_funcapp_blob_contributor" {
   for_each = {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
