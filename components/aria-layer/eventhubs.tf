@@ -31,6 +31,8 @@ resource "azurerm_eventhub" "aria_topic" {
 }
 
 #active EventHubs
+## update sbox00, stg00 with conditional count prameter. this should not update the resource as the conditions are tf metadata
+# update tf name and create inverse of the resource eg stg01
 resource "azurerm_eventhub" "aria_active_topic" {
   for_each = {
     for combination in flatten([

@@ -48,8 +48,8 @@ resource "azurerm_role_assignment" "xcutting_funcapp_blob_contributor" {
     for combo in flatten([
       for lz_key, _ in var.landing_zones : [
         for func_key, func in azurerm_linux_function_app.example : {
-          key     = "${lz_key}-${func_key}"
-          lz_key  = lz_key
+          key      = "${lz_key}-${func_key}"
+          lz_key   = lz_key
           func_key = func_key
         }
       ]
@@ -187,25 +187,3 @@ resource "azurerm_role_assignment" "rbac_account" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-# data "azurerm_linux_function_app" "example" {
-#   for_each = azurerm_linux_function_app.example
-
-#   name                = each.value.name
-#   resource_group_name = each.value.resource_group_name
-# }
-
-
-# resource "azurerm_role_assignment" "xcutting_funcapp_blob_reader" {
-#   for_each = {
-#     for lz_key, _ in var.landing_zones :
-#     for app_key, app in data.azurerm_linux_function_app.example :
-#     "${lz_key}-${app_key}" => {
-#       lz_key   = lz_key
-#       app_key  = app_key
-#     }
-#   }
-
-#   scope                = azurerm_storage_account.xcutting[each.value.lz_key].id
-#   role_definition_name = "Storage Blob Data Reader"
-#   principal_id         = data.azurerm_linux_function_app.example[each.value.app_key].identity[0].principal_id
-# }

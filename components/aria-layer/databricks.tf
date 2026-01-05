@@ -129,17 +129,17 @@ resource "databricks_dbfs_file" "config_file_sbox00" {
   path = "/configs/config.json"
 }
 
-resource "databricks_dbfs_file" "config_file_sbox01" {
-  count    = var.env == "sbox" ? 1 : 0
-  provider = databricks.sbox-01
+# resource "databricks_dbfs_file" "config_file_sbox01" {
+#   count    = var.env == "sbox" ? 1 : 0
+#   provider = databricks.sbox-01
 
-  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-    env    = "sbox"
-    lz_key = "01"
-  }))
+#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+#     env    = "sbox"
+#     lz_key = "01"
+#   }))
 
-  path = "/configs/config.json"
-}
+#   path = "/configs/config.json"
+# }
 
 resource "databricks_dbfs_file" "config_file_stg00" {
   count    = var.env == "stg" ? 1 : 0
