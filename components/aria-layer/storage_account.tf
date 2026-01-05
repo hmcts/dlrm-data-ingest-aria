@@ -126,7 +126,7 @@ resource "azurerm_storage_container" "landing" {
       ]
     ]) :
     combo.key => combo
-    if !(var.env == "sbox" && (combo.lz_key == "00" || combo.lz_key == "01"))
+    if !(var.env == "sbox" && combo.lz_key == "00") #|| combo.lz_key == "01"
   }
 
   name                  = each.value.container
@@ -149,7 +149,7 @@ resource "azurerm_storage_container" "external" {
     lz_key => {
       lz_key = lz_key
     }
-    if lz_key != "00" && lz_key != "01"
+    if lz_key != "00" #&& lz_key != "01"
   }
 
   name                  = "external-csv"
