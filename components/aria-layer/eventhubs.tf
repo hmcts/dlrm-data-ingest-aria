@@ -36,7 +36,6 @@ resource "azurerm_eventhub" "aria_topic" {
 
 #active EventHubs
 resource "azurerm_eventhub" "aria_active_topic" {
-  count = var.landing_zones == "00" ? 1 : 0
   for_each = {
     for combination in flatten([
       for lz_key in keys(var.landing_zones) : [
