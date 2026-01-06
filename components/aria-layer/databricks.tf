@@ -77,6 +77,17 @@ provider "databricks" {
   skip_verify = var.env != "stg"
 }
 
+provider "databricks" {
+  alias                       = "stg-01"
+  azure_workspace_resource_id = try(data.azurerm_databricks_workspace.db_ws["stg-01"].id, null)
+  host                        = try(data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_url, null)
+
+  azure_client_id     = data.azurerm_client_config.current.client_id
+  azure_client_secret = data.azurerm_key_vault_secret.client_secret.value
+  azure_tenant_id     = data.azurerm_client_config.current.tenant_id
+
+  skip_verify = var.env != "stg"
+}
 
 provider "databricks" {
   alias                       = "prod-00"
@@ -90,32 +101,7 @@ provider "databricks" {
   skip_verify = var.env != "prod"
 }
 
-resource "databricks_secret_scope" "kv-scope-sbox00" {
-  count    = var.env == "sbox" ? 1 : 0
-  provider = databricks.sbox-00
-  name     = "ingest00-meta002-sbox"
-
-  keyvault_metadata {
-    resource_id = data.azurerm_key_vault.logging_vault["00"].id
-    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
-  }
-}
-
-# resource "databricks_secret_scope" "kv-scope-sbox01" {
-#   count    = var.env == "sbox" ? 1 : 0
-#   provider = databricks.sbox-01
-#   name     = "ingest01-meta002-sbox"
-
-#   keyvault_metadata {
-#     resource_id = data.azurerm_key_vault.logging_vault["01"].id
-#     dns_name    = data.azurerm_key_vault.logging_vault["01"].vault_uri
-#   }
-# }
-
-
-
-# Config file specifically for sbox
-
+##kv scope and config file for sbox00
 resource "databricks_dbfs_file" "config_file_sbox00" {
   count = var.env == "sbox" ? 1 : 0
 
@@ -129,18 +115,18 @@ resource "databricks_dbfs_file" "config_file_sbox00" {
   path = "/configs/config.json"
 }
 
-# resource "databricks_dbfs_file" "config_file_sbox01" {
-#   count    = var.env == "sbox" ? 1 : 0
-#   provider = databricks.sbox-01
+resource "databricks_secret_scope" "kv-scope-sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+  name     = "ingest00-meta002-sbox"
 
-#   content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
-#     env    = "sbox"
-#     lz_key = "01"
-#   }))
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["00"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["00"].vault_uri
+  }
+}
 
-#   path = "/configs/config.json"
-# }
-
+##kv scope and config file for stg00
 resource "databricks_dbfs_file" "config_file_stg00" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
@@ -153,8 +139,6 @@ resource "databricks_dbfs_file" "config_file_stg00" {
   path = "/configs/config.json"
 }
 
-## access policies and vnets for azure functions
-
 resource "databricks_secret_scope" "kv-scope-stg00" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
@@ -166,6 +150,31 @@ resource "databricks_secret_scope" "kv-scope-stg00" {
   }
 }
 
+##kv scope and config file for stg01
+resource "databricks_dbfs_file" "config_file_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  content_base64 = base64encode(templatefile("${path.module}/config.json.tmpl", {
+    env    = "stg"
+    lz_key = "01"
+  }))
+
+  path = "/configs/config.json"
+}
+
+resource "databricks_secret_scope" "kv-scope-stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+  name     = "ingest01-meta002-stg"
+
+  keyvault_metadata {
+    resource_id = data.azurerm_key_vault.logging_vault["01"].id
+    dns_name    = data.azurerm_key_vault.logging_vault["01"].vault_uri
+  }
+}
+
+##kv scope and config file for prod00
 resource "databricks_secret_scope" "kv-scope-prod00" {
 
   count    = var.env == "prod" ? 1 : 0
