@@ -20,7 +20,10 @@ resource "azurerm_eventhub" "aria_topic" {
         ]
       ]]
     ) : combination.key => combination
+
+    if combination.lz_key != "01"
   }
+
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
@@ -28,10 +31,12 @@ resource "azurerm_eventhub" "aria_topic" {
   message_retention   = each.value.segment == "td" ? 5 : 1
 
   #   tags = module.ctags.common_tags
-}
+} #      if !(var.env == "sbox" && combo.lz_key == "00") #|| combo.lz_key == "01"
+#       count = var.landing_zones == "00" ? 1 : 0
 
 #active EventHubs
 resource "azurerm_eventhub" "aria_active_topic" {
+  count = var.landing_zones == "00" ? 1 : 0
   for_each = {
     for combination in flatten([
       for lz_key in keys(var.landing_zones) : [
