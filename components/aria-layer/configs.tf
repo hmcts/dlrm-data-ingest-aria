@@ -11,7 +11,7 @@ resource "azurerm_storage_blob" "config_json" {
   for_each = {
     for k, v in var.landing_zones :
     k => v
-    if k != "01"
+    # if k != "01"
   }
 
   name = "configs/env_config.json"
