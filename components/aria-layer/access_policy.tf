@@ -20,6 +20,16 @@ resource "azurerm_key_vault_access_policy" "example-principal" {
   depends_on = [azurerm_linux_function_app.example]
 }
 
+resource "azurerm_role_assignment" "kv_secrets_user" {
+  for_each = var.landing_zones
+
+  scope                = data.azurerm_key_vault.logging_vault[each.key].id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = data.azurerm_client_config.current.object_id
+
+  depends_on = [azurerm_linux_function_app.example]
+}
+
 # Below assigns RBAC permissions to use the Service Principle (object_id) access to Contribute/Own permissions to the storage accounts highlighted in locals below.
 locals {
   storage_accounts = ["landing", "curated", "external", "xcutting", "raw"]
