@@ -57,6 +57,21 @@ resource "azurerm_eventhub" "aria_active_topic" {
   #   tags = module.ctags.common_tags
 }
 
+#active case link EventHubs
+module "active_case_link_eventhubs" {
+  source = "../../modules/active-eventhubs"
+
+  env = var.env
+  evh_name = "active-caselink"  # "evh-${var.evh_name}-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
+  landing_zones = {
+    for lz_key in keys(var.landing_zones) : lz_key => {
+      eventhub_namespace_name                = data.azurerm_eventhub_namespace.lz[lz_key].name
+      eventhub_namespace_resource_group_name = data.azurerm_eventhub_namespace.lz[lz_key].resource_group_name
+      key_vault_id                           = data.azurerm_key_vault.logging_vault[lz_key].id
+    }
+  }
+  tags = module.ctags.common_tags
+}
 
 data "azurerm_eventhub_namespace_authorization_rule" "lz" {
   for_each = var.landing_zones
