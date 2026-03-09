@@ -29,6 +29,8 @@ resource "azurerm_storage_account" "xcutting" {
     default_action             = "Allow" #Allow
     virtual_network_subnet_ids = []      #data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id] 
   }
+
+  tags = module.ctags.common_tags
 }
 
 resource "azurerm_linux_function_app" "example" {
