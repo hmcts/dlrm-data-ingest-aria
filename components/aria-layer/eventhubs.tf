@@ -61,8 +61,8 @@ resource "azurerm_eventhub" "aria_active_topic" {
 module "active_case_link_eventhubs" {
   source = "../../modules/active-eventhubs"
 
-  env = var.env
-  evh_name = "active-caselink"  # "evh-${var.evh_name}-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
+  env      = var.env
+  evh_name = "active-caselink" # "evh-${var.evh_name}-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
   landing_zones = {
     for lz_key in keys(var.landing_zones) : lz_key => {
       eventhub_namespace_name                = data.azurerm_eventhub_namespace.lz[lz_key].name
