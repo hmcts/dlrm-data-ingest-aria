@@ -30,6 +30,16 @@ resource "azurerm_storage_account" "xcutting" {
     virtual_network_subnet_ids = []      #data.azurerm_subnet.lz["ingest${each.key}-data-product-001-${var.env}"].id] 
   }
 
+  blob_properties {
+    delete_retention_policy {
+      days = 365
+    }
+
+    container_delete_retention_policy {
+      days = 7
+    }
+  }
+
   tags = module.ctags.common_tags
 }
 
