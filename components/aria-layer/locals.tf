@@ -27,8 +27,9 @@ locals {
     "af-bails",
     "af-joh",
     "af-td",
-    "af-active-ccd",         # Active Azure Function APP
-    "af-active-caselink-ccd" # Active Azure Function APP for case linking
+    "af-active-ccd",           # Active Azure Function APP
+    "af-active-caselink-ccd",  # Active Azure Function APP for case linking
+    "af-active-cdam"           # Active Azure Function APP for CDAM
   ]
 
 
