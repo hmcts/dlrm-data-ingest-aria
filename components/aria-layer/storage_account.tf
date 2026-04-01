@@ -51,8 +51,8 @@ data "azurerm_storage_account_sas" "curated" {
     file  = false
   }
 
-  start  = "2025-03-21T00:00:00Z"
-  expiry = "2026-03-21T00:00:00Z"
+  start  = "2026-03-21T00:00:00Z"
+  expiry = "2027-12-31T23:59:59Z"
 
   permissions {
     read    = true
