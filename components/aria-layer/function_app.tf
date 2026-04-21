@@ -77,6 +77,8 @@ resource "azurerm_linux_function_app" "example" {
     type = "SystemAssigned"
   }
 
+  https_only = true
+
   site_config {
     application_stack {
       python_version = "3.11"

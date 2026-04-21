@@ -27,7 +27,7 @@ resource "azurerm_eventhub" "aria_topic" {
   name                = each.value.name
   namespace_name      = data.azurerm_eventhub_namespace.lz[each.value.lz_key].name
   resource_group_name = data.azurerm_eventhub_namespace.lz[each.value.lz_key].resource_group_name
-  partition_count     = each.value.segment == "td" ? 32 : 16
+  partition_count     = each.value.segment == "td" ? 32 : 8
   message_retention   = each.value.segment == "td" ? 5 : 1
 
   #   tags = module.ctags.common_tags
@@ -77,8 +77,8 @@ module "active_case_link_eventhubs" {
 module "active_cdam_eventhubs" {
   source = "../../modules/active-eventhubs"
 
-  env = var.env
-  evh_name = "active-cdam"  # "evh-${var.evh_name}-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
+  env      = var.env
+  evh_name = "active-cdam" # "evh-${var.evh_name}-${suffix}-${var.env}-${lz_key}-uks-dlrm-01"
   landing_zones = {
     for lz_key in keys(var.landing_zones) : lz_key => {
       eventhub_namespace_name                = data.azurerm_eventhub_namespace.lz[lz_key].name
