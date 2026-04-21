@@ -8,7 +8,7 @@ locals {
     ]
   ])
 
-  subnets = ["data-bricks-private", "data-bricks-product-private", "data-bricks-product-public", "data-bricks-public", "data-integration-001", "data-integration-002", "data-product-001", "data-product-002", "services-mysql", "services"]
+  subnets = ["data-bricks-private", "data-bricks-product-private", "data-bricks-product-public", "data-bricks-public", "data-integration-001", "data-integration-002", "data-product-001", "data-product-002", "services"] #"services-mysql"
   flattened_subnets = flatten([
     for lz_key, lz in var.landing_zones : [
       for subnet in local.subnets : {
