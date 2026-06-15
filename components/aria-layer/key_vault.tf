@@ -146,8 +146,8 @@ resource "azurerm_key_vault_secret" "client_secret_copy" {
 # Read IA KV depending on environment
 data "azurerm_key_vault" "ia_kv" {
   provider            = azurerm.ia-vault
-  name                = "ia-${var.env}"
-  resource_group_name = "ia-${var.env}"
+  name                = "ia-${contains(["sbox", "stg"], var.env) ? "aat" : var.env}"
+  resource_group_name = "ia-${contains(["sbox", "stg"], var.env) ? "aat" : var.env}"
 }
 
 data "azurerm_key_vault_secret" "ia_system_username" {
