@@ -16,6 +16,11 @@ variable "eventhub_active_topic_suffixes" {
   default     = ["pub", "ack"]
 }
 
+variable "ia_vault_subscription" {
+  description = "Subscription ID for the subscription the IA vault to access for System user secrets is stored in."
+  type        = string
+}
+
 variable "ClientId" {
   type    = string
   default = ""

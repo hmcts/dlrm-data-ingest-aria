@@ -23,6 +23,11 @@ provider "azurerm" {
 }
 
 provider "azurerm" {
+  alias = "ia-vault"
   features {}
+  subscription_id = var.ia_vault_subscription
 }
 
+provider "azurerm" {
+  features {}
+}

@@ -142,3 +142,42 @@ resource "azurerm_key_vault_secret" "client_secret_copy" {
 
   tags = module.ctags.common_tags
 }
+
+# Read IA KV depending on environment
+data "azurerm_key_vault" "ia_kv" {
+  provider            = azurerm.ia-vault
+  name                = "ia-${contains(["sbox", "stg"], var.env) ? "aat" : var.env}"
+  resource_group_name = "ia-${contains(["sbox", "stg"], var.env) ? "aat" : var.env}"
+}
+
+data "azurerm_key_vault_secret" "ia_system_username" {
+  provider     = azurerm.ia-vault
+  name         = "system-username"
+  key_vault_id = data.azurerm_key_vault.ia_kv.id
+}
+
+data "azurerm_key_vault_secret" "ia_system_password" {
+  provider     = azurerm.ia-vault
+  name         = "system-password"
+  key_vault_id = data.azurerm_key_vault.ia_kv.id
+}
+
+resource "azurerm_key_vault_secret" "ia_system_username_copy" {
+  for_each = var.landing_zones
+
+  name         = "system-username"
+  value        = data.azurerm_key_vault_secret.ia_system_username.value
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
+}
+
+resource "azurerm_key_vault_secret" "ia_system_password_copy" {
+  for_each = var.landing_zones
+
+  name         = "system-password"
+  value        = data.azurerm_key_vault_secret.ia_system_password.value
+  key_vault_id = data.azurerm_key_vault.logging_vault[each.key].id
+
+  tags = module.ctags.common_tags
+}

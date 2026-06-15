@@ -8,3 +8,5 @@ landing_zones = {
     use_microsoft_ip_kit_structure = true
   }
 }
+
+ia_vault_subscription = "1c4f0704-a29e-403d-b719-b90c34ef14c9"
