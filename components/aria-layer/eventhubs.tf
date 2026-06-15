@@ -3,6 +3,7 @@ data "azurerm_eventhub_namespace" "lz" {
 
   name                = "ingest${each.key}-integration-eventHubNamespace001-${var.env}"
   resource_group_name = "ingest${each.key}-main-${var.env}"
+  capacity            = 2
 }
 
 resource "azurerm_eventhub" "aria_topic" {
