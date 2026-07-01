@@ -219,8 +219,6 @@ resource "databricks_instance_pool" "config_file_stg00" {
   max_capacity                          = var.max_capacity
   node_type_id                          = var.node_type_id
   idle_instance_autotermination_minutes = 60
-
-  path = "/configs/config.json"
 }
 
 resource "databricks_instance_pool" "config_file_stg01" {
@@ -232,8 +230,6 @@ resource "databricks_instance_pool" "config_file_stg01" {
   max_capacity                          = var.max_capacity
   node_type_id                          = var.node_type_id
   idle_instance_autotermination_minutes = 60
-
-  path = "/configs/config.json"
 }
 
 resource "databricks_instance_pool" "config_file_prod00" {
@@ -245,6 +241,4 @@ resource "databricks_instance_pool" "config_file_prod00" {
   max_capacity                          = var.max_capacity
   node_type_id                          = var.node_type_id
   idle_instance_autotermination_minutes = 60
-
-  path = "/configs/config.json"
 }
