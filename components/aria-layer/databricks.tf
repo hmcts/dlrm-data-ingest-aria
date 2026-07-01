@@ -204,7 +204,7 @@ resource "databricks_instance_pool" "config_file_sbox00" {
   provider = databricks.sbox-00
 
   instance_pool_name                    = "aria-pool-${var.env}00"
-  min_idle_instances                    = 0
+  min_idle_instances                    = var.min_capacity
   max_capacity                          = var.max_capacity
   node_type_id                          = var.node_type_id
   idle_instance_autotermination_minutes = 60

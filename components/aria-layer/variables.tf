@@ -47,3 +47,9 @@ variable "max_capacity" {
   type        = number
   default     = 27
 }
+
+variable "min_capacity" {
+  description = "Min total instances in the pool"
+  type        = number
+  default     = 27
+}
