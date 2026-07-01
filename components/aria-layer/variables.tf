@@ -35,3 +35,15 @@ variable "TenantURL" {
   type    = string
   default = ""
 }
+
+variable "node_type_id" {
+  description = "VM SKU for pool nodes"
+  type        = string
+  default     = "Standard_D8ds_v5"
+}
+
+variable "max_capacity" {
+  description = "Max total instances in the pool"
+  type        = number
+  default     = 27
+}

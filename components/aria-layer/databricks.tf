@@ -198,3 +198,53 @@ resource "databricks_dbfs_file" "config_file_prod00" {
 
   path = "/configs/config.json"
 }
+
+resource "databricks_instance_pool" "config_file_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  instance_pool_name                    = "aria-pool-${var.env}00"
+  min_idle_instances                    = 0
+  max_capacity                          = var.max_capacity
+  node_type_id                          = var.node_type_id
+  idle_instance_autotermination_minutes = 60
+}
+
+resource "databricks_instance_pool" "config_file_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  instance_pool_name                    = "aria-pool-${var.env}00"
+  min_idle_instances                    = 0
+  max_capacity                          = var.max_capacity
+  node_type_id                          = var.node_type_id
+  idle_instance_autotermination_minutes = 60
+
+  path = "/configs/config.json"
+}
+
+resource "databricks_instance_pool" "config_file_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  instance_pool_name                    = "aria-pool-${var.env}01"
+  min_idle_instances                    = 0
+  max_capacity                          = var.max_capacity
+  node_type_id                          = var.node_type_id
+  idle_instance_autotermination_minutes = 60
+
+  path = "/configs/config.json"
+}
+
+resource "databricks_instance_pool" "config_file_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  instance_pool_name                    = "aria-pool-${var.env}00"
+  min_idle_instances                    = 0
+  max_capacity                          = var.max_capacity
+  node_type_id                          = var.node_type_id
+  idle_instance_autotermination_minutes = 60
+
+  path = "/configs/config.json"
+}
