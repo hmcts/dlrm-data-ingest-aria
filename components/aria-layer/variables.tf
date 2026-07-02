@@ -51,5 +51,5 @@ variable "max_capacity" {
 variable "min_capacity" {
   description = "Min total instances in the pool"
   type        = number
-  default     = 26
+  default     = 0
 }
