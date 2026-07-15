@@ -133,7 +133,7 @@ resource "databricks_group_member" "stg00" {
 
   for_each = data.databricks_user.aria_uc_admins
 
-  group_id  = databricks_group.stg00.id
+  group_id  = databricks_group.aria_uc_admins_stg00.id
   member_id = each.value.id
 }
 
@@ -142,7 +142,7 @@ resource "databricks_group_member" "stg01" {
 
   for_each = data.databricks_user.aria_uc_admins
 
-  group_id  = databricks_group.stg01.id
+  group_id  = databricks_group.aria_uc_admins_stg01.id
   member_id = each.value.id
 }
 
