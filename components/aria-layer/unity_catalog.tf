@@ -62,7 +62,7 @@ resource "databricks_group" "aria_uc_admins_prod00" {
   display_name = "aria-admins-${var.env}00"
 }
 
-resource "databricks_storage_credential" "external" {
+resource "databricks_storage_credential" "curated" {
   for_each = var.landing_zones
 
   name = "aria_databricks_catalogue_${var.env}${each.key}"
@@ -75,7 +75,7 @@ resource "databricks_storage_credential" "external" {
 resource "databricks_grants" "storage_cred_grants" {
   for_each = var.landing_zones
 
-  storage_credential = databricks_storage_credential.external[each.key].id
+  storage_credential = databricks_storage_credential.curated[each.key].id
 
   grant {
     principal  = local.uc_admin_groups["${var.env}${each.key}"]
@@ -107,7 +107,7 @@ resource "databricks_external_location" "gold" {
 resource "databricks_grants" "storage_container_grants" {
   for_each = var.landing_zones
 
-  storage_credential = databricks_storage_credential.external[each.key].id
+  storage_credential = databricks_storage_credential.curated[each.key].id
 
   grant {
     principal  = local.uc_admin_groups["${var.env}${each.key}"]
