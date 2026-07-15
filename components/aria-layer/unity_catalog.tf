@@ -531,3 +531,45 @@ resource "databricks_group_member" "prod00" {
   group_id  = databricks_group.aria_uc_admins_prod00[0].id
   member_id = each.value.id
 }
+
+##give service principal permisisons to create external tables and credentials
+
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.sbox-00
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+  }
+}
+
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.stg-00
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+  }
+}
+
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.stg-01
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+  }
+}
+
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.prod-00
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+  }
+}
