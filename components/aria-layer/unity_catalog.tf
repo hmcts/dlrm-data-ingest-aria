@@ -119,6 +119,14 @@ data "databricks_user" "aria_uc_admins_sbox00" {
   user_name = each.value
 }
 
+data "databricks_user" "aria_uc_admins_sbox00" {
+  provider = databricks.sbox-00
+
+  for_each = var.env == "sbox" ? toset(var.aria_uc_admins) : {}
+
+  user_name = each.value
+}
+
 resource "databricks_group_member" "sbox00" {
   provider = databricks.sbox-00
 
@@ -131,7 +139,7 @@ resource "databricks_group_member" "sbox00" {
 data "databricks_user" "aria_uc_admins_stg00" {
   provider = databricks.stg-00
 
-  for_each = toset(var.aria_uc_admins)
+  for_each = var.env == "stg" ? toset(var.aria_uc_admins) : {}
 
   user_name = each.value
 }
@@ -148,7 +156,7 @@ resource "databricks_group_member" "stg00" {
 data "databricks_user" "aria_uc_admins_stg01" {
   provider = databricks.stg-01
 
-  for_each = toset(var.aria_uc_admins)
+  for_each = var.env == "stg" ? toset(var.aria_uc_admins) : {}
 
   user_name = each.value
 }
@@ -165,7 +173,7 @@ resource "databricks_group_member" "stg01" {
 data "databricks_user" "aria_uc_admins_prod00" {
   provider = databricks.prod-00
 
-  for_each = toset(var.aria_uc_admins)
+  for_each = var.env == "prod" ? toset(var.aria_uc_admins) : {}
 
   user_name = each.value
 }
