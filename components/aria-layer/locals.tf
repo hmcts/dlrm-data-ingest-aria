@@ -45,10 +45,10 @@ locals {
   ])
 
   uc_admin_groups = {
-    "sbox-00" = databricks_group.aria_uc_admins_sbox00.display_name
-    "stg-00"  = databricks_group.aria_uc_admins_stg00.display_name
-    "stg-01"  = databricks_group.aria_uc_admins_stg01.display_name
-    "prod-00" = databricks_group.aria_uc_admins_prod00.display_name
+    "sbox00" = databricks_group.aria_uc_admins_sbox00.display_name
+    "stg00"  = databricks_group.aria_uc_admins_stg00.display_name
+    "stg01"  = databricks_group.aria_uc_admins_stg01.display_name
+    "prod00" = databricks_group.aria_uc_admins_prod00.display_name
   }
 
 }

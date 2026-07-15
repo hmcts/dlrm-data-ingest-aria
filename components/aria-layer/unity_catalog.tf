@@ -1,22 +1,26 @@
 resource "databricks_metastore_assignment" "sbox00" {
+  count        = var.env == "sbox" ? 1 : 0
   provider     = databricks.sbox-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "stg00" {
+  count        = var.env == "stg" ? 1 : 0
   provider     = databricks.stg-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "stg01" {
+  count        = var.env == "stg" ? 1 : 0
   provider     = databricks.stg-01
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "prod00" {
+  count        = var.env == "prod" ? 1 : 0
   provider     = databricks.prod-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_id
   metastore_id = var.metastore_id
@@ -77,21 +81,21 @@ resource "databricks_grants" "storage_cred_grants" {
 
 resource "databricks_external_location" "bronze" {
   for_each        = var.landing_zones
-  name            = "bronze"
+  name            = "bronze_${var.env}_${each.key}"
   url             = "abfss://bronze@ingest${each.key}curated${var.env}.dfs.core.windows.net"
   credential_name = databricks_storage_credential.curated[each.key].id
 }
 
 resource "databricks_external_location" "silver" {
   for_each        = var.landing_zones
-  name            = "silver"
+  name            = "silver_${var.env}_${each.key}"
   url             = "abfss://silver@ingest${each.key}curated${var.env}.dfs.core.windows.net"
   credential_name = databricks_storage_credential.curated[each.key].id
 }
 
 resource "databricks_external_location" "gold" {
   for_each        = var.landing_zones
-  name            = "gold"
+  name            = "gold_${var.env}_${each.key}"
   url             = "abfss://gold@ingest${each.key}curated${var.env}.dfs.core.windows.net"
   credential_name = databricks_storage_credential.curated[each.key].id
 }
