@@ -59,13 +59,23 @@ variable "metastore_id" {
   default = "5b45be19-5b40-4cae-8df2-8994a95305c5"
 }
 
-variable "aria_uc_admins" {
-  type = list(string)
-  default = [
-    "andrew.mcdevitt@hmcts.net",
-    "nazee.kadiu1@hmcts.net",
-    "peter.gresty@hmcts.net",
-    "rafiul.alam@hmcts.net",
-    "tony.chow@hmcts.net"
-  ]
+# variable "aria_uc_admins" {
+#   type = list(string)
+#   default = [
+#     "andrew.mcdevitt@hmcts.net",
+#     "nazee.kadiu1@hmcts.net",
+#     "peter.gresty@hmcts.net",
+#     "rafiul.alam@hmcts.net",
+#     "tony.chow@hmcts.net"
+#   ]
+# }
+
+variable "databricks_account_id" {
+  type    = string
+  default = "76220ee3-045f-43a7-a035-b29f808e71db"
+}
+
+variable "assign_account" {
+  type    = string
+  default = "false"
 }
