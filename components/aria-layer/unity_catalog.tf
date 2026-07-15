@@ -110,3 +110,47 @@ resource "databricks_grants" "storage_container_grants" {
     privileges = ["ALL_PRIVILEGES"]
   }
 }
+
+data "databricks_user" "aria_uc_admins" {
+  provider = databricks.sbox-00
+
+  for_each = toset(var.aria_uc_admins)
+
+  user_name = each.value
+}
+
+resource "databricks_group_member" "sbox00" {
+  provider = databricks.sbox-00
+
+  for_each = data.databricks_user.aria_uc_admins
+
+  group_id  = databricks_group.aria_uc_admins_sbox00.id
+  member_id = each.value.id
+}
+
+resource "databricks_group_member" "stg00" {
+  provider = databricks.stg-00
+
+  for_each = data.databricks_user.aria_uc_admins
+
+  group_id  = databricks_group.stg00.id
+  member_id = each.value.id
+}
+
+resource "databricks_group_member" "stg01" {
+  provider = databricks.stg-01
+
+  for_each = data.databricks_user.aria_uc_admins
+
+  group_id  = databricks_group.stg01.id
+  member_id = each.value.id
+}
+
+resource "databricks_group_member" "prod00" {
+  provider = databricks.prod-00
+
+  for_each = data.databricks_user.aria_uc_admins
+
+  group_id  = databricks_group.aria_uc_admins_prod00.id
+  member_id = each.value.id
+}
