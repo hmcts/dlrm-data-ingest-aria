@@ -1,30 +1,22 @@
 resource "databricks_metastore_assignment" "sbox00" {
-  for_each = var.landing_zones
-
   provider     = databricks.sbox-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "stg00" {
-  for_each = var.landing_zones
-
   provider     = databricks.stg-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "stg01" {
-  for_each = var.landing_zones
-
   provider     = databricks.stg-01
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_id
   metastore_id = var.metastore_id
 }
 
 resource "databricks_metastore_assignment" "prod00" {
-  for_each = var.landing_zones
-
   provider     = databricks.prod-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_id
   metastore_id = var.metastore_id
