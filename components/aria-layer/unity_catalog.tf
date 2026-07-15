@@ -1,6 +1,6 @@
 provider "databricks" {
   alias      = "account"
-  host       = "https://accounts.azuredatabricks.net" # Azure Accounts API endpoint
+  host       = "https://accounts.azuredatabricks.net"
   account_id = var.databricks_account_id
 }
 
@@ -11,24 +11,43 @@ data "databricks_metastore" "this" {
 }
 
 data "databricks_group" "aria_admins" {
+  provider     = databricks.account
   display_name = "aria_admin_${var.env}"
 }
 
 data "databricks_group" "aria_users" {
+  provider     = databricks.account
   display_name = "aria_${var.env}"
 }
 
+## create catalog
 resource "databricks_catalog" "aria_catalog" {
   for_each = var.landing_zones
 
-  name     = "aria_${var.env}"
-  comment  = "this catalog is managed by terraform"
+  name    = "aria_${var.env}${each.key}"
+  comment = "this catalog is managed by terraform"
   properties = {
-    purpose = "Aria catalog for ${var.env}"
+    purpose = "Aria catalog for ${var.env}${each.key}"
   }
 
   storage_root   = "abfss://landing@ingest${each.key}landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
   isolation_mode = "ISOLATED"
+}
+
+##
+data "databricks_user" "aria_uc_admins" {
+  provider = databricks.account
+  for_each = toset(var.aria_uc_admins)
+
+  user_name = each.value
+}
+
+resource "databricks_group_member" "aria_admins" {
+  provider = databricks.account
+  for_each = data.databricks_user.aria_uc_admins
+
+  group_id  = data.databricks_group.aria_admins.id
+  member_id = each.value.id
 }
 
 ##create databricks access connector
@@ -82,7 +101,8 @@ resource "databricks_grants" "storage_cred_grants" {
 }
 
 resource "databricks_grants" "external_location_admin_grants" {
-  external_location = databricks_external_location.landing_external.id
+  for_each          = var.landing_zones
+  external_location = databricks_external_location.landing_external[each.key].id
 
   grant {
     principal  = data.databricks_group.aria_admins.display_name
@@ -91,12 +111,13 @@ resource "databricks_grants" "external_location_admin_grants" {
 
   grant {
     principal  = data.databricks_group.aria_users.display_name
-    privileges = ["BROWSE", "READ FILES"]
+    privileges = ["BROWSE", "READ_FILES"]
   }
 }
 
 resource "databricks_grants" "catalog_aria_grants" {
-  catalog = databricks_catalog.xhibit_catalog.name
+  for_each = var.landing_zones
+  catalog  = databricks_catalog.aria_catalog[each.key].name
 
   grant {
     principal  = data.databricks_group.aria_admins.display_name
@@ -105,6 +126,6 @@ resource "databricks_grants" "catalog_aria_grants" {
 
   grant {
     principal  = data.databricks_group.aria_users.display_name
-    privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ VOLUME", "EXECUTE"]
+    privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ_VOLUME", "EXECUTE"]
   }
 }
