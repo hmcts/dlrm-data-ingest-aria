@@ -111,7 +111,9 @@ resource "databricks_grants" "storage_container_grants" {
   }
 }
 
-data "databricks_user" "aria_uc_admins" {
+data "databricks_user" "aria_uc_admins_sbox00" {
+  provider = databricks.sbox-00
+
   for_each = toset(var.aria_uc_admins)
 
   user_name = each.value
@@ -120,34 +122,58 @@ data "databricks_user" "aria_uc_admins" {
 resource "databricks_group_member" "sbox00" {
   provider = databricks.sbox-00
 
-  for_each = var.env == "sbox" ? data.databricks_user.aria_uc_admins : {}
+  for_each = var.env == "sbox" ? data.databricks_user.aria_uc_admins_sbox00 : {}
 
   group_id  = databricks_group.aria_uc_admins_sbox00.id
   member_id = each.value.id
 }
 
+data "databricks_user" "aria_uc_admins_stg00" {
+  provider = databricks.stg-00
+
+  for_each = toset(var.aria_uc_admins)
+
+  user_name = each.value
+}
+
 resource "databricks_group_member" "stg00" {
   provider = databricks.stg-00
 
-  for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins : {}
+  for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins_stg00 : {}
 
   group_id  = databricks_group.aria_uc_admins_stg00.id
   member_id = each.value.id
 }
 
+data "databricks_user" "aria_uc_admins_stg01" {
+  provider = databricks.stg-01
+
+  for_each = toset(var.aria_uc_admins)
+
+  user_name = each.value
+}
+
 resource "databricks_group_member" "stg01" {
   provider = databricks.stg-01
 
-  for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins : {}
+  for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins_stg01 : {}
 
   group_id  = databricks_group.aria_uc_admins_stg01.id
   member_id = each.value.id
 }
 
+data "databricks_user" "aria_uc_admins_prod00" {
+  provider = databricks.prod-00
+
+  for_each = toset(var.aria_uc_admins)
+
+  user_name = each.value
+}
+
 resource "databricks_group_member" "prod00" {
   provider = databricks.prod-00
 
-  for_each = var.env == "prod" ? data.databricks_user.aria_uc_admins : {}
+  for_each = var.env == "prod" ? data.databricks_user.aria_uc_admins_prod00 : {}
 
   group_id  = databricks_group.aria_uc_admins_prod00.id
   member_id = each.value.id
