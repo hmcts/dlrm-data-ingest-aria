@@ -130,7 +130,7 @@ resource "databricks_grants" "storage_cred_grants_sbox00" {
 
   grant {
     # principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
-    principal = databricks_group.aria_admins
+    principal = data.databricks_group.aria_admins
     privileges = ["ALL_PRIVILEGES"]
   }
 }
