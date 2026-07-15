@@ -114,14 +114,6 @@ resource "databricks_grants" "storage_container_grants" {
 data "databricks_user" "aria_uc_admins_sbox00" {
   provider = databricks.sbox-00
 
-  for_each = toset(var.aria_uc_admins)
-
-  user_name = each.value
-}
-
-data "databricks_user" "aria_uc_admins_sbox00" {
-  provider = databricks.sbox-00
-
   for_each = var.env == "sbox" ? toset(var.aria_uc_admins) : {}
 
   user_name = each.value
