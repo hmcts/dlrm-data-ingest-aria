@@ -5,7 +5,7 @@ data "databricks_metastore" "sbox00" {
 
 resource "databricks_metastore_assignment" "sbox00" {
   provider     = databricks.sbox-00
-  workspace_id = data.azurerm_databricks_workspace.db_ws.sbox-00.id
+  workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].id
   metastore_id = var.metastore_id
 }
 
