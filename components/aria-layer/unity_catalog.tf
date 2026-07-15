@@ -12,12 +12,12 @@ data "databricks_metastore" "this" {
 
 data "databricks_group" "aria_admins" {
   provider     = databricks.account
-  display_name = "aria_admin_${var.env}"
+  display_name = "aria_admin_${var.env}${var.landing_zones}"
 }
 
 data "databricks_group" "aria_users" {
   provider     = databricks.account
-  display_name = "aria_${var.env}"
+  display_name = "aria_${var.env}${var.landing_zones}"
 }
 
 ## create catalog
@@ -34,7 +34,7 @@ resource "databricks_catalog" "aria_catalog" {
   isolation_mode = "ISOLATED"
 }
 
-##
+## create list of aria users
 data "databricks_user" "aria_uc_admins" {
   provider = databricks.account
   for_each = toset(var.aria_uc_admins)
@@ -42,6 +42,7 @@ data "databricks_user" "aria_uc_admins" {
   user_name = each.value
 }
 
+## add aria admins to the group -> will get UC permissions
 resource "databricks_group_member" "aria_admins" {
   provider = databricks.account
   for_each = data.databricks_user.aria_uc_admins
@@ -63,6 +64,7 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   }
 }
 
+##set up storage credential for external storage account -> this will be used to create external location
 resource "databricks_storage_credential" "external" {
   for_each = var.landing_zones
 
@@ -74,6 +76,7 @@ resource "databricks_storage_credential" "external" {
   comment        = "Managed by TF"
 }
 
+## create external location for landing storage account -> this will be used to create external tables (external delta tables)
 resource "databricks_external_location" "landing_external" {
   for_each = var.landing_zones
 
@@ -85,6 +88,7 @@ resource "databricks_external_location" "landing_external" {
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
 }
 
+##grant access /permissions to storage credential and external location to the aria_admins and aria_users groups
 resource "databricks_grants" "storage_cred_grants" {
   for_each           = var.landing_zones
   storage_credential = databricks_storage_credential.external[each.key].id
@@ -115,6 +119,7 @@ resource "databricks_grants" "external_location_admin_grants" {
   }
 }
 
+##assign catalog permissions to aria admins
 resource "databricks_grants" "catalog_aria_grants" {
   for_each = var.landing_zones
   catalog  = databricks_catalog.aria_catalog[each.key].name
