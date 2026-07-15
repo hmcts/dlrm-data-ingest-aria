@@ -62,13 +62,55 @@ resource "databricks_group" "aria_uc_admins_prod00" {
   display_name = "aria-admins-${var.env}00"
 }
 
-resource "databricks_storage_credential" "curated" {
-  for_each = var.landing_zones
+resource "databricks_storage_credential" "curated_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
 
-  name = "aria_databricks_catalogue_${var.env}${each.key}"
+  name = "aria_databricks_catalogue_sbox00"
+
   azure_managed_identity {
-    access_connector_id = azurerm_databricks_access_connector.ext_access_connector[each.key].id
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
   }
+
+  comment = "Managed by TF"
+}
+
+resource "databricks_storage_credential" "curated_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  name = "aria_databricks_catalogue_stg00"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
+  }
+
+  comment = "Managed by TF"
+}
+
+resource "databricks_storage_credential" "curated_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  name = "aria_databricks_catalogue_stg01"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["01"].id
+  }
+
+  comment = "Managed by TF"
+}
+
+resource "databricks_storage_credential" "prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  name = "aria_databricks_catalogue_${var.env}00"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
+  }
+
   comment = "Managed by TF"
 }
 
