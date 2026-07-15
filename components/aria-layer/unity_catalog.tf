@@ -534,7 +534,7 @@ resource "databricks_group_member" "prod00" {
 
 ##give service principal permisisons to create external tables and credentials
 
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_sbox00" {
   provider  = databricks.sbox-00
   metastore = var.metastore_id
 
@@ -544,7 +544,7 @@ resource "databricks_grants" "metastore_grants" {
   }
 }
 
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_stg00" {
   provider  = databricks.stg-00
   metastore = var.metastore_id
 
@@ -554,7 +554,7 @@ resource "databricks_grants" "metastore_grants" {
   }
 }
 
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_stg01" {
   provider  = databricks.stg-01
   metastore = var.metastore_id
 
@@ -564,7 +564,7 @@ resource "databricks_grants" "metastore_grants" {
   }
 }
 
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_prod00" {
   provider  = databricks.prod-00
   metastore = var.metastore_id
 
