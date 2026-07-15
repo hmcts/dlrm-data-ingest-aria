@@ -129,7 +129,8 @@ resource "databricks_grants" "storage_cred_grants_sbox00" {
   storage_credential = databricks_storage_credential.curated_sbox00[0].id
 
   grant {
-    principal  = "aria-admins-sbox00" #test if hardcoding works
+    # principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
+    principal = databricks_group.aria_admins
     privileges = ["ALL_PRIVILEGES"]
   }
 }
@@ -576,4 +577,8 @@ resource "databricks_grants" "metastore_grants_prod00" {
     principal  = data.azurerm_client_config.current.client_id
     privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
   }
+}
+
+data "databricks_group" "aria_admins" {
+  display_name = "aria_admins_${var.env}"
 }
