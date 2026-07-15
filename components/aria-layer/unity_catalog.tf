@@ -39,21 +39,25 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
 }
 
 resource "databricks_group" "aria_uc_admins_sbox00" {
+  count        = var.env == "sbox" ? 1 : 0
   provider     = databricks.sbox-00
   display_name = "aria-admins-${var.env}00"
 }
 
 resource "databricks_group" "aria_uc_admins_stg00" {
+  count        = var.env == "stg" ? 1 : 0
   provider     = databricks.stg-00
   display_name = "aria-admins-${var.env}00"
 }
 
 resource "databricks_group" "aria_uc_admins_stg01" {
+  count        = var.env == "stg" ? 1 : 0
   provider     = databricks.stg-01
   display_name = "aria-admins-${var.env}01"
 }
 
 resource "databricks_group" "aria_uc_admins_prod00" {
+  count        = var.env == "prod" ? 1 : 0
   provider     = databricks.prod-00
   display_name = "aria-admins-${var.env}00"
 }
@@ -124,7 +128,7 @@ resource "databricks_group_member" "sbox00" {
 
   for_each = var.env == "sbox" ? data.databricks_user.aria_uc_admins_sbox00 : {}
 
-  group_id  = databricks_group.aria_uc_admins_sbox00.id
+  group_id  = databricks_group.aria_uc_admins_sbox00[0].id
   member_id = each.value.id
 }
 
@@ -141,7 +145,7 @@ resource "databricks_group_member" "stg00" {
 
   for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins_stg00 : {}
 
-  group_id  = databricks_group.aria_uc_admins_stg00.id
+  group_id  = databricks_group.aria_uc_admins_stg00[0].id
   member_id = each.value.id
 }
 
@@ -158,7 +162,7 @@ resource "databricks_group_member" "stg01" {
 
   for_each = var.env == "stg" ? data.databricks_user.aria_uc_admins_stg01 : {}
 
-  group_id  = databricks_group.aria_uc_admins_stg01.id
+  group_id  = databricks_group.aria_uc_admins_stg01[0].id
   member_id = each.value.id
 }
 
@@ -175,6 +179,6 @@ resource "databricks_group_member" "prod00" {
 
   for_each = var.env == "prod" ? data.databricks_user.aria_uc_admins_prod00 : {}
 
-  group_id  = databricks_group.aria_uc_admins_prod00.id
+  group_id  = databricks_group.aria_uc_admins_prod00[0].id
   member_id = each.value.id
 }
