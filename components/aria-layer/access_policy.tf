@@ -205,3 +205,38 @@ resource "azurerm_role_assignment" "rbac_account" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+resource "azurerm_databricks_access_connector" "ext_access_connector" {
+  for_each = var.landing_zones
+
+  name                = "${var.env}${each.key}-ext-access-connector"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+  location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_role_assignment" "ext_storage_2" {
+  for_each = var.landing_zones
+
+  scope                = data.azurerm_storage_account.curated[each.value.lz_key].name
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "ext_storage_2" {
+  for_each = var.landing_zones
+
+  scope                = data.azurerm_storage_account.curated[each.value.lz_key].name
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "ext_storage_2" {
+  for_each = var.landing_zones
+
+  scope                = data.azurerm_storage_account.curated[each.value.lz_key].name
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector.identity[0].principal_id
+}
