@@ -1,6 +1,32 @@
 resource "databricks_metastore_assignment" "sbox00" {
+  for_each = var.landing_zones
+
   provider     = databricks.sbox-00
   workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
+  metastore_id = var.metastore_id
+}
+
+resource "databricks_metastore_assignment" "stg00" {
+  for_each = var.landing_zones
+
+  provider     = databricks.stg-00
+  workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
+  metastore_id = var.metastore_id
+}
+
+resource "databricks_metastore_assignment" "stg01" {
+  for_each = var.landing_zones
+
+  provider     = databricks.stg-01
+  workspace_id = data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_id
+  metastore_id = var.metastore_id
+}
+
+resource "databricks_metastore_assignment" "prod00" {
+  for_each = var.landing_zones
+
+  provider     = databricks.prod-00
+  workspace_id = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_id
   metastore_id = var.metastore_id
 }
 
@@ -13,5 +39,78 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
   identity {
     type = "SystemAssigned"
+  }
+}
+
+resource "databricks_group" "aria_uc_admins_sbox00" {
+  provider     = databricks.sbox-00
+  display_name = "aria-admins-${var.env}00"
+}
+
+resource "databricks_group" "aria_uc_admins_stg00" {
+  provider     = databricks.stg-00
+  display_name = "aria-admins-${var.env}00"
+}
+
+resource "databricks_group" "aria_uc_admins_stg01" {
+  provider     = databricks.stg-01
+  display_name = "aria-admins-${var.env}01"
+}
+
+resource "databricks_group" "aria_uc_admins_prod00" {
+  provider     = databricks.prod-00
+  display_name = "aria-admins-${var.env}00"
+}
+
+resource "databricks_storage_credential" "external" {
+  for_each = var.landing_zones
+
+  name = "aria_databricks_catalogue_${var.env}${each.key}"
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector[each.key].id
+  }
+  comment = "Managed by TF"
+}
+
+resource "databricks_grants" "storage_cred_grants" {
+  for_each = var.landing_zones
+
+  storage_credential = databricks_storage_credential.external[each.key].id
+
+  grant {
+    principal  = local.uc_admin_groups["${var.env}${each.key}"]
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_external_location" "bronze" {
+  for_each        = var.landing_zones
+  name            = "bronze"
+  url             = "abfss://bronze@ingest${each.key}curated${var.env}.dfs.core.windows.net"
+  credential_name = databricks_storage_credential.curated["${each.key}"].id
+}
+
+resource "databricks_external_location" "silver" {
+  for_each        = var.landing_zones
+  name            = "silver"
+  url             = "abfss://silver@ingest${each.key}curated${var.env}.dfs.core.windows.net"
+  credential_name = databricks_storage_credential.curated["${each.key}"].id
+}
+
+resource "databricks_external_location" "gold" {
+  for_each        = var.landing_zones
+  name            = "gold"
+  url             = "abfss://gold@ingest${each.key}curated${var.env}.dfs.core.windows.net"
+  credential_name = databricks_storage_credential.curated["${each.key}"].id
+}
+
+resource "databricks_grants" "storage_container_grants" {
+  for_each = var.landing_zones
+
+  storage_credential = databricks_storage_credential.external[each.key].id
+
+  grant {
+    principal  = local.uc_admin_groups["${var.env}${each.key}"]
+    privileges = ["ALL_PRIVILEGES"]
   }
 }
