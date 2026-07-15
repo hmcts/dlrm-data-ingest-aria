@@ -17,7 +17,7 @@ data "databricks_group" "aria_admins" {
 
 data "databricks_group" "aria_users" {
   provider     = databricks.account
-  display_name = "aria_${var.env}${var.landing_zones}"
+  display_name = "aria_users_${var.env}${var.landing_zones}"
 }
 
 ## create catalog
