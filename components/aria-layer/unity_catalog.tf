@@ -1,3 +1,4 @@
+##create metastore per lz/env
 resource "databricks_metastore_assignment" "sbox00" {
   count        = var.env == "sbox" ? 1 : 0
   provider     = databricks.sbox-00
@@ -26,6 +27,7 @@ resource "databricks_metastore_assignment" "prod00" {
   metastore_id = var.metastore_id
 }
 
+##create databricks access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
   for_each = var.landing_zones
 
@@ -37,6 +39,8 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
     type = "SystemAssigned"
   }
 }
+
+##create access groups
 
 resource "databricks_group" "aria_uc_admins_sbox00" {
   count        = var.env == "sbox" ? 1 : 0
@@ -61,6 +65,8 @@ resource "databricks_group" "aria_uc_admins_prod00" {
   provider     = databricks.prod-00
   display_name = "aria-admins-${var.env}00"
 }
+
+##create catalogues
 
 resource "databricks_storage_credential" "curated_sbox00" {
   count    = var.env == "sbox" ? 1 : 0
@@ -114,48 +120,349 @@ resource "databricks_storage_credential" "prod00" {
   comment = "Managed by TF"
 }
 
-resource "databricks_grants" "storage_cred_grants" {
-  for_each = var.landing_zones
+##grant all privelege access for users on the catalogues
 
-  storage_credential = databricks_storage_credential.curated[each.key].id
+resource "databricks_grants" "storage_cred_grants_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  storage_credential = databricks_storage_credential.curated_sbox00[0].id
 
   grant {
-    principal  = local.uc_admin_groups["${var.env}${each.key}"]
+    principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
     privileges = ["ALL_PRIVILEGES"]
   }
 }
 
-resource "databricks_external_location" "bronze" {
-  for_each        = var.landing_zones
-  name            = "bronze_${var.env}_${each.key}"
-  url             = "abfss://bronze@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated[each.key].id
-}
+resource "databricks_grants" "storage_cred_grants_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
 
-resource "databricks_external_location" "silver" {
-  for_each        = var.landing_zones
-  name            = "silver_${var.env}_${each.key}"
-  url             = "abfss://silver@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated[each.key].id
-}
-
-resource "databricks_external_location" "gold" {
-  for_each        = var.landing_zones
-  name            = "gold_${var.env}_${each.key}"
-  url             = "abfss://gold@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated[each.key].id
-}
-
-resource "databricks_grants" "storage_container_grants" {
-  for_each = var.landing_zones
-
-  storage_credential = databricks_storage_credential.curated[each.key].id
+  storage_credential = databricks_storage_credential.curated_stg00[0].id
 
   grant {
-    principal  = local.uc_admin_groups["${var.env}${each.key}"]
+    principal  = databricks_group.aria_uc_admins_stg00[0].display_name
     privileges = ["ALL_PRIVILEGES"]
   }
 }
+
+resource "databricks_grants" "storage_cred_grants_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  storage_credential = databricks_storage_credential.curated_stg01[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg01[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "storage_cred_grants_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  storage_credential = databricks_storage_credential.prod00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_prod00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+##create external locations for delta tables to live
+
+resource "databricks_external_location" "bronze_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  name = "bronze_sbox_00"
+
+  url = "abfss://bronze@ingest00curatedsbox.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_sbox00[0].name
+}
+
+resource "databricks_external_location" "bronze_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  name = "bronze_stg_00"
+
+  url = "abfss://bronze@ingest00curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg00[0].name
+}
+
+resource "databricks_external_location" "bronze_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  name = "bronze_stg_01"
+
+  url = "abfss://bronze@ingest01curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg01[0].name
+}
+
+resource "databricks_external_location" "bronze_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  name = "bronze_prod_00"
+
+  url = "abfss://bronze@ingest00curatedprod.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.prod00[0].name
+}
+
+resource "databricks_external_location" "silver_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  name = "silver_sbox_00"
+
+  url = "abfss://silver@ingest00curatedsbox.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_sbox00[0].name
+}
+
+
+resource "databricks_external_location" "silver_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  name = "silver_stg_00"
+
+  url = "abfss://silver@ingest00curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg00[0].name
+}
+
+
+resource "databricks_external_location" "silver_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  name = "silver_stg_01"
+
+  url = "abfss://silver@ingest01curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg01[0].name
+}
+
+
+resource "databricks_external_location" "silver_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  name = "silver_prod_00"
+
+  url = "abfss://silver@ingest00curatedprod.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.prod00[0].name
+}
+
+resource "databricks_external_location" "gold_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  name = "gold_sbox_00"
+
+  url = "abfss://gold@ingest00curatedsbox.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_sbox00[0].name
+}
+
+
+resource "databricks_external_location" "gold_stg00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  name = "gold_stg_00"
+
+  url = "abfss://gold@ingest00curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg00[0].name
+}
+
+
+resource "databricks_external_location" "gold_stg01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  name = "gold_stg_01"
+
+  url = "abfss://gold@ingest01curatedstg.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.curated_stg01[0].name
+}
+
+
+resource "databricks_external_location" "gold_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  name = "gold_prod_00"
+
+  url = "abfss://gold@ingest00curatedprod.dfs.core.windows.net"
+
+  credential_name = databricks_storage_credential.prod00[0].name
+}
+
+##bronze,silver,gold sbox00
+
+resource "databricks_grants" "bronze_sbox00_grants" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  external_location = databricks_external_location.bronze_sbox00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "silver_sbox00_grants" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  external_location = databricks_external_location.silver_sbox00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "gold_sbox00_grants" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  external_location = databricks_external_location.gold_sbox00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+##bronze,silver,gold stg00
+
+resource "databricks_grants" "bronze_stg00_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  external_location = databricks_external_location.bronze_stg00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "silver_stg00_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  external_location = databricks_external_location.silver_stg00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "gold_stg00_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  external_location = databricks_external_location.gold_stg00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+##bronze,silver,gold stg01
+
+resource "databricks_grants" "bronze_stg01_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  external_location = databricks_external_location.bronze_stg01[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg01[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "silver_stg01_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  external_location = databricks_external_location.silver_stg01[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg01[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "gold_stg01_grants" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  external_location = databricks_external_location.gold_stg01[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_stg01[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+##bronze, silver, gold prod
+
+resource "databricks_grants" "bronze_prod00_grants" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  external_location = databricks_external_location.bronze_prod00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_prod00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "silver_prod00_grants" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  external_location = databricks_external_location.silver_prod00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_prod00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "gold_prod00_grants" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  external_location = databricks_external_location.gold_prod00[0].id
+
+  grant {
+    principal  = databricks_group.aria_uc_admins_prod00[0].display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+##create group members for the admin groups and assign per env/lz.
 
 data "databricks_user" "aria_uc_admins_sbox00" {
   provider = databricks.sbox-00
