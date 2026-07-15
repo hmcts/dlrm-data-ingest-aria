@@ -87,21 +87,21 @@ resource "databricks_external_location" "bronze" {
   for_each        = var.landing_zones
   name            = "bronze"
   url             = "abfss://bronze@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated["${each.key}"].id
+  credential_name = databricks_storage_credential.curated[each.key].id
 }
 
 resource "databricks_external_location" "silver" {
   for_each        = var.landing_zones
   name            = "silver"
   url             = "abfss://silver@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated["${each.key}"].id
+  credential_name = databricks_storage_credential.curated[each.key].id
 }
 
 resource "databricks_external_location" "gold" {
   for_each        = var.landing_zones
   name            = "gold"
   url             = "abfss://gold@ingest${each.key}curated${var.env}.dfs.core.windows.net"
-  credential_name = databricks_storage_credential.curated["${each.key}"].id
+  credential_name = databricks_storage_credential.curated[each.key].id
 }
 
 resource "databricks_grants" "storage_container_grants" {
