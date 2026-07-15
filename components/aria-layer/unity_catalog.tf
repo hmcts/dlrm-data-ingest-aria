@@ -129,7 +129,7 @@ resource "databricks_grants" "storage_cred_grants_sbox00" {
   storage_credential = databricks_storage_credential.curated_sbox00[0].id
 
   grant {
-    principal  = databricks_group.aria_uc_admins_sbox00[0].display_name
+    principal  = "aria-admins-sbox00" #test if hardcoding works
     privileges = ["ALL_PRIVILEGES"]
   }
 }
@@ -535,6 +535,7 @@ resource "databricks_group_member" "prod00" {
 ##give service principal permisisons to create external tables and credentials
 
 resource "databricks_grants" "metastore_grants_sbox00" {
+      count    = var.env == "sbox" ? 1 : 0
   provider  = databricks.sbox-00
   metastore = var.metastore_id
 
@@ -545,6 +546,7 @@ resource "databricks_grants" "metastore_grants_sbox00" {
 }
 
 resource "databricks_grants" "metastore_grants_stg00" {
+      count    = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-00
   metastore = var.metastore_id
 
@@ -555,6 +557,7 @@ resource "databricks_grants" "metastore_grants_stg00" {
 }
 
 resource "databricks_grants" "metastore_grants_stg01" {
+      count    = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-01
   metastore = var.metastore_id
 
@@ -565,6 +568,7 @@ resource "databricks_grants" "metastore_grants_stg01" {
 }
 
 resource "databricks_grants" "metastore_grants_prod00" {
+      count    = var.env == "prod" ? 1 : 0
   provider  = databricks.prod-00
   metastore = var.metastore_id
 
