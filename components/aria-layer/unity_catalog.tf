@@ -101,8 +101,8 @@ resource "databricks_catalog" "aria_catalog_00" {
   storage_root   = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
   isolation_mode = "ISOLATED"
 
-  depends_on = [databricks_metastore_assignment.workspace_00[0],
-  databricks_external_location.landing_external_00[0]]
+  depends_on = [databricks_metastore_assignment.workspace_00,
+  databricks_external_location.landing_external_00]
 }
 
 resource "databricks_catalog" "aria_catalog_01" {
@@ -118,8 +118,8 @@ resource "databricks_catalog" "aria_catalog_01" {
   storage_root   = "abfss://landing@ingest01landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
   isolation_mode = "ISOLATED"
 
-  depends_on = [databricks_metastore_assignment.workspace_01[0],
-  databricks_external_location.landing_external_01[0]]
+  depends_on = [databricks_metastore_assignment.workspace_01,
+  databricks_external_location.landing_external_01]
 }
 
 ## storage credentials
