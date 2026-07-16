@@ -633,8 +633,7 @@ resource "databricks_external_location" "landing_external_sbox00" {
 
   depends_on = [
     time_sleep.wait_for_uc,
-    databricks_storage_credential.external_sbox00,
-    databricks_grants.metastore_grants_sbox00
+    databricks_storage_credential.external_sbox00
   ]
 }
 
@@ -656,8 +655,7 @@ resource "databricks_external_location" "landing_external_stg00" {
 
   depends_on = [
     time_sleep.wait_for_uc,
-    databricks_storage_credential.external_stg00,
-    databricks_grants.metastore_grants_stg00
+    databricks_storage_credential.external_stg00
   ]
 }
 
@@ -679,8 +677,7 @@ resource "databricks_external_location" "landing_external_stg01" {
 
   depends_on = [
     time_sleep.wait_for_uc,
-    databricks_storage_credential.external_stg00,
-    databricks_grants.metastore_grants_stg00
+    databricks_storage_credential.external_stg00
   ]
 }
 
@@ -702,8 +699,7 @@ resource "databricks_external_location" "landing_external_prod00" {
 
   depends_on = [
     time_sleep.wait_for_uc,
-    databricks_storage_credential.external_prod00,
-    databricks_grants.metastore_grants_prod00
+    databricks_storage_credential.external_prod00
   ]
 }
 
