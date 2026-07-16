@@ -69,11 +69,11 @@
 # # }
 
 # # ##assign metastore to workspaces
-# # resource "databricks_metastore_assignment" "workspace_00" {
-# #   provider     = databricks.workspace_00
-# #   workspace_id = data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_id
-# #   metastore_id = var.metastore_id
-# # }
+# resource "databricks_metastore_assignment" "workspace_00" {
+#   provider     = databricks.workspace_00
+#   workspace_id = data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_id
+#   metastore_id = var.metastore_id
+# }
 
 # # resource "databricks_metastore_assignment" "workspace_01" {
 # #   count        = contains(keys(var.landing_zones), "01") ? 1 : 0

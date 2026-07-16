@@ -32,8 +32,6 @@ resource "databricks_group_member" "aria_admins" {
   member_id = each.value.id
 }
 
-##sbox00
-
 # Access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
@@ -46,6 +44,19 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   identity {
     type = "SystemAssigned"
   }
+}
+
+##sbox00
+
+##metastore assignment
+resource "databricks_metastore_assignment" "workspace_00" {
+  provider = databricks.account
+
+  workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
+  metastore_id = var.metastore_id
+
+  # Optional but recommended
+#   default_catalog_name = "main"
 }
 
 
@@ -79,6 +90,10 @@ resource "databricks_external_location" "landing_external" {
 
   comment        = "Managed by TF"
   isolation_mode = "ISOLATED"
+
+  depends_on = [
+    databricks_metastore_assignment.this
+  ]
 }
 
 # Catalog
