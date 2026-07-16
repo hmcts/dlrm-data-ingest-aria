@@ -64,21 +64,6 @@ provider "databricks" {
   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, "https://placeholder.azuredatabricks.net")
 }
 
-## create catalog
-# resource "databricks_catalog" "aria_catalog" {
-#   provider = databricks.workspace
-#   for_each = var.landing_zones
-
-#   name    = "aria_${var.env}${each.key}"
-#   comment = "this catalog is managed by terraform"
-#   properties = {
-#     purpose = "Aria catalog for ${var.env}${each.key}"
-#   }
-
-#   storage_root   = "abfss://landing@ingest${each.key}landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
-#   isolation_mode = "ISOLATED"
-# }
-
 ##create catalogs
 resource "databricks_catalog" "aria_catalog_00" {
   provider = databricks.workspace_00
@@ -150,7 +135,7 @@ resource "databricks_external_location" "landing_external_01" {
   name = "external_storage_location_${var.env}01"
 
   url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["01"].name)
-  credential_name = databricks_storage_credential.external_01.name
+  credential_name = databricks_storage_credential.external_01[0].name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
 }
@@ -174,7 +159,7 @@ resource "databricks_grants" "storage_cred_grants_00" {
 resource "databricks_grants" "storage_cred_grants_01" {
   count              = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider           = databricks.workspace_01
-  storage_credential = databricks_storage_credential.external_01.id
+  storage_credential = databricks_storage_credential.external_01[0].id
 
   grant {
     principal  = databricks_group.aria_admins.display_name
@@ -206,7 +191,7 @@ resource "databricks_grants" "external_location_admin_grants_00" {
 resource "databricks_grants" "external_location_admin_grants_01" {
   count             = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider          = databricks.workspace_01
-  external_location = databricks_external_location.landing_external_01.id
+  external_location = databricks_external_location.landing_external_01[0].id
 
   grant {
     principal  = databricks_group.aria_admins.display_name
@@ -238,7 +223,7 @@ resource "databricks_grants" "catalog_aria_grants_00" {
 resource "databricks_grants" "catalog_aria_grants_01" {
   count    = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider = databricks.workspace_01
-  catalog  = databricks_catalog.aria_catalog_01.name
+  catalog  = databricks_catalog.aria_catalog_01[0].name
 
   grant {
     principal  = databricks_group.aria_admins.display_name
