@@ -54,19 +54,19 @@
 #   }
 # }
 
-provider "databricks" {
-  alias = "workspace_00"
-  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, null)
+# provider "databricks" {
+#   alias = "workspace_00"
+#   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, null)
 
-  skip_verify = var.landing_zones != "00"
-}
+#   skip_verify = var.landing_zones != "00"
+# }
 
-provider "databricks" {
-  alias = "workspace_01"
-  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, null)
+# provider "databricks" {
+#   alias = "workspace_01"
+#   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, null)
 
-  skip_verify = var.landing_zones != "01"
-}
+#   skip_verify = var.landing_zones != "01"
+# }
 
 # ##assign metastore to workspaces
 # resource "databricks_metastore_assignment" "workspace_00" {
@@ -427,49 +427,57 @@ resource "databricks_metastore_assignment" "prod00" {
 }
 
 ##assign workspace metastore permissions to service principal
-resource "databricks_grants" "metastore_grants_sbox00" {
-  count     = var.env == "sbox" ? 1 : 0
-  provider  = databricks.sbox-00
-  metastore = var.metastore_id
+# resource "databricks_grants" "metastore_grants_sbox00" {
+#   count     = var.env == "sbox" ? 1 : 0
+#   provider  = databricks.account
+#   metastore = var.metastore_id
 
-  grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   grant {
+#     principal  = data.azurerm_client_config.current.client_id
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+#   }
 
-resource "databricks_grants" "metastore_grants_stg00" {
-  count     = var.env == "stg" ? 1 : 0
-  provider  = databricks.stg-00
-  metastore = var.metastore_id
+#   depends_on = [time_sleep.wait_for_uc]
+# }
 
-  grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+# resource "databricks_grants" "metastore_grants_stg00" {
+#   count     = var.env == "stg" ? 1 : 0
+#   provider  = databricks.account
+#   metastore = var.metastore_id
 
-resource "databricks_grants" "metastore_grants_stg01" {
-  count     = var.env == "stg" ? 1 : 0
-  provider  = databricks.stg-01
-  metastore = var.metastore_id
+#   grant {
+#     principal  = data.azurerm_client_config.current.client_id
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+#   }
 
-  grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   depends_on = [time_sleep.wait_for_uc]
+# }
 
-resource "databricks_grants" "metastore_grants_prod00" {
-  count     = var.env == "prod" ? 1 : 0
-  provider  = databricks.prod-00
-  metastore = var.metastore_id
+# resource "databricks_grants" "metastore_grants_stg01" {
+#   count     = var.env == "stg" ? 1 : 0
+#   provider  = databricks.account
+#   metastore = var.metastore_id
 
-  grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   grant {
+#     principal  = data.azurerm_client_config.current.client_id
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+#   }
+
+#   depends_on = [time_sleep.wait_for_uc]
+# }
+
+# resource "databricks_grants" "metastore_grants_prod00" {
+#   count     = var.env == "prod" ? 1 : 0
+#   provider  = databricks.account
+#   metastore = var.metastore_id
+
+#   grant {
+#     principal  = data.azurerm_client_config.current.client_id
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+#   }
+
+#   depends_on = [time_sleep.wait_for_uc]
+# }
 
 ##create catalogs
 resource "databricks_catalog" "aria_catalog_sbox00" {
@@ -611,17 +619,27 @@ resource "databricks_storage_credential" "external_prod00" {
   depends_on = [databricks_metastore_assignment.prod00]
 }
 
-## external locations
 resource "databricks_external_location" "landing_external_sbox00" {
   count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
   name = "external_storage_location_sbox00"
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["00"].name)
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net",
+    "landing",
+    data.azurerm_storage_account.landing["00"].name
+  )
+
   credential_name = databricks_storage_credential.external_sbox00[0].name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
+
+  depends_on = [
+    time_sleep.wait_for_uc,
+    databricks_storage_credential.external_sbox00,
+    databricks_grants.metastore_grants_sbox00
+  ]
 }
 
 resource "databricks_external_location" "landing_external_stg00" {
@@ -630,10 +648,21 @@ resource "databricks_external_location" "landing_external_stg00" {
 
   name = "external_storage_location_stg00"
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["00"].name)
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net",
+    "landing",
+    data.azurerm_storage_account.landing["00"].name
+  )
+
   credential_name = databricks_storage_credential.external_stg00[0].name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
+
+  depends_on = [
+    time_sleep.wait_for_uc,
+    databricks_storage_credential.external_stg00,
+    databricks_grants.metastore_grants_stg00
+  ]
 }
 
 resource "databricks_external_location" "landing_external_stg01" {
@@ -642,10 +671,21 @@ resource "databricks_external_location" "landing_external_stg01" {
 
   name = "external_storage_location_stg01"
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["01"].name)
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net",
+    "landing",
+    data.azurerm_storage_account.landing["01"].name
+  )
+
   credential_name = databricks_storage_credential.external_stg01[0].name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
+
+  depends_on = [
+    time_sleep.wait_for_uc,
+    databricks_storage_credential.external_stg00,
+    databricks_grants.metastore_grants_stg00
+  ]
 }
 
 resource "databricks_external_location" "landing_external_prod00" {
@@ -654,10 +694,21 @@ resource "databricks_external_location" "landing_external_prod00" {
 
   name = "external_storage_location_prod00"
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["00"].name)
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net",
+    "landing",
+    data.azurerm_storage_account.landing["00"].name
+  )
+
   credential_name = databricks_storage_credential.external_prod00[0].name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
+
+  depends_on = [
+    time_sleep.wait_for_uc,
+    databricks_storage_credential.external_prod00,
+    databricks_grants.metastore_grants_prod00
+  ]
 }
 
 ## grants: storage credential
