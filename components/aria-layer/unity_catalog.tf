@@ -15,13 +15,21 @@ resource "databricks_group" "aria_admins" {
   display_name = "aria_admin_${var.env}"
 }
 
-resource "databricks_group_member" "aria_admins" {
+data "databricks_user" "aria_admins" {
   provider = databricks.account
 
   for_each = toset(var.aria_uc_admins)
 
+  user_name = each.value
+}
+
+resource "databricks_group_member" "aria_admins" {
+  provider = databricks.account
+
+  for_each = data.databricks_user.aria_admins
+
   group_id  = databricks_group.aria_admins.id
-  member_id = each.value
+  member_id = each.value.id
 }
 
 ##sbox00
