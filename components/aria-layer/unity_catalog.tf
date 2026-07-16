@@ -10,14 +10,8 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
-# --- Reference existing Databricks workspace ---
-data "azurerm_databricks_workspace" "this" {
-  name                = "ingest${var.landing_zones}-product-databricks001-${var.env}"
-  resource_group_name = "ingest${var.landing_zones}-main-${var.env}"
-}
-
 provider "databricks" {
-  host = data.azurerm_databricks_workspace.this.workspace_url
+  host = data.azurerm_databricks_workspace.db_ws.workspace_url
 }
 
 resource "databricks_group" "aria_admins" {
