@@ -11,7 +11,7 @@ data "databricks_metastore" "this" {
 }
 
 provider "databricks" {
-  host = data.azurerm_databricks_workspace.db_ws.workspace_url
+  host = data.azurerm_databricks_workspace.db_ws[each.key].workspace_url
 }
 
 resource "databricks_group" "aria_admins" {
