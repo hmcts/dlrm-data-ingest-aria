@@ -39,7 +39,7 @@ resource "databricks_storage_credential" "external" {
   name     = "aria_catalog_${var.env}00"
 
   azure_managed_identity {
-    access_connector_id = azurerm_databricks_access_connector.ext_access_connector.id
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector[each.key].id
   }
 
   isolation_mode = "ISOLATION_MODE_ISOLATED"
