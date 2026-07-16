@@ -64,7 +64,6 @@ resource "databricks_group_member" "aria_admins" {
 
 ##create databricks access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
-  provider = databricks.account
   for_each = var.landing_zones
 
   name                = "${var.env}${each.key}-ext-access-connector"
@@ -78,6 +77,8 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
 ##set up storage credential for external storage account -> this will be used to create external location
 resource "databricks_storage_credential" "external" {
+  provider = databricks.account
+
   for_each = var.landing_zones
 
   name = "aria_uc_${var.env}${each.key}"
