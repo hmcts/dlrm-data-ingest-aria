@@ -38,6 +38,18 @@ resource "databricks_catalog" "aria_catalog" {
   isolation_mode = "ISOLATED"
 }
 
+resource "azurerm_databricks_access_connector" "ext_access_connector" {
+  for_each = var.landing_zones
+
+  name                = "${var.env}${each.key}-ext-access-connector"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+  location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
 resource "databricks_storage_credential" "external" {
   for_each = var.landing_zones
 
