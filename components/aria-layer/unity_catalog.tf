@@ -39,6 +39,8 @@ resource "databricks_group_member" "aria_admins" {
   member_id = each.value.id
 }
 
+##workspace level resources##
+
 ##create databricks access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
   for_each = var.landing_zones
@@ -52,16 +54,14 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   }
 }
 
-##workspace level resources
-
 provider "databricks" {
   alias = "workspace_00"
-  host  = data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, "https://placeholder.azuredatabricks.net")
 }
 
 provider "databricks" {
   alias = "workspace_01"
-  host  = data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, "https://placeholder.azuredatabricks.net")
 }
 
 ## create catalog
@@ -94,6 +94,7 @@ resource "databricks_catalog" "aria_catalog_00" {
 }
 
 resource "databricks_catalog" "aria_catalog_01" {
+  count    = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider = databricks.workspace_01
 
   name    = "aria_${var.env}01"
@@ -119,6 +120,7 @@ resource "databricks_storage_credential" "external_00" {
 }
 
 resource "databricks_storage_credential" "external_01" {
+  count    = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider = databricks.workspace_01
 
   name = "aria_uc_${var.env}01"
@@ -142,6 +144,7 @@ resource "databricks_external_location" "landing_external_00" {
 }
 
 resource "databricks_external_location" "landing_external_01" {
+  count    = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider = databricks.workspace_01
 
   name = "external_storage_location_${var.env}01"
@@ -169,6 +172,7 @@ resource "databricks_grants" "storage_cred_grants_00" {
 }
 
 resource "databricks_grants" "storage_cred_grants_01" {
+  count              = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider           = databricks.workspace_01
   storage_credential = databricks_storage_credential.external_01.id
 
@@ -200,6 +204,7 @@ resource "databricks_grants" "external_location_admin_grants_00" {
 }
 
 resource "databricks_grants" "external_location_admin_grants_01" {
+  count             = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider          = databricks.workspace_01
   external_location = databricks_external_location.landing_external_01.id
 
@@ -231,6 +236,7 @@ resource "databricks_grants" "catalog_aria_grants_00" {
 }
 
 resource "databricks_grants" "catalog_aria_grants_01" {
+  count    = contains(keys(var.landing_zones), "01") ? 1 : 0
   provider = databricks.workspace_01
   catalog  = databricks_catalog.aria_catalog_01.name
 
