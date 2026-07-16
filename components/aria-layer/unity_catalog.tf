@@ -17,7 +17,7 @@ resource "databricks_grants" "metastore_grants" {
 
   grant {
     principal  = data.azurerm_client_config.current.client_id
-    privileges = ["CREATE_EXTERNAL_LOCATION", "CREATE_STORAGE_CREDENTIAL"]
+    privileges = ["ALL_PRIVILEGES"]
   }
 }
 
@@ -102,7 +102,8 @@ resource "databricks_catalog" "aria_catalog_00" {
   isolation_mode = "ISOLATED"
 
   depends_on = [databricks_metastore_assignment.workspace_00,
-  databricks_external_location.landing_external_00]
+    databricks_external_location.landing_external_00,
+  databricks_grants.metastore_grants]
 }
 
 resource "databricks_catalog" "aria_catalog_01" {
@@ -119,7 +120,8 @@ resource "databricks_catalog" "aria_catalog_01" {
   isolation_mode = "ISOLATED"
 
   depends_on = [databricks_metastore_assignment.workspace_01,
-  databricks_external_location.landing_external_01]
+    databricks_external_location.landing_external_01,
+  databricks_grants.metastore_grants]
 }
 
 ## storage credentials
