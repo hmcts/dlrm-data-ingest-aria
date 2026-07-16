@@ -10,6 +10,11 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
+resource "databricks_group" "aria_admins" {
+  provider     = databricks.account
+  display_name = "aria_admin_${var.env}"
+}
+
 ##sbox00
 
 # Access connector

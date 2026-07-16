@@ -20,10 +20,10 @@
 # # }
 
 # # ##create workspace level groups for aria admins and aria users -> these groups will be used to assign permissions to the catalog, storage credentials and external locations
-# # resource "databricks_group" "aria_admins" {
-# #   provider     = databricks.account
-# #   display_name = "aria_admin_${var.env}"
-# # }
+# resource "databricks_group" "aria_admins" {
+#   provider     = databricks.account
+#   display_name = "aria_admin_${var.env}"
+# }
 
 # # resource "databricks_group" "aria_users" {
 # #   provider     = databricks.account
