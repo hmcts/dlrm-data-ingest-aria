@@ -12,12 +12,12 @@ data "databricks_metastore" "this" {
 
 data "databricks_group" "aria_admins" {
   provider     = databricks.account
-  display_name = "aria_admin_${var.env}${var.landing_zones}"
+  display_name = "aria_admin_${var.env}"
 }
 
 data "databricks_group" "aria_users" {
   provider     = databricks.account
-  display_name = "aria_users_${var.env}${var.landing_zones}"
+  display_name = "aria_users_${var.env}"
 }
 
 ## create catalog
@@ -82,7 +82,7 @@ resource "databricks_external_location" "landing_external" {
 
   name = "external_storage_location_${var.env}${each.key}"
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing_storage[each.key].name)
+  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing[each.key].name)
   credential_name = databricks_storage_credential.external[each.key].id
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
