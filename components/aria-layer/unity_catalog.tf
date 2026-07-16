@@ -56,12 +56,12 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
 provider "databricks" {
   alias = "workspace_00"
-  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, "https://placeholder.azuredatabricks.net")
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, null)
 }
 
 provider "databricks" {
   alias = "workspace_01"
-  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, "https://placeholder.azuredatabricks.net")
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, null)
 }
 
 ##assign metastore to workspaces
