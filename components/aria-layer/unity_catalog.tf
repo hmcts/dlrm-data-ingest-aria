@@ -79,7 +79,7 @@ resource "databricks_metastore_assignment" "workspace_01" {
 }
 
 ##assign workspace metastore permissions to service principal
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_00" {
   provider  = databricks.workspace_00
   metastore = var.metastore_id
 
@@ -89,7 +89,7 @@ resource "databricks_grants" "metastore_grants" {
   }
 }
 
-resource "databricks_grants" "metastore_grants" {
+resource "databricks_grants" "metastore_grants_01" {
   provider  = databricks.workspace_01
   metastore = var.metastore_id
 
