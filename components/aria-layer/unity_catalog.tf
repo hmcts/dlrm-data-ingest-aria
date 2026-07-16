@@ -32,6 +32,7 @@ resource "databricks_group" "aria_users" {
 
 ## create catalog
 resource "databricks_catalog" "aria_catalog" {
+  provider = databricks.account
   for_each = var.landing_zones
 
   name    = "aria_${var.env}${each.key}"
@@ -63,6 +64,7 @@ resource "databricks_group_member" "aria_admins" {
 
 ##create databricks access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
+  provider = databricks.account
   for_each = var.landing_zones
 
   name                = "${var.env}${each.key}-ext-access-connector"
