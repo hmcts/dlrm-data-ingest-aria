@@ -11,8 +11,8 @@ data "databricks_metastore" "this" {
 }
 
 data "azurerm_databricks_workspace" "db_ws" {
-  databricks_ws_name = "ingest00-product-databricks001-${var.env}"
-  databricks_rg_name = "ingest00-main-${var.env}"
+  name                = "ingest00-product-databricks001-${var.env}"
+  resource_group_name = "ingest00-main-${var.env}"
 }
 
 provider "databricks" {
