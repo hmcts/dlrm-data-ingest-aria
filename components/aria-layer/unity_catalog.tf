@@ -704,9 +704,9 @@ resource "databricks_external_location" "landing_external_prod00" {
 }
 
 ## grants: metastore grants
-resource "databricks_grants" "metastore_grants_sbox00" {
+resource "databricks_grants" "metastore_grants" {
   count     = var.env == "sbox" ? 1 : 0
-  provider  = databricks.sbox-00
+  provider  = databricks.account
   metastore = var.metastore_id
 
   grant {
@@ -715,38 +715,38 @@ resource "databricks_grants" "metastore_grants_sbox00" {
   }
 }
 
-resource "databricks_grants" "metastore_grants_stg00" {
-  count     = var.env == "stg" ? 1 : 0
-  provider  = databricks.stg-00
-  metastore = var.metastore_id
+# resource "databricks_grants" "metastore_grants_stg00" {
+#   count     = var.env == "stg" ? 1 : 0
+#   provider  = databricks.account
+#   metastore = var.metastore_id
 
-  grant {
-    principal  = databricks_group.aria_admins.display_name
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
+#   }
+# }
 
-resource "databricks_grants" "metastore_grants_stg01" {
-  count     = var.env == "stg" ? 1 : 0
-  provider  = databricks.stg-01
-  metastore = var.metastore_id
+# resource "databricks_grants" "metastore_grants_stg01" {
+#   count     = var.env == "stg" ? 1 : 0
+#   provider  = databricks.stg-01
+#   metastore = var.metastore_id
 
-  grant {
-    principal  = databricks_group.aria_admins.display_name
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
+#   }
+# }
 
-resource "databricks_grants" "metastore_grants_prod00" {
-  count     = var.env == "prod" ? 1 : 0
-  provider  = databricks.prod-00
-  metastore = var.metastore_id
+# resource "databricks_grants" "metastore_grants_prod00" {
+#   count     = var.env == "prod" ? 1 : 0
+#   provider  = databricks.prod-00
+#   metastore = var.metastore_id
 
-  grant {
-    principal  = databricks_group.aria_admins.display_name
-    privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
-  }
-}
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_SERVICE_CREDENTIAL", "CREATE_STORAGE_CREDENTIAL"]
+#   }
+# }
 
 ## grants: storage credential
 resource "databricks_grants" "storage_cred_grants_sbox00" {
