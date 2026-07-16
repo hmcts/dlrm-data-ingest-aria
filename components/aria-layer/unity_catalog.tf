@@ -705,7 +705,6 @@ resource "databricks_external_location" "landing_external_prod00" {
 
 ## grants: metastore grants
 resource "databricks_grants" "metastore_grants" {
-  count     = var.env == "sbox" ? 1 : 0
   provider  = databricks.account
   metastore = var.metastore_id
 
