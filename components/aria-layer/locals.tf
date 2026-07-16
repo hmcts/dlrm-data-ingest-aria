@@ -43,14 +43,4 @@ locals {
       }
     ]
   ])
-
-  uc_admin_groups = {
-    for k, v in {
-      "sbox00" = try(databricks_group.aria_uc_admins_sbox00[0].display_name, null)
-      "stg00"  = try(databricks_group.aria_uc_admins_stg00[0].display_name, null)
-      "stg01"  = try(databricks_group.aria_uc_admins_stg01[0].display_name, null)
-      "prod00" = try(databricks_group.aria_uc_admins_prod00[0].display_name, null)
-    } : k => v if v != null
-  }
-
 }
