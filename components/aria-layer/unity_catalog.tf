@@ -56,7 +56,7 @@ resource "databricks_metastore_assignment" "workspace_00" {
   metastore_id = var.metastore_id
 
   # Optional but recommended
-#   default_catalog_name = "main"
+  #   default_catalog_name = "main"
 }
 
 
@@ -92,7 +92,7 @@ resource "databricks_external_location" "landing_external" {
   isolation_mode = "ISOLATED"
 
   depends_on = [
-    databricks_metastore_assignment.this
+    databricks_metastore_assignment.workspace_00
   ]
 }
 
