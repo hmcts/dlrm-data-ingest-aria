@@ -15,6 +15,14 @@ resource "databricks_group" "aria_admins" {
   display_name = "aria_admin_${var.env}"
 }
 
+resource "databricks_group_member" "aria_admins" {
+  provider = databricks.account
+  for_each = var.aria_uc_admins
+
+  group_id  = databricks_group.aria_admins.id
+  member_id = each.value.id
+}
+
 ##sbox00
 
 # Access connector

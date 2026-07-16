@@ -31,13 +31,13 @@
 # # }
 
 # # ## add aria admins to the group -> will get UC permissions
-# # resource "databricks_group_member" "aria_admins" {
-# #   provider = databricks.account
-# #   for_each = data.databricks_user.aria_uc_admins
+# resource "databricks_group_member" "aria_admins" {
+#   provider = databricks.account
+#   for_each = data.databricks_user.aria_uc_admins
 
-# #   group_id  = databricks_group.aria_admins.id
-# #   member_id = each.value.id
-# # }
+#   group_id  = databricks_group.aria_admins.id
+#   member_id = each.value.id
+# }
 
 # # ##workspace level resources##
 
