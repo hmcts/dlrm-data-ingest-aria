@@ -10,12 +10,22 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
-data "databricks_group" "aria_admins" {
+# data "databricks_group" "aria_admins" {
+#   provider     = databricks.account
+#   display_name = "aria_admin_${var.env}"
+# }
+
+# data "databricks_group" "aria_users" {
+#   provider     = databricks.account
+#   display_name = "aria_users_${var.env}"
+# }
+
+resource "databricks_group" "aria_admins" {
   provider     = databricks.account
   display_name = "aria_admin_${var.env}"
 }
 
-data "databricks_group" "aria_users" {
+resource "databricks_group" "aria_users" {
   provider     = databricks.account
   display_name = "aria_users_${var.env}"
 }
@@ -47,7 +57,7 @@ resource "databricks_group_member" "aria_admins" {
   provider = databricks.account
   for_each = data.databricks_user.aria_uc_admins
 
-  group_id  = data.databricks_group.aria_admins.id
+  group_id  = databricks_group.aria_admins.id
   member_id = each.value.id
 }
 
@@ -94,12 +104,12 @@ resource "databricks_grants" "storage_cred_grants" {
   storage_credential = databricks_storage_credential.external[each.key].id
 
   grant {
-    principal  = data.databricks_group.aria_admins.display_name
+    principal  = databricks_group.aria_admins.display_name
     privileges = ["ALL_PRIVILEGES", "MANAGE"]
   }
 
   grant {
-    principal  = data.databricks_group.aria_users.display_name
+    principal  = databricks_group.aria_users.display_name
     privileges = ["READ_FILES"]
   }
 }
@@ -109,12 +119,12 @@ resource "databricks_grants" "external_location_admin_grants" {
   external_location = databricks_external_location.landing_external[each.key].id
 
   grant {
-    principal  = data.databricks_group.aria_admins.display_name
+    principal  = databricks_group.aria_admins.display_name
     privileges = ["ALL_PRIVILEGES", "MANAGE"]
   }
 
   grant {
-    principal  = data.databricks_group.aria_users.display_name
+    principal  = databricks_group.aria_users.display_name
     privileges = ["BROWSE", "READ_FILES"]
   }
 }
@@ -125,12 +135,12 @@ resource "databricks_grants" "catalog_aria_grants" {
   catalog  = databricks_catalog.aria_catalog[each.key].name
 
   grant {
-    principal  = data.databricks_group.aria_admins.display_name
+    principal  = databricks_group.aria_admins.display_name
     privileges = ["ALL_PRIVILEGES"]
   }
 
   grant {
-    principal  = data.databricks_group.aria_users.display_name
+    principal  = databricks_group.aria_users.display_name
     privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ_VOLUME", "EXECUTE"]
   }
 }
