@@ -1,3 +1,4 @@
+##account level databricks api for metastore, group permissions, users
 provider "databricks" {
   alias      = "account"
   host       = "https://accounts.azuredatabricks.net"
@@ -10,16 +11,15 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
-# data "databricks_group" "aria_admins" {
-#   provider     = databricks.account
-#   display_name = "aria_admin_${var.env}"
-# }
+## create list of aria users
+data "databricks_user" "aria_uc_admins" {
+  provider = databricks.account
+  for_each = toset(var.aria_uc_admins)
 
-# data "databricks_group" "aria_users" {
-#   provider     = databricks.account
-#   display_name = "aria_users_${var.env}"
-# }
+  user_name = each.value
+}
 
+##create workspace level groups for aria admins and aria users -> these groups will be used to assign permissions to the catalog, storage credentials and external locations
 resource "databricks_group" "aria_admins" {
   provider     = databricks.account
   display_name = "aria_admin_${var.env}"
@@ -28,29 +28,6 @@ resource "databricks_group" "aria_admins" {
 resource "databricks_group" "aria_users" {
   provider     = databricks.account
   display_name = "aria_users_${var.env}"
-}
-
-## create catalog
-resource "databricks_catalog" "aria_catalog" {
-  provider = databricks.account
-  for_each = var.landing_zones
-
-  name    = "aria_${var.env}${each.key}"
-  comment = "this catalog is managed by terraform"
-  properties = {
-    purpose = "Aria catalog for ${var.env}${each.key}"
-  }
-
-  storage_root   = "abfss://landing@ingest${each.key}landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
-  isolation_mode = "ISOLATED"
-}
-
-## create list of aria users
-data "databricks_user" "aria_uc_admins" {
-  provider = databricks.account
-  for_each = toset(var.aria_uc_admins)
-
-  user_name = each.value
 }
 
 ## add aria admins to the group -> will get UC permissions
@@ -75,36 +52,110 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   }
 }
 
-##set up storage credential for external storage account -> this will be used to create external location
-resource "databricks_storage_credential" "external" {
-  provider = databricks.account
+##workspace level resources
 
-  for_each = var.landing_zones
+provider "databricks" {
+  alias = "workspace_00"
+  host  = data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url
+}
 
-  name = "aria_uc_${var.env}${each.key}"
+provider "databricks" {
+  alias = "workspace_01"
+  host  = data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url
+}
+
+## create catalog
+# resource "databricks_catalog" "aria_catalog" {
+#   provider = databricks.workspace
+#   for_each = var.landing_zones
+
+#   name    = "aria_${var.env}${each.key}"
+#   comment = "this catalog is managed by terraform"
+#   properties = {
+#     purpose = "Aria catalog for ${var.env}${each.key}"
+#   }
+
+#   storage_root   = "abfss://landing@ingest${each.key}landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
+#   isolation_mode = "ISOLATED"
+# }
+
+##create catalogs
+resource "databricks_catalog" "aria_catalog_00" {
+  provider = databricks.workspace_00
+
+  name    = "aria_${var.env}00"
+  comment = "this catalog is managed by terraform"
+  properties = {
+    purpose = "Aria catalog for ${var.env}00"
+  }
+
+  storage_root   = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
+  isolation_mode = "ISOLATED"
+}
+
+resource "databricks_catalog" "aria_catalog_01" {
+  provider = databricks.workspace_01
+
+  name    = "aria_${var.env}01"
+  comment = "this catalog is managed by terraform"
+  properties = {
+    purpose = "Aria catalog for ${var.env}01"
+  }
+
+  storage_root   = "abfss://landing@ingest01landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
+  isolation_mode = "ISOLATED"
+}
+
+## storage credentials
+resource "databricks_storage_credential" "external_00" {
+  provider = databricks.workspace_00
+
+  name = "aria_uc_${var.env}00"
   azure_managed_identity {
-    access_connector_id = azurerm_databricks_access_connector.ext_access_connector[each.key].id
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
   }
   isolation_mode = "ISOLATION_MODE_ISOLATED"
   comment        = "Managed by TF"
 }
 
-## create external location for landing storage account -> this will be used to create external tables (external delta tables)
-resource "databricks_external_location" "landing_external" {
-  for_each = var.landing_zones
+resource "databricks_storage_credential" "external_01" {
+  provider = databricks.workspace_01
 
-  name = "external_storage_location_${var.env}${each.key}"
+  name = "aria_uc_${var.env}01"
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["01"].id
+  }
+  isolation_mode = "ISOLATION_MODE_ISOLATED"
+  comment        = "Managed by TF"
+}
 
-  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing[each.key].name)
-  credential_name = databricks_storage_credential.external[each.key].id
+## external locations
+resource "databricks_external_location" "landing_external_00" {
+  provider = databricks.workspace_00
+
+  name = "external_storage_location_${var.env}00"
+
+  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["00"].name)
+  credential_name = databricks_storage_credential.external_00.name
   comment         = "Managed by TF"
   isolation_mode  = "ISOLATION_MODE_ISOLATED"
 }
 
-##grant access /permissions to storage credential and external location to the aria_admins and aria_users groups
-resource "databricks_grants" "storage_cred_grants" {
-  for_each           = var.landing_zones
-  storage_credential = databricks_storage_credential.external[each.key].id
+resource "databricks_external_location" "landing_external_01" {
+  provider = databricks.workspace_01
+
+  name = "external_storage_location_${var.env}01"
+
+  url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing["01"].name)
+  credential_name = databricks_storage_credential.external_01.name
+  comment         = "Managed by TF"
+  isolation_mode  = "ISOLATION_MODE_ISOLATED"
+}
+
+## grants: storage credential
+resource "databricks_grants" "storage_cred_grants_00" {
+  provider           = databricks.workspace_00
+  storage_credential = databricks_storage_credential.external_00.id
 
   grant {
     principal  = databricks_group.aria_admins.display_name
@@ -117,9 +168,25 @@ resource "databricks_grants" "storage_cred_grants" {
   }
 }
 
-resource "databricks_grants" "external_location_admin_grants" {
-  for_each          = var.landing_zones
-  external_location = databricks_external_location.landing_external[each.key].id
+resource "databricks_grants" "storage_cred_grants_01" {
+  provider           = databricks.workspace_01
+  storage_credential = databricks_storage_credential.external_01.id
+
+  grant {
+    principal  = databricks_group.aria_admins.display_name
+    privileges = ["ALL_PRIVILEGES", "MANAGE"]
+  }
+
+  grant {
+    principal  = databricks_group.aria_users.display_name
+    privileges = ["READ_FILES"]
+  }
+}
+
+## grants: external location
+resource "databricks_grants" "external_location_admin_grants_00" {
+  provider          = databricks.workspace_00
+  external_location = databricks_external_location.landing_external_00.id
 
   grant {
     principal  = databricks_group.aria_admins.display_name
@@ -132,10 +199,25 @@ resource "databricks_grants" "external_location_admin_grants" {
   }
 }
 
-##assign catalog permissions to aria admins
-resource "databricks_grants" "catalog_aria_grants" {
-  for_each = var.landing_zones
-  catalog  = databricks_catalog.aria_catalog[each.key].name
+resource "databricks_grants" "external_location_admin_grants_01" {
+  provider          = databricks.workspace_01
+  external_location = databricks_external_location.landing_external_01.id
+
+  grant {
+    principal  = databricks_group.aria_admins.display_name
+    privileges = ["ALL_PRIVILEGES", "MANAGE"]
+  }
+
+  grant {
+    principal  = databricks_group.aria_users.display_name
+    privileges = ["BROWSE", "READ_FILES"]
+  }
+}
+
+## grants: catalog
+resource "databricks_grants" "catalog_aria_grants_00" {
+  provider = databricks.workspace_00
+  catalog  = databricks_catalog.aria_catalog_00.name
 
   grant {
     principal  = databricks_group.aria_admins.display_name
@@ -147,3 +229,109 @@ resource "databricks_grants" "catalog_aria_grants" {
     privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ_VOLUME", "EXECUTE"]
   }
 }
+
+resource "databricks_grants" "catalog_aria_grants_01" {
+  provider = databricks.workspace_01
+  catalog  = databricks_catalog.aria_catalog_01.name
+
+  grant {
+    principal  = databricks_group.aria_admins.display_name
+    privileges = ["ALL_PRIVILEGES"]
+  }
+
+  grant {
+    principal  = databricks_group.aria_users.display_name
+    privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ_VOLUME", "EXECUTE"]
+  }
+}
+
+
+
+
+
+
+
+
+##############
+
+##set up storage credential for external storage account -> this will be used to create external location
+# resource "databricks_storage_credential" "external_00" {
+#   provider = databricks.workspace_00
+
+#   name = "aria_uc_${var.env}00"
+#   azure_managed_identity {
+#     access_connector_id = azurerm_databricks_access_connector.ext_access_connector.id
+#   }
+#   isolation_mode = "ISOLATION_MODE_ISOLATED"
+#   comment        = "Managed by TF"
+# }
+
+# resource "databricks_storage_credential" "external_01" {
+#   provider = databricks.workspace_01
+
+#   name = "aria_uc_${var.env}01"
+#   azure_managed_identity {
+#     access_connector_id = azurerm_databricks_access_connector.ext_access_connector.id
+#   }
+#   isolation_mode = "ISOLATION_MODE_ISOLATED"
+#   comment        = "Managed by TF"
+# }
+
+# ## create external location for landing storage account -> this will be used to create external tables (external delta tables)
+# resource "databricks_external_location" "landing_external" {
+#   for_each = var.landing_zones
+
+#   name = "external_storage_location_${var.env}${each.key}"
+
+#   url             = format("abfss://%s@%s.dfs.core.windows.net", "landing", data.azurerm_storage_account.landing[each.key].name)
+#   credential_name = databricks_storage_credential.external[each.key].id
+#   comment         = "Managed by TF"
+#   isolation_mode  = "ISOLATION_MODE_ISOLATED"
+# }
+
+# ##grant access /permissions to storage credential and external location to the aria_admins and aria_users groups
+# resource "databricks_grants" "storage_cred_grants" {
+#   for_each           = var.landing_zones
+#   storage_credential = databricks_storage_credential.external[each.key].id
+
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["ALL_PRIVILEGES", "MANAGE"]
+#   }
+
+#   grant {
+#     principal  = databricks_group.aria_users.display_name
+#     privileges = ["READ_FILES"]
+#   }
+# }
+
+# resource "databricks_grants" "external_location_admin_grants" {
+#   for_each          = var.landing_zones
+#   external_location = databricks_external_location.landing_external[each.key].id
+
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["ALL_PRIVILEGES", "MANAGE"]
+#   }
+
+#   grant {
+#     principal  = databricks_group.aria_users.display_name
+#     privileges = ["BROWSE", "READ_FILES"]
+#   }
+# }
+
+# ##assign catalog permissions to aria admins
+# resource "databricks_grants" "catalog_aria_grants" {
+#   for_each = var.landing_zones
+#   catalog  = databricks_catalog.aria_catalog[each.key].name
+
+#   grant {
+#     principal  = databricks_group.aria_admins.display_name
+#     privileges = ["ALL_PRIVILEGES"]
+#   }
+
+#   grant {
+#     principal  = databricks_group.aria_users.display_name
+#     privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "EXTERNAL_USE_SCHEMA", "READ_VOLUME", "EXECUTE"]
+#   }
+# }
