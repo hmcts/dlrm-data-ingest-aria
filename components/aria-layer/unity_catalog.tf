@@ -495,8 +495,7 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 
   depends_on = [
     databricks_metastore_assignment.sbox00,
-    databricks_external_location.landing_external_sbox00,
-    databricks_grants.metastore_grants_sbox00
+    databricks_external_location.landing_external_sbox00
   ]
 }
 
@@ -515,8 +514,7 @@ resource "databricks_catalog" "aria_catalog_stg00" {
 
   depends_on = [
     databricks_metastore_assignment.stg00,
-    databricks_external_location.landing_external_stg00,
-    databricks_grants.metastore_grants_stg00
+    databricks_external_location.landing_external_stg00
   ]
 }
 
@@ -535,8 +533,7 @@ resource "databricks_catalog" "aria_catalog_stg01" {
 
   depends_on = [
     databricks_metastore_assignment.stg01,
-    databricks_external_location.landing_external_stg01,
-    databricks_grants.metastore_grants_stg01
+    databricks_external_location.landing_external_stg01
   ]
 }
 
@@ -555,8 +552,7 @@ resource "databricks_catalog" "aria_catalog_prod00" {
 
   depends_on = [
     databricks_metastore_assignment.prod00,
-    databricks_external_location.landing_external_prod00,
-    databricks_grants.metastore_grants_prod00
+    databricks_external_location.landing_external_prod00
   ]
 }
 
@@ -572,7 +568,7 @@ resource "databricks_storage_credential" "external_sbox00" {
   isolation_mode = "ISOLATION_MODE_ISOLATED"
   comment        = "Managed by TF"
 
-#   depends_on = [databricks_metastore_assignment.sbox00]
+  #   depends_on = [databricks_metastore_assignment.sbox00]
   depends_on = [time_sleep.wait_for_uc]
 
 }
