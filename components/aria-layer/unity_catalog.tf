@@ -17,10 +17,11 @@ resource "databricks_group" "aria_admins" {
 
 resource "databricks_group_member" "aria_admins" {
   provider = databricks.account
-  for_each = var.aria_uc_admins
+
+  for_each = toset(var.aria_uc_admins)
 
   group_id  = databricks_group.aria_admins.id
-  member_id = each.value.id
+  member_id = each.value
 }
 
 ##sbox00
