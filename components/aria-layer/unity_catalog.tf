@@ -84,8 +84,10 @@ resource "databricks_grants" "metastore_grants_00" {
   metastore = var.metastore_id
 
   grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["ALL_PRIVILEGES"]
+    principal = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION",
+    "CREATE_STORAGE_CREDENTIAL"]
   }
 }
 
@@ -94,8 +96,10 @@ resource "databricks_grants" "metastore_grants_01" {
   metastore = var.metastore_id
 
   grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["ALL_PRIVILEGES"]
+    principal = data.azurerm_client_config.current.client_id
+    privileges = ["CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION",
+    "CREATE_STORAGE_CREDENTIAL"]
   }
 }
 
