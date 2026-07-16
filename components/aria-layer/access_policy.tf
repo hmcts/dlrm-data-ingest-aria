@@ -218,7 +218,7 @@ resource "azurerm_role_assignment" "external_uc" {
 
   scope                = data.azurerm_storage_account.external[each.key].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_databricks_access_connector.ext_access_connector[each.key].identity[0].principal_id
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector["00"].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "raw_uc" {
@@ -226,7 +226,7 @@ resource "azurerm_role_assignment" "raw_uc" {
 
   scope                = data.azurerm_storage_account.raw[each.key].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_databricks_access_connector.ext_access_connector[each.key].identity[0].principal_id
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector["00"].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "landing_uc" {
@@ -234,5 +234,5 @@ resource "azurerm_role_assignment" "landing_uc" {
 
   scope                = data.azurerm_storage_account.landing[each.key].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_databricks_access_connector.ext_access_connector[each.key].identity[0].principal_id
+  principal_id         = azurerm_databricks_access_connector.ext_access_connector["00"].identity[0].principal_id
 }

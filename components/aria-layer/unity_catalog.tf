@@ -20,9 +20,11 @@ resource "databricks_group" "aria_admins" {
 # Access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
-  name                = "${var.env}00-ext-access-connector"
-  resource_group_name = "ingest00-main-${var.env}"
-  location            = data.azurerm_resource_group.lz["ingest00-main-${var.env}"].location
+  for_each = var.landing_zones
+
+  name                = "${var.env}${each.key}-ext-access-connector"
+  resource_group_name = "ingest${each.key}-main-${var.env}"
+  location            = data.azurerm_resource_group.lz["ingest${each.key}-main-${var.env}"].location
 
   identity {
     type = "SystemAssigned"
