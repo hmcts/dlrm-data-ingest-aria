@@ -54,19 +54,19 @@
 #   }
 # }
 
-# provider "databricks" {
-#   alias = "workspace_00"
-#   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, null)
+provider "databricks" {
+  alias = "workspace_00"
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_url, null)
 
-#   skip_verify = var.landing_zones != "00"
-# }
+  skip_verify = var.landing_zones != "00"
+}
 
-# provider "databricks" {
-#   alias = "workspace_01"
-#   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, null)
+provider "databricks" {
+  alias = "workspace_01"
+  host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, null)
 
-#   skip_verify = var.landing_zones != "01"
-# }
+  skip_verify = var.landing_zones != "01"
+}
 
 # ##assign metastore to workspaces
 # resource "databricks_metastore_assignment" "workspace_00" {
