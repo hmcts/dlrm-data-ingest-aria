@@ -64,6 +64,20 @@ provider "databricks" {
   host  = try(data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_url, "https://placeholder.azuredatabricks.net")
 }
 
+##assign metastore to workspaces
+resource "databricks_metastore_assignment" "workspace_00" {
+  provider     = databricks.workspace_00
+  workspace_id = data.azurerm_databricks_workspace.db_ws["${var.env}-00"].workspace_id
+  metastore_id = var.metastore_id
+}
+
+resource "databricks_metastore_assignment" "workspace_01" {
+  count        = contains(keys(var.landing_zones), "01") ? 1 : 0
+  provider     = databricks.workspace_01
+  workspace_id = data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_id
+  metastore_id = var.metastore_id
+}
+
 ##create catalogs
 resource "databricks_catalog" "aria_catalog_00" {
   provider = databricks.workspace_00
@@ -76,6 +90,8 @@ resource "databricks_catalog" "aria_catalog_00" {
 
   storage_root   = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
   isolation_mode = "ISOLATED"
+
+  depends_on = [databricks_metastore_assignment.workspace_00]
 }
 
 resource "databricks_catalog" "aria_catalog_01" {
@@ -90,6 +106,8 @@ resource "databricks_catalog" "aria_catalog_01" {
 
   storage_root   = "abfss://landing@ingest01landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
   isolation_mode = "ISOLATED"
+
+  depends_on = [databricks_metastore_assignment.workspace_01]
 }
 
 ## storage credentials
@@ -102,6 +120,8 @@ resource "databricks_storage_credential" "external_00" {
   }
   isolation_mode = "ISOLATION_MODE_ISOLATED"
   comment        = "Managed by TF"
+
+  depends_on = [databricks_metastore_assignment.workspace_00]
 }
 
 resource "databricks_storage_credential" "external_01" {
@@ -114,6 +134,8 @@ resource "databricks_storage_credential" "external_01" {
   }
   isolation_mode = "ISOLATION_MODE_ISOLATED"
   comment        = "Managed by TF"
+
+  depends_on = [databricks_metastore_assignment.workspace_01]
 }
 
 ## external locations
