@@ -55,7 +55,7 @@ resource "databricks_storage_credential" "external" {
 
   name = "aria_catalog_${var.env}${each.key}"
   azure_managed_identity {
-    access_connector_id = data.azurerm_databricks_access_connector.unity_catalog[each.key].id
+    access_connector_id = azurerm_databricks_access_connector.unity_catalog[each.key].id
   }
   isolation_mode = "ISOLATION_MODE_ISOLATED"
   comment        = "Managed by TF"
@@ -98,10 +98,10 @@ resource "databricks_grants" "external_location_admin_grants" {
 
 resource "databricks_grants" "catalog_aria_grants" {
   for_each = var.landing_zones
-  catalog  = databricks_catalog.aria_catalog.name
+  catalog  = databricks_catalog.aria_catalog[each.key].name
 
   grant {
-    principal  = data.databricks_group.aria_admins.display_name
+    principal  = databricks_group.aria_admins.display_name
     privileges = ["ALL_PRIVILEGES"]
   }
 }
