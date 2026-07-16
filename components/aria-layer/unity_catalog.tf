@@ -10,8 +10,13 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
+data "azurerm_databricks_workspace" "db_ws" {
+  databricks_ws_name = "ingest00-product-databricks001-${var.env}"
+  databricks_rg_name = "ingest00-main-${var.env}"
+}
+
 provider "databricks" {
-  host = data.azurerm_databricks_workspace.db_ws[each.key].workspace_url
+  host = data.azurerm_databricks_workspace.db_ws.workspace_url
 }
 
 resource "databricks_group" "aria_admins" {
