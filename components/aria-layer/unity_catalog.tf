@@ -11,16 +11,6 @@ data "databricks_metastore" "this" {
   metastore_id = var.metastore_id
 }
 
-resource "databricks_grants" "metastore_grants" {
-  provider  = databricks.account
-  metastore = var.metastore_id
-
-  grant {
-    principal  = data.azurerm_client_config.current.client_id
-    privileges = ["ALL_PRIVILEGES"]
-  }
-}
-
 ## create list of aria users
 data "databricks_user" "aria_uc_admins" {
   provider = databricks.account
@@ -86,6 +76,27 @@ resource "databricks_metastore_assignment" "workspace_01" {
   provider     = databricks.workspace_01
   workspace_id = data.azurerm_databricks_workspace.db_ws["${var.env}-01"].workspace_id
   metastore_id = var.metastore_id
+}
+
+##assign workspace metastore permissions to service principal
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.workspace_00
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["ALL_PRIVILEGES"]
+  }
+}
+
+resource "databricks_grants" "metastore_grants" {
+  provider  = databricks.workspace_01
+  metastore = var.metastore_id
+
+  grant {
+    principal  = data.azurerm_client_config.current.client_id
+    privileges = ["ALL_PRIVILEGES"]
+  }
 }
 
 ##create catalogs
