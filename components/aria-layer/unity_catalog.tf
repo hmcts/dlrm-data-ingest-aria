@@ -184,6 +184,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "USE_CATALOG",
       "CREATE_SCHEMA",
       "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
       "SELECT",
       "MODIFY",
       "MANAGE",
@@ -198,6 +199,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "USE_CATALOG",
       "CREATE_SCHEMA",
       "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
       "SELECT",
       "MANAGE",
       "MODIFY",
@@ -234,6 +236,7 @@ resource "databricks_grants" "active_schema" {
       "USE_SCHEMA",
       "MANAGE",
       "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
       "MODIFY",
       "SELECT"
     ]
@@ -246,6 +249,7 @@ resource "databricks_grants" "active_schema" {
       "USE_SCHEMA",
       "MANAGE",
       "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
       "MODIFY",
       "SELECT"
     ]
