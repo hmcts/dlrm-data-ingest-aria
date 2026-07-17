@@ -200,7 +200,8 @@ resource "databricks_grants" "sbox00_catalog" {
       "CREATE_TABLE",
       "SELECT",
       "MODIFY",
-      "BROWSE"
+      "BROWSE",
+      "USE_SCHEMA"
     ]
   }
   grant {
@@ -212,7 +213,8 @@ resource "databricks_grants" "sbox00_catalog" {
       "CREATE_TABLE",
       "SELECT",
       "MODIFY",
-      "BROWSE"
+      "BROWSE",
+      "USE_SCHEMA"
     ]
   }
 }
