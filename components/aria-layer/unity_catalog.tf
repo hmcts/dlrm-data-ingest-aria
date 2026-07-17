@@ -81,7 +81,7 @@ resource "databricks_external_location" "landing_external" {
   provider = databricks.sbox-00
   name     = "external_storage_aria_uc_${var.env}00"
   url = format(
-    "abfss://%s@%s.dfs.core.windows.net",
+    "abfss://%s@%s.dfs.core.windows.net/aria_uc",
     "landing",
     data.azurerm_storage_account.landing["00"].name
   )
@@ -109,7 +109,7 @@ resource "databricks_catalog" "aria_catalog" {
     purpose = "Aria catalog for ${var.env}00"
   }
 
-  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net"
+  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc"
 
   isolation_mode = "ISOLATED"
 
