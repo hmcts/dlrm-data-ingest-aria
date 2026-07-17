@@ -195,26 +195,28 @@ resource "databricks_grants" "sbox00_catalog" {
     principal = data.azurerm_client_config.current.client_id
 
     privileges = [
-      "USE_CATALOG",
-      "CREATE_SCHEMA",
-      "CREATE_TABLE",
-      "SELECT",
-      "MODIFY",
-      "BROWSE",
-      "USE_SCHEMA"
+      "ALL_PRIVELEGES"
+      #   "USE_CATALOG",
+      #   "CREATE_SCHEMA",
+      #   "CREATE_TABLE",
+      #   "SELECT",
+      #   "MODIFY",
+      #   "BROWSE",
+      #   "USE_SCHEMA"
     ]
   }
   grant {
     principal = databricks_group.aria_admins.display_name
 
     privileges = [
-      "USE_CATALOG",
-      "CREATE_SCHEMA",
-      "CREATE_TABLE",
-      "SELECT",
-      "MODIFY",
-      "BROWSE",
-      "USE_SCHEMA"
+      "ALL_PRIVELEGES"
+      #   "USE_CATALOG",
+      #   "CREATE_SCHEMA",
+      #   "CREATE_TABLE",
+      #   "SELECT",
+      #   "MODIFY",
+      #   "BROWSE",
+      #   "USE_SCHEMA"
     ]
   }
 }
