@@ -196,7 +196,10 @@ resource "databricks_grants" "sbox00_catalog" {
 
     privileges = [
       "USE_CATALOG",
-      "CREATE"
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "SELECT",
+      "MODIFY"
     ]
   }
   grant {
@@ -204,7 +207,10 @@ resource "databricks_grants" "sbox00_catalog" {
 
     privileges = [
       "USE_CATALOG",
-      "CREATE"
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "SELECT",
+      "MODIFY"
     ]
   }
 }
