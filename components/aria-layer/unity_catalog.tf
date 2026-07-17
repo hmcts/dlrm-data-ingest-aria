@@ -174,20 +174,6 @@ resource "databricks_grants" "external_location_admin_grants_sbox00" {
 }
 
 # Catalog permissions
-# resource "databricks_grants" "catalog_aria_grants_sbox00" {
-
-#   provider = databricks.sbox-00
-
-#   catalog = databricks_catalog.aria_catalog_sbox00.name
-
-#   grant {
-#     principal = databricks_group.aria_admins.display_name
-
-#     privileges = [
-#       "ALL_PRIVILEGES"
-#     ]
-#   }
-# }
 resource "databricks_grants" "sbox00_catalog" {
   provider = databricks.sbox-00
   catalog  = databricks_catalog.aria_catalog_sbox00.name
@@ -195,28 +181,26 @@ resource "databricks_grants" "sbox00_catalog" {
     principal = data.azurerm_client_config.current.client_id
 
     privileges = [
-      "ALL_PRIVELEGES"
-      #   "USE_CATALOG",
-      #   "CREATE_SCHEMA",
-      #   "CREATE_TABLE",
-      #   "SELECT",
-      #   "MODIFY",
-      #   "BROWSE",
-      #   "USE_SCHEMA"
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "SELECT",
+      "MODIFY",
+      "BROWSE",
+      "USE_SCHEMA"
     ]
   }
   grant {
     principal = databricks_group.aria_admins.display_name
 
     privileges = [
-      "ALL_PRIVELEGES"
-      #   "USE_CATALOG",
-      #   "CREATE_SCHEMA",
-      #   "CREATE_TABLE",
-      #   "SELECT",
-      #   "MODIFY",
-      #   "BROWSE",
-      #   "USE_SCHEMA"
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "SELECT",
+      "MODIFY",
+      "BROWSE",
+      "USE_SCHEMA"
     ]
   }
 }
@@ -232,6 +216,34 @@ resource "databricks_grants" "metastore_sbox00" {
     privileges = [
       "CREATE_CATALOG",
       "CREATE_EXTERNAL_LOCATION"
+    ]
+  }
+}
+
+resource "databricks_grants" "active_schema" {
+  provider = databricks.sbox-00
+
+  schema = "${databricks_catalog.aria_catalog_sbox00.name}.active"
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_SCHEMA",
+      "CREATE_TABLE",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_SCHEMA",
+      "CREATE_TABLE",
+      "MODIFY",
+      "SELECT"
     ]
   }
 }
