@@ -186,6 +186,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "CREATE_TABLE",
       "SELECT",
       "MODIFY",
+      "MANAGE",
       "BROWSE",
       "USE_SCHEMA"
     ]
@@ -198,6 +199,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "CREATE_SCHEMA",
       "CREATE_TABLE",
       "SELECT",
+      "MANAGE",
       "MODIFY",
       "BROWSE",
       "USE_SCHEMA"
@@ -230,6 +232,7 @@ resource "databricks_grants" "active_schema" {
 
     privileges = [
       "USE_SCHEMA",
+      "MANAGE",
       "CREATE_TABLE",
       "MODIFY",
       "SELECT"
@@ -241,6 +244,7 @@ resource "databricks_grants" "active_schema" {
 
     privileges = [
       "USE_SCHEMA",
+      "MANAGE",
       "CREATE_TABLE",
       "MODIFY",
       "SELECT"
