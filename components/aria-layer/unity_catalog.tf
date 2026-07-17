@@ -204,17 +204,17 @@ resource "databricks_grants" "metastore_sbox00" {
 }
 
 ##perms on catalog for aria admins
-resource "databricks_grants" "sbox00_catalog" {
-  catalog = databricks_catalog.aria_catalog_sbox00.name
-  grant {
-    principal = databricks_group.aria_admins.display_name
+# resource "databricks_grants" "sbox00_catalog" {
+#   catalog = databricks_catalog.aria_catalog_sbox00.name
+#   grant {
+#     principal = databricks_group.aria_admins.display_name
 
-    privileges = [
-      "USE_CATALOG",
-      "CREATE"
-    ]
-  }
-}
+#     privileges = [
+#       "USE_CATALOG",
+#       "CREATE"
+#     ]
+#   }
+# }
 
 ##stg00
 
