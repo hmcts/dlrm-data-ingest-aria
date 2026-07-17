@@ -164,6 +164,21 @@ resource "databricks_grants" "catalog_aria_grants" {
   }
 }
 
+##assign permissions for user to create external location on the metastore
+resource "databricks_grants" "metastore" {
+  provider  = databricks.account
+  metastore = var.metastore_id
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION"
+    ]
+  }
+}
+
 ##stg00
 
 
