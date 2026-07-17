@@ -1,8 +1,8 @@
-# provider "databricks" {
-#   alias      = "account"
-#   host       = "https://accounts.azuredatabricks.net"
-#   account_id = var.databricks_account_id
-# }
+provider "databricks" {
+  alias      = "account"
+  host       = "https://accounts.azuredatabricks.net"
+  account_id = var.databricks_account_id
+}
 
 # data "databricks_metastore" "this" {
 #   count        = var.assign_account == "true" ? 1 : 0
