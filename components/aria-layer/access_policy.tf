@@ -205,10 +205,10 @@ resource "azurerm_role_assignment" "rbac_account" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-resource "azurerm_role_assignment" "curated_uc" {
+resource "azurerm_role_assignment" "external_uc" {
   for_each = var.landing_zones
 
-  scope                = data.azurerm_storage_account.curated[each.key].id
+  scope                = data.azurerm_storage_account.external[each.key].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_databricks_access_connector.ext_access_connector[each.key].identity[0].principal_id
 }
