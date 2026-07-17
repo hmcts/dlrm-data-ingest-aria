@@ -119,7 +119,7 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 #create active schema
-resource "databricks_schema" "sbox00" {
+resource "databricks_schema" "active_sbox00" {
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
   name         = "active"
   comment      = "this database is managed by terraform"
@@ -129,7 +129,7 @@ resource "databricks_schema" "sbox00" {
 }
 
 #create archive schema
-resource "databricks_schema" "sbox00" {
+resource "databricks_schema" "archive_sbox00" {
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
   name         = "archive"
   comment      = "this database is managed by terraform"
