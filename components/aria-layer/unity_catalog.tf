@@ -119,24 +119,24 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 #create active schema
-resource "databricks_schema" "active_sbox00" {
-  catalog_name = databricks_catalog.aria_catalog_sbox00.id
-  name         = "active"
-  comment      = "this database is managed by terraform"
-  properties = {
-    kind = "various"
-  }
-}
+# resource "databricks_schema" "active_sbox00" {
+#   catalog_name = databricks_catalog.aria_catalog_sbox00.id
+#   name         = "active"
+#   comment      = "this database is managed by terraform"
+#   properties = {
+#     kind = "various"
+#   }
+# }
 
-#create archive schema
-resource "databricks_schema" "archive_sbox00" {
-  catalog_name = databricks_catalog.aria_catalog_sbox00.id
-  name         = "archive"
-  comment      = "this database is managed by terraform"
-  properties = {
-    kind = "various"
-  }
-}
+# #create archive schema
+# resource "databricks_schema" "archive_sbox00" {
+#   catalog_name = databricks_catalog.aria_catalog_sbox00.id
+#   name         = "archive"
+#   comment      = "this database is managed by terraform"
+#   properties = {
+#     kind = "various"
+#   }
+# }
 
 # Storage credential permissions
 resource "databricks_grants" "storage_cred_grants_sbox00" {
