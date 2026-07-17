@@ -174,37 +174,20 @@ resource "databricks_grants" "external_location_admin_grants_sbox00" {
 }
 
 # Catalog permissions
-resource "databricks_grants" "catalog_aria_grants_sbox00" {
+# resource "databricks_grants" "catalog_aria_grants_sbox00" {
 
-  provider = databricks.sbox-00
+#   provider = databricks.sbox-00
 
-  catalog = databricks_catalog.aria_catalog_sbox00.name
+#   catalog = databricks_catalog.aria_catalog_sbox00.name
 
-  grant {
-    principal = databricks_group.aria_admins.display_name
+#   grant {
+#     principal = databricks_group.aria_admins.display_name
 
-    privileges = [
-      "ALL_PRIVILEGES"
-    ]
-  }
-}
-
-##assign permissions for user to create external location on the metastore
-resource "databricks_grants" "metastore_sbox00" {
-  provider  = databricks.sbox-00
-  metastore = var.metastore_id
-
-  grant {
-    principal = data.azurerm_client_config.current.client_id
-
-    privileges = [
-      "CREATE_CATALOG",
-      "CREATE_EXTERNAL_LOCATION"
-    ]
-  }
-}
-
-##perms on catalog for aria admins
+#     privileges = [
+#       "ALL_PRIVILEGES"
+#     ]
+#   }
+# }
 resource "databricks_grants" "sbox00_catalog" {
   provider = databricks.sbox-00
   catalog  = databricks_catalog.aria_catalog_sbox00.name
@@ -222,6 +205,21 @@ resource "databricks_grants" "sbox00_catalog" {
     privileges = [
       "USE_CATALOG",
       "CREATE"
+    ]
+  }
+}
+
+##assign permissions for user to create external location on the metastore
+resource "databricks_grants" "metastore_sbox00" {
+  provider  = databricks.sbox-00
+  metastore = var.metastore_id
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION"
     ]
   }
 }
