@@ -166,7 +166,7 @@ resource "databricks_grants" "catalog_aria_grants" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore" {
-  provider  = databricks.account
+  provider  = databricks.sbox-00
   metastore = var.metastore_id
 
   grant {
