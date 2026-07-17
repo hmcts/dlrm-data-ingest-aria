@@ -109,9 +109,13 @@ resource "databricks_catalog" "aria_catalog" {
     purpose = "Aria catalog for ${var.env}00"
   }
 
-  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc_${var.env}"
+  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net"
 
   isolation_mode = "ISOLATED"
+
+  depends_on = [
+    databricks_external_location.landing_external
+  ]
 }
 
 # Storage credential permissions
