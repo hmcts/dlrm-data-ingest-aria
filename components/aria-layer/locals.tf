@@ -43,4 +43,14 @@ locals {
       }
     ]
   ])
+
+  schema_names = toset([
+    "aria_bails",
+    "aria_s_bails",
+    "ariadm_arm_fta",
+    "ariadm_arm_uta",
+    "ariadm_arm_fpa",
+    "ariadm_arm_td",
+    "ariadm_arm_joh"
+  ])
 }

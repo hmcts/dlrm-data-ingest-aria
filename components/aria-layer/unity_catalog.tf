@@ -130,9 +130,11 @@ resource "databricks_schema" "active_sbox00" {
 }
 
 resource "databricks_schema" "aria_bails_sbox00" {
+  for_each = local.schema_names
+
   provider     = databricks.sbox-00
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
-  name         = "aria_bails"
+  name         = each.key
   comment      = "this database is managed by terraform"
   properties = {
     kind = "various"
@@ -236,10 +238,44 @@ resource "databricks_grants" "metastore_sbox00" {
   }
 }
 
-resource "databricks_grants" "aria_bails_schema" {
+# resource "databricks_grants" "aria_bails_schema" {
+#   provider = databricks.sbox-00
+
+#   schema = "${databricks_catalog.aria_catalog_sbox00.name}.aria_bails"
+
+#   grant {
+#     principal = databricks_group.aria_admins.display_name
+
+#     privileges = [
+#       "USE_SCHEMA",
+#       "MANAGE",
+#       "CREATE_TABLE",
+#       "CREATE_MATERIALIZED_VIEW",
+#       "MODIFY",
+#       "SELECT"
+#     ]
+#   }
+
+#   grant {
+#     principal = data.azurerm_client_config.current.client_id
+
+#     privileges = [
+#       "USE_SCHEMA",
+#       "MANAGE",
+#       "CREATE_TABLE",
+#       "CREATE_MATERIALIZED_VIEW",
+#       "MODIFY",
+#       "SELECT"
+#     ]
+#   }
+# }
+
+resource "databricks_grants" "schema_grants" {
+  for_each = databricks_schema.schemas
+
   provider = databricks.sbox-00
 
-  schema = "${databricks_catalog.aria_catalog_sbox00.name}.aria_bails"
+  schema = "${databricks_catalog.aria_catalog_sbox00.name}.${each.value.name}"
 
   grant {
     principal = databricks_group.aria_admins.display_name
