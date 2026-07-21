@@ -119,15 +119,17 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 #create active schema
-resource "databricks_schema" "active_sbox00" {
+resource "databricks_schema" "aria_bails_sbox00" {
   provider     = databricks.sbox-00
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
-  name         = "active"
+  name         = "aria_bails"
   comment      = "this database is managed by terraform"
   properties = {
     kind = "various"
   }
 }
+
+##potentially loop schema names above then loop the permissions
 
 # #create archive schema
 # resource "databricks_schema" "archive_sbox00" {
@@ -224,10 +226,10 @@ resource "databricks_grants" "metastore_sbox00" {
   }
 }
 
-resource "databricks_grants" "active_schema" {
+resource "databricks_grants" "aria_bails_schema" {
   provider = databricks.sbox-00
 
-  schema = "${databricks_catalog.aria_catalog_sbox00.name}.active"
+  schema = "${databricks_catalog.aria_catalog_sbox00.name}.aria_bails"
 
   grant {
     principal = databricks_group.aria_admins.display_name
