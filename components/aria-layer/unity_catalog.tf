@@ -119,6 +119,16 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 #create active schema
+resource "databricks_schema" "active_sbox00" {
+  provider     = databricks.sbox-00
+  catalog_name = databricks_catalog.aria_catalog_sbox00.id
+  name         = "active"
+  comment      = "this database is managed by terraform"
+  properties = {
+    kind = "various"
+  }
+}
+
 resource "databricks_schema" "aria_bails_sbox00" {
   provider     = databricks.sbox-00
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
