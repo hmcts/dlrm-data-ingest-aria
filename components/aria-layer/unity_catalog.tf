@@ -129,7 +129,7 @@ resource "databricks_schema" "active_sbox00" {
   }
 }
 
-resource "databricks_schema" "aria_bails_sbox00" {
+resource "databricks_schema" "aria_sbox00" {
   for_each = local.schema_names
 
   provider     = databricks.sbox-00
@@ -271,7 +271,7 @@ resource "databricks_grants" "metastore_sbox00" {
 # }
 
 resource "databricks_grants" "schema_grants" {
-  for_each = databricks_schema.schemas
+  for_each = databricks_schema.aria_sbox00
 
   provider = databricks.sbox-00
 
