@@ -117,10 +117,10 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 resource "databricks_schema" "aria_sbox00" {
-  for_each = var.env == "sbox" ? local.schema_names : [] 
+  for_each = var.env == "sbox" ? local.schema_names : []
 
   provider     = databricks.sbox-00
-  catalog_name = databricks_catalog.aria_catalog_sbox00.id
+  catalog_name = databricks_catalog.aria_catalog_sbox00[0].id
   name         = each.key
   comment      = "this database is managed by terraform"
   properties = {
@@ -150,7 +150,7 @@ resource "databricks_grants" "external_location_admin_grants_sbox00" {
   count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
-  external_location = databricks_external_location.landing_external_sbox00.id
+  external_location = databricks_external_location.landing_external_sbox00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -166,7 +166,7 @@ resource "databricks_grants" "external_location_admin_grants_sbox00" {
 resource "databricks_grants" "sbox00_catalog" {
   count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
-  catalog  = databricks_catalog.aria_catalog_sbox00.name
+  catalog  = databricks_catalog.aria_catalog_sbox00[0].name
   grant {
     principal = data.azurerm_client_config.current.client_id
 
@@ -201,7 +201,7 @@ resource "databricks_grants" "sbox00_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_sbox00" {
-  count    = var.env == "sbox" ? 1 : 0
+  count     = var.env == "sbox" ? 1 : 0
   provider  = databricks.sbox-00
   metastore = var.metastore_id
 
@@ -216,11 +216,11 @@ resource "databricks_grants" "metastore_sbox00" {
 }
 
 resource "databricks_grants" "schema_grants" {
-  for_each = var.env == "sbox" ? databricks_schema.aria_sbox00 : [] 
+  for_each = var.env == "sbox" ? databricks_schema.aria_sbox00 : []
 
   provider = databricks.sbox-00
 
-  schema = "${databricks_catalog.aria_catalog_sbox00.name}.${each.value.name}"
+  schema = "${databricks_catalog.aria_catalog_sbox00[0].name}.${each.value.name}"
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -320,10 +320,10 @@ resource "databricks_catalog" "aria_catalog_stg00" {
 }
 
 resource "databricks_schema" "aria_stg00" {
-  for_each = var.env == "stg" ? local.schema_names : [] 
+  for_each = var.env == "stg" ? local.schema_names : []
 
   provider     = databricks.stg-00
-  catalog_name = databricks_catalog.aria_catalog_stg00.id
+  catalog_name = databricks_catalog.aria_catalog_stg00[0].id
   name         = each.key
   comment      = "this database is managed by terraform"
   properties = {
@@ -353,7 +353,7 @@ resource "databricks_grants" "external_location_admin_grants_stg00" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
 
-  external_location = databricks_external_location.landing_external_stg00.id
+  external_location = databricks_external_location.landing_external_stg00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -369,7 +369,7 @@ resource "databricks_grants" "external_location_admin_grants_stg00" {
 resource "databricks_grants" "stg00_catalog" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
-  catalog  = databricks_catalog.aria_catalog_stg00.name
+  catalog  = databricks_catalog.aria_catalog_stg00[0].name
   grant {
     principal = data.azurerm_client_config.current.client_id
 
@@ -404,7 +404,7 @@ resource "databricks_grants" "stg00_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_stg00" {
-  count    = var.env == "stg" ? 1 : 0
+  count     = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-00
   metastore = var.metastore_id
 
@@ -419,10 +419,10 @@ resource "databricks_grants" "metastore_stg00" {
 }
 
 resource "databricks_grants" "schema_grants_stg00" {
-  for_each = var.env == "stg" ? databricks_schema.stg00 : [] 
+  for_each = var.env == "stg" ? databricks_schema.aria_stg00 : []
   provider = databricks.stg-00
 
-  schema = "${databricks_catalog.aria_catalog_stg00.name}.${each.value.name}"
+  schema = "${databricks_catalog.aria_catalog_stg00[0].name}.${each.value.name}"
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -521,10 +521,10 @@ resource "databricks_catalog" "aria_catalog_stg01" {
 }
 
 resource "databricks_schema" "aria_stg01" {
-  for_each = var.env == "stg" ? local.schema_names : [] 
+  for_each = var.env == "stg" ? local.schema_names : []
 
   provider     = databricks.stg-01
-  catalog_name = databricks_catalog.aria_catalog_stg01.id
+  catalog_name = databricks_catalog.aria_catalog_stg01[0].id
   name         = each.key
   comment      = "this database is managed by terraform"
   properties = {
@@ -554,7 +554,7 @@ resource "databricks_grants" "external_location_admin_grants_stg01" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
 
-  external_location = databricks_external_location.landing_external_stg01.id
+  external_location = databricks_external_location.landing_external_stg01[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -570,7 +570,7 @@ resource "databricks_grants" "external_location_admin_grants_stg01" {
 resource "databricks_grants" "stg01_catalog" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
-  catalog  = databricks_catalog.aria_catalog_stg01.name
+  catalog  = databricks_catalog.aria_catalog_stg01[0].name
   grant {
     principal = data.azurerm_client_config.current.client_id
 
@@ -605,7 +605,7 @@ resource "databricks_grants" "stg01_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_stg01" {
-  count    = var.env == "stg" ? 1 : 0
+  count     = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-01
   metastore = var.metastore_id
 
@@ -620,10 +620,10 @@ resource "databricks_grants" "metastore_stg01" {
 }
 
 resource "databricks_grants" "schema_grants_stg01" {
-  for_each = var.env == "stg" ? databricks_schema.aria_stg01 : [] 
+  for_each = var.env == "stg" ? databricks_schema.aria_stg01 : []
   provider = databricks.stg-01
 
-  schema = "${databricks_catalog.aria_catalog_stg01.name}.${each.value.name}"
+  schema = "${databricks_catalog.aria_catalog_stg01[0].name}.${each.value.name}"
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -722,10 +722,10 @@ resource "databricks_catalog" "aria_catalog_prod00" {
 }
 
 resource "databricks_schema" "aria_prod00" {
-  for_each = var.env == "prod" ? local.schema_names : [] 
-  provider     = databricks.prod-00
+  for_each = var.env == "prod" ? local.schema_names : []
+  provider = databricks.prod-00
 
-  catalog_name = databricks_catalog.aria_catalog_prod00.id
+  catalog_name = databricks_catalog.aria_catalog_prod00[0].id
   name         = each.key
   comment      = "this database is managed by terraform"
   properties = {
@@ -755,7 +755,7 @@ resource "databricks_grants" "external_location_admin_grants_prod00" {
   count    = var.env == "prod" ? 1 : 0
   provider = databricks.prod-00
 
-  external_location = databricks_external_location.landing_external_prod00.id
+  external_location = databricks_external_location.landing_external_prod00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -771,7 +771,7 @@ resource "databricks_grants" "external_location_admin_grants_prod00" {
 resource "databricks_grants" "prod00_catalog" {
   count    = var.env == "prod" ? 1 : 0
   provider = databricks.prod-00
-  catalog  = databricks_catalog.aria_catalog_prod00.name
+  catalog  = databricks_catalog.aria_catalog_prod00[0].name
   grant {
     principal = data.azurerm_client_config.current.client_id
 
@@ -806,7 +806,7 @@ resource "databricks_grants" "prod00_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_prod00" {
-  count    = var.env == "prod" ? 1 : 0
+  count     = var.env == "prod" ? 1 : 0
   provider  = databricks.prod-00
   metastore = var.metastore_id
 
@@ -821,11 +821,11 @@ resource "databricks_grants" "metastore_prod00" {
 }
 
 resource "databricks_grants" "schema_grants_prod00" {
-  for_each = var.env == "prod" ? databricks_schema.aria_prod00 : [] 
+  for_each = var.env == "prod" ? databricks_schema.aria_prod00 : []
 
   provider = databricks.prod-00
 
-  schema = "${databricks_catalog.aria_catalog_prod00.name}.${each.value.name}"
+  schema = "${databricks_catalog.aria_catalog_prod00[0].name}.${each.value.name}"
 
   grant {
     principal = databricks_group.aria_admins.display_name
