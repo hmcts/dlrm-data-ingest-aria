@@ -43,4 +43,38 @@ locals {
       }
     ]
   ])
+
+  schema_names = toset([
+    "aria_bails",
+    "aria_s_bails",
+    "ariadm_arm_fta",
+    "ariadm_arm_uta",
+    "ariadm_arm_fpa",
+    "ariadm_arm_td",
+    "ariadm_arm_joh",
+    "ariadm_active_appeals",
+    "ariadm_active_appeals_bronze_silver",
+    "ariadm_active_appeals_cdam_html",
+    "ariadm_active_appeals_bronze",
+    "ariadm_active_appeals_silver",
+    "appealsubmitted_gold",
+    "audit",
+    "awaitingrespondentevidencea_gold",
+    "awaitingrespondentevidenceb_gold",
+    "caseunderreview_gold",
+    "decidedA_gold",
+    "decision_gold",
+    "ftpaSubmittedA_gold",
+    "ftpaSubmittedB_gold",
+    "gold_payloads",
+    "listing_gold",
+    "paymentPending_gold",
+    "prepareforhearing_gold",
+    "decidedB_gold",
+    "ended_gold",
+    "ftpadecided_gold",
+    "reasonsForAppealSubmitted_gold",
+    "remitted_gold",
+    "ariadm_arm_appeals"
+  ])
 }
