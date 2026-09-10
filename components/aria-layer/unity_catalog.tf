@@ -117,8 +117,7 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 resource "databricks_schema" "aria_sbox00" {
-  count    = var.env == "sbox" ? 1 : 0
-  for_each = local.schema_names
+  for_each = var.env == "sbox" ? local.schema_names : [] 
 
   provider     = databricks.sbox-00
   catalog_name = databricks_catalog.aria_catalog_sbox00.id
@@ -217,8 +216,7 @@ resource "databricks_grants" "metastore_sbox00" {
 }
 
 resource "databricks_grants" "schema_grants" {
-  count    = var.env == "sbox" ? 1 : 0
-  for_each = databricks_schema.aria_sbox00
+  for_each = var.env == "sbox" ? databricks_schema.aria_sbox00 : [] 
 
   provider = databricks.sbox-00
 
@@ -322,8 +320,7 @@ resource "databricks_catalog" "aria_catalog_stg00" {
 }
 
 resource "databricks_schema" "aria_stg00" {
-  count    = var.env == "stg" ? 1 : 0
-  for_each = local.schema_names
+  for_each = var.env == "stg" ? local.schema_names : [] 
 
   provider     = databricks.stg-00
   catalog_name = databricks_catalog.aria_catalog_stg00.id
@@ -422,9 +419,7 @@ resource "databricks_grants" "metastore_stg00" {
 }
 
 resource "databricks_grants" "schema_grants_stg00" {
-  count    = var.env == "stg" ? 1 : 0
-  for_each = databricks_schema.aria_stg00
-
+  for_each = var.env == "stg" ? databricks_schema.stg00 : [] 
   provider = databricks.stg-00
 
   schema = "${databricks_catalog.aria_catalog_stg00.name}.${each.value.name}"
@@ -526,8 +521,7 @@ resource "databricks_catalog" "aria_catalog_stg01" {
 }
 
 resource "databricks_schema" "aria_stg01" {
-  count    = var.env == "stg" ? 1 : 0
-  for_each = local.schema_names
+  for_each = var.env == "stg" ? local.schema_names : [] 
 
   provider     = databricks.stg-01
   catalog_name = databricks_catalog.aria_catalog_stg01.id
@@ -626,8 +620,7 @@ resource "databricks_grants" "metastore_stg01" {
 }
 
 resource "databricks_grants" "schema_grants_stg01" {
-  count    = var.env == "stg" ? 1 : 0
-  for_each = databricks_schema.aria_stg01
+  for_each = var.env == "stg" ? databricks_schema.aria_stg01 : [] 
   provider = databricks.stg-01
 
   schema = "${databricks_catalog.aria_catalog_stg01.name}.${each.value.name}"
@@ -668,7 +661,6 @@ resource "databricks_metastore_assignment" "workspace_prod00" {
 
   workspace_id = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_id
   metastore_id = var.metastore_id
-
 }
 
 # Storage credential
@@ -730,10 +722,9 @@ resource "databricks_catalog" "aria_catalog_prod00" {
 }
 
 resource "databricks_schema" "aria_prod00" {
-  count    = var.env == "prod" ? 1 : 0
-  for_each = local.schema_names
-
+  for_each = var.env == "prod" ? local.schema_names : [] 
   provider     = databricks.prod-00
+
   catalog_name = databricks_catalog.aria_catalog_prod00.id
   name         = each.key
   comment      = "this database is managed by terraform"
@@ -830,8 +821,7 @@ resource "databricks_grants" "metastore_prod00" {
 }
 
 resource "databricks_grants" "schema_grants_prod00" {
-  count    = var.env == "prod" ? 1 : 0
-  for_each = databricks_schema.aria_prod00
+  for_each = var.env == "prod" ? databricks_schema.aria_prod00 : [] 
 
   provider = databricks.prod-00
 
