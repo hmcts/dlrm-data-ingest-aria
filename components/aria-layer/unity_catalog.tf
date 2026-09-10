@@ -50,6 +50,7 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
 
 ##metastore assignment
 resource "databricks_metastore_assignment" "workspace_00" {
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.account
 
   workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
