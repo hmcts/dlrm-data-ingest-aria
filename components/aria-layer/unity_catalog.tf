@@ -60,7 +60,7 @@ resource "databricks_metastore_assignment" "workspace_00" {
 
 # Storage credential
 resource "databricks_storage_credential" "external_sbox00" {
-
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
   name     = "aria_catalog_${var.env}00"
 
@@ -75,7 +75,7 @@ resource "databricks_storage_credential" "external_sbox00" {
 
 # External location
 resource "databricks_external_location" "landing_external_sbox00" {
-
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
   name     = "external_storage_aria_uc_${var.env}00"
   url = format(
@@ -96,7 +96,7 @@ resource "databricks_external_location" "landing_external_sbox00" {
 
 # Catalog
 resource "databricks_catalog" "aria_catalog_sbox00" {
-
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
   name = "aria_${var.env}00"
@@ -117,6 +117,7 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
 }
 
 resource "databricks_schema" "aria_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
   for_each = local.schema_names
 
   provider     = databricks.sbox-00
@@ -130,7 +131,7 @@ resource "databricks_schema" "aria_sbox00" {
 
 # Storage credential permissions
 resource "databricks_grants" "storage_cred_grants_sbox00" {
-
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
   storage_credential = databricks_storage_credential.external_sbox00.id
@@ -147,7 +148,7 @@ resource "databricks_grants" "storage_cred_grants_sbox00" {
 
 # External location permissions
 resource "databricks_grants" "external_location_admin_grants_sbox00" {
-
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
   external_location = databricks_external_location.landing_external_sbox00.id
@@ -164,6 +165,7 @@ resource "databricks_grants" "external_location_admin_grants_sbox00" {
 
 # Catalog permissions
 resource "databricks_grants" "sbox00_catalog" {
+  count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
   catalog  = databricks_catalog.aria_catalog_sbox00.name
   grant {
@@ -200,6 +202,7 @@ resource "databricks_grants" "sbox00_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_sbox00" {
+  count    = var.env == "sbox" ? 1 : 0
   provider  = databricks.sbox-00
   metastore = var.metastore_id
 
@@ -214,6 +217,7 @@ resource "databricks_grants" "metastore_sbox00" {
 }
 
 resource "databricks_grants" "schema_grants" {
+  count    = var.env == "sbox" ? 1 : 0
   for_each = databricks_schema.aria_sbox00
 
   provider = databricks.sbox-00
@@ -251,6 +255,7 @@ resource "databricks_grants" "schema_grants" {
 
 ##metastore assignment
 resource "databricks_metastore_assignment" "workspace_stg00" {
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.account
 
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
@@ -260,7 +265,7 @@ resource "databricks_metastore_assignment" "workspace_stg00" {
 
 # Storage credential
 resource "databricks_storage_credential" "external_stg00" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
   name     = "aria_catalog_${var.env}00"
 
@@ -275,7 +280,7 @@ resource "databricks_storage_credential" "external_stg00" {
 
 # External location
 resource "databricks_external_location" "landing_external_stg00" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
   name     = "external_storage_aria_uc_${var.env}00"
   url = format(
@@ -296,7 +301,7 @@ resource "databricks_external_location" "landing_external_stg00" {
 
 # Catalog
 resource "databricks_catalog" "aria_catalog_stg00" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
 
   name = "aria_${var.env}00"
@@ -317,6 +322,7 @@ resource "databricks_catalog" "aria_catalog_stg00" {
 }
 
 resource "databricks_schema" "aria_stg00" {
+  count    = var.env == "stg" ? 1 : 0
   for_each = local.schema_names
 
   provider     = databricks.stg-00
@@ -330,7 +336,7 @@ resource "databricks_schema" "aria_stg00" {
 
 # Storage credential permissions
 resource "databricks_grants" "storage_cred_grants_stg00" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
 
   storage_credential = databricks_storage_credential.external_stg00.id
@@ -347,7 +353,7 @@ resource "databricks_grants" "storage_cred_grants_stg00" {
 
 # External location permissions
 resource "databricks_grants" "external_location_admin_grants_stg00" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
 
   external_location = databricks_external_location.landing_external_stg00.id
@@ -364,6 +370,7 @@ resource "databricks_grants" "external_location_admin_grants_stg00" {
 
 # Catalog permissions
 resource "databricks_grants" "stg00_catalog" {
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
   catalog  = databricks_catalog.aria_catalog_stg00.name
   grant {
@@ -400,6 +407,7 @@ resource "databricks_grants" "stg00_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_stg00" {
+  count    = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-00
   metastore = var.metastore_id
 
@@ -413,7 +421,8 @@ resource "databricks_grants" "metastore_stg00" {
   }
 }
 
-resource "databricks_grants" "schema_grants" {
+resource "databricks_grants" "schema_grants_stg00" {
+  count    = var.env == "stg" ? 1 : 0
   for_each = databricks_schema.aria_stg00
 
   provider = databricks.stg-00
@@ -451,6 +460,7 @@ resource "databricks_grants" "schema_grants" {
 
 ##metastore assignment
 resource "databricks_metastore_assignment" "workspace_stg01" {
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.account
 
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_id
@@ -459,7 +469,7 @@ resource "databricks_metastore_assignment" "workspace_stg01" {
 
 # Storage credential
 resource "databricks_storage_credential" "external_stg01" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
   name     = "aria_catalog_${var.env}01"
 
@@ -474,7 +484,7 @@ resource "databricks_storage_credential" "external_stg01" {
 
 # External location
 resource "databricks_external_location" "landing_external_stg01" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
   name     = "external_storage_aria_uc_${var.env}01"
   url = format(
@@ -495,7 +505,7 @@ resource "databricks_external_location" "landing_external_stg01" {
 
 # Catalog
 resource "databricks_catalog" "aria_catalog_stg01" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
 
   name = "aria_${var.env}01"
@@ -516,6 +526,7 @@ resource "databricks_catalog" "aria_catalog_stg01" {
 }
 
 resource "databricks_schema" "aria_stg01" {
+  count    = var.env == "stg" ? 1 : 0
   for_each = local.schema_names
 
   provider     = databricks.stg-01
@@ -529,7 +540,7 @@ resource "databricks_schema" "aria_stg01" {
 
 # Storage credential permissions
 resource "databricks_grants" "storage_cred_grants_stg01" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
 
   storage_credential = databricks_storage_credential.external_stg01.id
@@ -546,7 +557,7 @@ resource "databricks_grants" "storage_cred_grants_stg01" {
 
 # External location permissions
 resource "databricks_grants" "external_location_admin_grants_stg01" {
-
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
 
   external_location = databricks_external_location.landing_external_stg01.id
@@ -563,6 +574,7 @@ resource "databricks_grants" "external_location_admin_grants_stg01" {
 
 # Catalog permissions
 resource "databricks_grants" "stg01_catalog" {
+  count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
   catalog  = databricks_catalog.aria_catalog_stg01.name
   grant {
@@ -599,6 +611,7 @@ resource "databricks_grants" "stg01_catalog" {
 
 ##assign permissions for user to create external location on the metastore
 resource "databricks_grants" "metastore_stg01" {
+  count    = var.env == "stg" ? 1 : 0
   provider  = databricks.stg-01
   metastore = var.metastore_id
 
@@ -612,9 +625,9 @@ resource "databricks_grants" "metastore_stg01" {
   }
 }
 
-resource "databricks_grants" "schema_grants" {
+resource "databricks_grants" "schema_grants_stg01" {
+  count    = var.env == "stg" ? 1 : 0
   for_each = databricks_schema.aria_stg01
-
   provider = databricks.stg-01
 
   schema = "${databricks_catalog.aria_catalog_stg01.name}.${each.value.name}"
@@ -646,16 +659,207 @@ resource "databricks_grants" "schema_grants" {
   }
 }
 
+########################prod00########################
+
+##metastore assignment
+resource "databricks_metastore_assignment" "workspace_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.account
+
+  workspace_id = data.azurerm_databricks_workspace.db_ws["prod-00"].workspace_id
+  metastore_id = var.metastore_id
+
+}
+
+# Storage credential
+resource "databricks_storage_credential" "external_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+  name     = "aria_catalog_${var.env}00"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
+  }
+
+  isolation_mode = "ISOLATION_MODE_ISOLATED"
+  comment        = "Managed by TF"
+}
 
 
+# External location
+resource "databricks_external_location" "landing_external_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+  name     = "external_storage_aria_uc_${var.env}00"
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net/aria_uc",
+    "landing",
+    data.azurerm_storage_account.landing["00"].name
+  )
 
+  credential_name = databricks_storage_credential.external_prod00.id
 
+  comment        = "Managed by TF"
+  isolation_mode = "ISOLATED"
 
+  depends_on = [
+    databricks_metastore_assignment.workspace_00
+  ]
+}
 
+# Catalog
+resource "databricks_catalog" "aria_catalog_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
 
+  name = "aria_${var.env}00"
 
+  comment = "this catalog is managed by terraform"
 
+  properties = {
+    purpose = "Aria catalog for ${var.env}00"
+  }
 
+  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc"
 
-#prod00
+  isolation_mode = "ISOLATED"
 
+  depends_on = [
+    databricks_external_location.landing_external_prod00
+  ]
+}
+
+resource "databricks_schema" "aria_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  for_each = local.schema_names
+
+  provider     = databricks.prod-00
+  catalog_name = databricks_catalog.aria_catalog_prod00.id
+  name         = each.key
+  comment      = "this database is managed by terraform"
+  properties = {
+    kind = "various"
+  }
+}
+
+# Storage credential permissions
+resource "databricks_grants" "storage_cred_grants_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  storage_credential = databricks_storage_credential.external_prod00.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# External location permissions
+resource "databricks_grants" "external_location_admin_grants_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  external_location = databricks_external_location.landing_external_prod00.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# Catalog permissions
+resource "databricks_grants" "prod00_catalog" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+  catalog  = databricks_catalog.aria_catalog_prod00.name
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MODIFY",
+      "MANAGE",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MANAGE",
+      "MODIFY",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+}
+
+##assign permissions for user to create external location on the metastore
+resource "databricks_grants" "metastore_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider  = databricks.prod-00
+  metastore = var.metastore_id
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION"
+    ]
+  }
+}
+
+resource "databricks_grants" "schema_grants_prod00" {
+  count    = var.env == "prod" ? 1 : 0
+  for_each = databricks_schema.aria_prod00
+
+  provider = databricks.prod-00
+
+  schema = "${databricks_catalog.aria_catalog_prod00.name}.${each.value.name}"
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+}
