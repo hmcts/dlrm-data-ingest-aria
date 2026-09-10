@@ -84,7 +84,7 @@ resource "databricks_external_location" "landing_external_sbox00" {
     data.azurerm_storage_account.landing["00"].name
   )
 
-  credential_name = databricks_storage_credential.external_sbox00.id
+  credential_name = databricks_storage_credential.external_sbox00[0].id
 
   comment        = "Managed by TF"
   isolation_mode = "ISOLATED"
@@ -133,7 +133,7 @@ resource "databricks_grants" "storage_cred_grants_sbox00" {
   count    = var.env == "sbox" ? 1 : 0
   provider = databricks.sbox-00
 
-  storage_credential = databricks_storage_credential.external_sbox00.id
+  storage_credential = databricks_storage_credential.external_sbox00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -287,13 +287,13 @@ resource "databricks_external_location" "landing_external_stg00" {
     data.azurerm_storage_account.landing["00"].name
   )
 
-  credential_name = databricks_storage_credential.external_stg00.id
+  credential_name = databricks_storage_credential.external_stg00[0].id
 
   comment        = "Managed by TF"
   isolation_mode = "ISOLATED"
 
   depends_on = [
-    databricks_metastore_assignment.workspace_00
+    databricks_metastore_assignment.workspace_stg00
   ]
 }
 
@@ -336,7 +336,7 @@ resource "databricks_grants" "storage_cred_grants_stg00" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-00
 
-  storage_credential = databricks_storage_credential.external_stg00.id
+  storage_credential = databricks_storage_credential.external_stg00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -488,13 +488,13 @@ resource "databricks_external_location" "landing_external_stg01" {
     data.azurerm_storage_account.landing["01"].name
   )
 
-  credential_name = databricks_storage_credential.external_stg01.id
+  credential_name = databricks_storage_credential.external_stg01[0].id
 
   comment        = "Managed by TF"
   isolation_mode = "ISOLATED"
 
   depends_on = [
-    databricks_metastore_assignment.workspace_01
+    databricks_metastore_assignment.workspace_stg01
   ]
 }
 
@@ -537,7 +537,7 @@ resource "databricks_grants" "storage_cred_grants_stg01" {
   count    = var.env == "stg" ? 1 : 0
   provider = databricks.stg-01
 
-  storage_credential = databricks_storage_credential.external_stg01.id
+  storage_credential = databricks_storage_credential.external_stg01[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
@@ -689,13 +689,13 @@ resource "databricks_external_location" "landing_external_prod00" {
     data.azurerm_storage_account.landing["00"].name
   )
 
-  credential_name = databricks_storage_credential.external_prod00.id
+  credential_name = databricks_storage_credential.external_prod00[0].id
 
   comment        = "Managed by TF"
   isolation_mode = "ISOLATED"
 
   depends_on = [
-    databricks_metastore_assignment.workspace_00
+    databricks_metastore_assignment.workspace_prod00
   ]
 }
 
@@ -738,7 +738,7 @@ resource "databricks_grants" "storage_cred_grants_prod00" {
   count    = var.env == "prod" ? 1 : 0
   provider = databricks.prod-00
 
-  storage_credential = databricks_storage_credential.external_prod00.id
+  storage_credential = databricks_storage_credential.external_prod00[0].id
 
   grant {
     principal = databricks_group.aria_admins.display_name
