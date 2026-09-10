@@ -46,7 +46,7 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   }
 }
 
-##sbox00
+###############################sbox00#############################
 
 ##metastore assignment
 resource "databricks_metastore_assignment" "workspace_00" {
@@ -55,8 +55,6 @@ resource "databricks_metastore_assignment" "workspace_00" {
   workspace_id = data.azurerm_databricks_workspace.db_ws["sbox-00"].workspace_id
   metastore_id = var.metastore_id
 
-  # Optional but recommended
-  #   default_catalog_name = "main"
 }
 
 
@@ -118,17 +116,6 @@ resource "databricks_catalog" "aria_catalog_sbox00" {
   ]
 }
 
-#create active schema
-resource "databricks_schema" "active_sbox00" {
-  provider     = databricks.sbox-00
-  catalog_name = databricks_catalog.aria_catalog_sbox00.id
-  name         = "active"
-  comment      = "this database is managed by terraform"
-  properties = {
-    kind = "various"
-  }
-}
-
 resource "databricks_schema" "aria_sbox00" {
   for_each = local.schema_names
 
@@ -140,18 +127,6 @@ resource "databricks_schema" "aria_sbox00" {
     kind = "various"
   }
 }
-
-##potentially loop schema names above then loop the permissions
-
-# #create archive schema
-# resource "databricks_schema" "archive_sbox00" {
-#   catalog_name = databricks_catalog.aria_catalog_sbox00.id
-#   name         = "archive"
-#   comment      = "this database is managed by terraform"
-#   properties = {
-#     kind = "various"
-#   }
-# }
 
 # Storage credential permissions
 resource "databricks_grants" "storage_cred_grants_sbox00" {
@@ -238,38 +213,6 @@ resource "databricks_grants" "metastore_sbox00" {
   }
 }
 
-# resource "databricks_grants" "aria_bails_schema" {
-#   provider = databricks.sbox-00
-
-#   schema = "${databricks_catalog.aria_catalog_sbox00.name}.aria_bails"
-
-#   grant {
-#     principal = databricks_group.aria_admins.display_name
-
-#     privileges = [
-#       "USE_SCHEMA",
-#       "MANAGE",
-#       "CREATE_TABLE",
-#       "CREATE_MATERIALIZED_VIEW",
-#       "MODIFY",
-#       "SELECT"
-#     ]
-#   }
-
-#   grant {
-#     principal = data.azurerm_client_config.current.client_id
-
-#     privileges = [
-#       "USE_SCHEMA",
-#       "MANAGE",
-#       "CREATE_TABLE",
-#       "CREATE_MATERIALIZED_VIEW",
-#       "MODIFY",
-#       "SELECT"
-#     ]
-#   }
-# }
-
 resource "databricks_grants" "schema_grants" {
   for_each = databricks_schema.aria_sbox00
 
@@ -304,19 +247,404 @@ resource "databricks_grants" "schema_grants" {
   }
 }
 
-##stg00
+#############################stg00#############################
+
+##metastore assignment
+resource "databricks_metastore_assignment" "workspace_stg00" {
+  provider = databricks.account
+
+  workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
+  metastore_id = var.metastore_id
+
+}
+
+# Storage credential
+resource "databricks_storage_credential" "external_stg00" {
+
+  provider = databricks.stg-00
+  name     = "aria_catalog_${var.env}00"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["00"].id
+  }
+
+  isolation_mode = "ISOLATION_MODE_ISOLATED"
+  comment        = "Managed by TF"
+}
 
 
+# External location
+resource "databricks_external_location" "landing_external_stg00" {
+
+  provider = databricks.stg-00
+  name     = "external_storage_aria_uc_${var.env}00"
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net/aria_uc",
+    "landing",
+    data.azurerm_storage_account.landing["00"].name
+  )
+
+  credential_name = databricks_storage_credential.external_stg00.id
+
+  comment        = "Managed by TF"
+  isolation_mode = "ISOLATED"
+
+  depends_on = [
+    databricks_metastore_assignment.workspace_00
+  ]
+}
+
+# Catalog
+resource "databricks_catalog" "aria_catalog_stg00" {
+
+  provider = databricks.stg-00
+
+  name = "aria_${var.env}00"
+
+  comment = "this catalog is managed by terraform"
+
+  properties = {
+    purpose = "Aria catalog for ${var.env}00"
+  }
+
+  storage_root = "abfss://landing@ingest00landing${var.env}.dfs.core.windows.net/aria_uc"
+
+  isolation_mode = "ISOLATED"
+
+  depends_on = [
+    databricks_external_location.landing_external_stg00
+  ]
+}
+
+resource "databricks_schema" "aria_stg00" {
+  for_each = local.schema_names
+
+  provider     = databricks.stg-00
+  catalog_name = databricks_catalog.aria_catalog_stg00.id
+  name         = each.key
+  comment      = "this database is managed by terraform"
+  properties = {
+    kind = "various"
+  }
+}
+
+# Storage credential permissions
+resource "databricks_grants" "storage_cred_grants_stg00" {
+
+  provider = databricks.stg-00
+
+  storage_credential = databricks_storage_credential.external_stg00.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# External location permissions
+resource "databricks_grants" "external_location_admin_grants_stg00" {
+
+  provider = databricks.stg-00
+
+  external_location = databricks_external_location.landing_external_stg00.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# Catalog permissions
+resource "databricks_grants" "stg00_catalog" {
+  provider = databricks.stg-00
+  catalog  = databricks_catalog.aria_catalog_stg00.name
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MODIFY",
+      "MANAGE",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MANAGE",
+      "MODIFY",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+}
+
+##assign permissions for user to create external location on the metastore
+resource "databricks_grants" "metastore_stg00" {
+  provider  = databricks.stg-00
+  metastore = var.metastore_id
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION"
+    ]
+  }
+}
+
+resource "databricks_grants" "schema_grants" {
+  for_each = databricks_schema.aria_stg00
+
+  provider = databricks.stg-00
+
+  schema = "${databricks_catalog.aria_catalog_stg00.name}.${each.value.name}"
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+}
+
+###############################stg01#############################
+
+##metastore assignment
+resource "databricks_metastore_assignment" "workspace_stg01" {
+  provider = databricks.account
+
+  workspace_id = data.azurerm_databricks_workspace.db_ws["stg-01"].workspace_id
+  metastore_id = var.metastore_id
+}
+
+# Storage credential
+resource "databricks_storage_credential" "external_stg01" {
+
+  provider = databricks.stg-01
+  name     = "aria_catalog_${var.env}01"
+
+  azure_managed_identity {
+    access_connector_id = azurerm_databricks_access_connector.ext_access_connector["01"].id
+  }
+
+  isolation_mode = "ISOLATION_MODE_ISOLATED"
+  comment        = "Managed by TF"
+}
 
 
+# External location
+resource "databricks_external_location" "landing_external_stg01" {
 
+  provider = databricks.stg-01
+  name     = "external_storage_aria_uc_${var.env}01"
+  url = format(
+    "abfss://%s@%s.dfs.core.windows.net/aria_uc",
+    "landing",
+    data.azurerm_storage_account.landing["01"].name
+  )
 
+  credential_name = databricks_storage_credential.external_stg01.id
 
+  comment        = "Managed by TF"
+  isolation_mode = "ISOLATED"
 
+  depends_on = [
+    databricks_metastore_assignment.workspace_01
+  ]
+}
 
-##stg01
+# Catalog
+resource "databricks_catalog" "aria_catalog_stg01" {
 
+  provider = databricks.stg-01
 
+  name = "aria_${var.env}01"
+
+  comment = "this catalog is managed by terraform"
+
+  properties = {
+    purpose = "Aria catalog for ${var.env}01"
+  }
+
+  storage_root = "abfss://landing@ingest01landing${var.env}.dfs.core.windows.net/aria_uc"
+
+  isolation_mode = "ISOLATED"
+
+  depends_on = [
+    databricks_external_location.landing_external_stg01
+  ]
+}
+
+resource "databricks_schema" "aria_stg01" {
+  for_each = local.schema_names
+
+  provider     = databricks.stg-01
+  catalog_name = databricks_catalog.aria_catalog_stg01.id
+  name         = each.key
+  comment      = "this database is managed by terraform"
+  properties = {
+    kind = "various"
+  }
+}
+
+# Storage credential permissions
+resource "databricks_grants" "storage_cred_grants_stg01" {
+
+  provider = databricks.stg-01
+
+  storage_credential = databricks_storage_credential.external_stg01.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# External location permissions
+resource "databricks_grants" "external_location_admin_grants_stg01" {
+
+  provider = databricks.stg-01
+
+  external_location = databricks_external_location.landing_external_stg01.id
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "ALL_PRIVILEGES",
+      "MANAGE"
+    ]
+  }
+}
+
+# Catalog permissions
+resource "databricks_grants" "stg01_catalog" {
+  provider = databricks.stg-01
+  catalog  = databricks_catalog.aria_catalog_stg01.name
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MODIFY",
+      "MANAGE",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_CATALOG",
+      "CREATE_SCHEMA",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "SELECT",
+      "MANAGE",
+      "MODIFY",
+      "BROWSE",
+      "USE_SCHEMA"
+    ]
+  }
+}
+
+##assign permissions for user to create external location on the metastore
+resource "databricks_grants" "metastore_stg01" {
+  provider  = databricks.stg-01
+  metastore = var.metastore_id
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "CREATE_CATALOG",
+      "CREATE_EXTERNAL_LOCATION"
+    ]
+  }
+}
+
+resource "databricks_grants" "schema_grants" {
+  for_each = databricks_schema.aria_stg01
+
+  provider = databricks.stg-01
+
+  schema = "${databricks_catalog.aria_catalog_stg01.name}.${each.value.name}"
+
+  grant {
+    principal = databricks_group.aria_admins.display_name
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+
+  grant {
+    principal = data.azurerm_client_config.current.client_id
+
+    privileges = [
+      "USE_SCHEMA",
+      "MANAGE",
+      "CREATE_TABLE",
+      "CREATE_MATERIALIZED_VIEW",
+      "MODIFY",
+      "SELECT"
+    ]
+  }
+}
 
 
 
