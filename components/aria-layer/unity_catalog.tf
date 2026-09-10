@@ -216,7 +216,7 @@ resource "databricks_grants" "metastore_sbox00" {
 }
 
 resource "databricks_grants" "schema_grants" {
-  for_each = var.env == "sbox" ? databricks_schema.aria_sbox00 : []
+  for_each = var.env == "sbox" ? databricks_schema.aria_sbox00 : {}
 
   provider = databricks.sbox-00
 
@@ -419,7 +419,7 @@ resource "databricks_grants" "metastore_stg00" {
 }
 
 resource "databricks_grants" "schema_grants_stg00" {
-  for_each = var.env == "stg" ? databricks_schema.aria_stg00 : []
+  for_each = var.env == "stg" ? databricks_schema.aria_stg00 : {}
   provider = databricks.stg-00
 
   schema = "${databricks_catalog.aria_catalog_stg00[0].name}.${each.value.name}"
@@ -620,7 +620,7 @@ resource "databricks_grants" "metastore_stg01" {
 }
 
 resource "databricks_grants" "schema_grants_stg01" {
-  for_each = var.env == "stg" ? databricks_schema.aria_stg01 : []
+  for_each = var.env == "stg" ? databricks_schema.aria_stg01 : {}
   provider = databricks.stg-01
 
   schema = "${databricks_catalog.aria_catalog_stg01[0].name}.${each.value.name}"
@@ -821,7 +821,7 @@ resource "databricks_grants" "metastore_prod00" {
 }
 
 resource "databricks_grants" "schema_grants_prod00" {
-  for_each = var.env == "prod" ? databricks_schema.aria_prod00 : []
+  for_each = var.env == "prod" ? databricks_schema.aria_prod00 : {}
 
   provider = databricks.prod-00
 
