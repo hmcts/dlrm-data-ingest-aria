@@ -259,7 +259,6 @@ resource "databricks_metastore_assignment" "workspace_stg00" {
 
   workspace_id = data.azurerm_databricks_workspace.db_ws["stg-00"].workspace_id
   metastore_id = var.metastore_id
-
 }
 
 # Storage credential
@@ -417,6 +416,10 @@ resource "databricks_grants" "metastore_stg00" {
       "CREATE_EXTERNAL_LOCATION"
     ]
   }
+
+  depends_on = [
+    databricks_metastore_assignment.workspace_stg00
+  ]
 }
 
 resource "databricks_grants" "schema_grants_stg00" {
