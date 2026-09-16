@@ -258,7 +258,7 @@ resource "databricks_volume" "databricks_packages_volume_sbox00" {
   count = var.env == "sbox" ? 1 : 0
 
   name             = "packages"
-  catalog_name     = databricks_catalog.aria_catalog_sbox00.name
+  catalog_name     = databricks_catalog.aria_catalog_sbox00[0].name
   schema_name      = databricks_schema.aria_sbox00["ariadm_active_appeals"].name
   volume_type      = "MANAGED"
   comment          = "this volume is managed by terraform"
@@ -473,7 +473,7 @@ resource "databricks_volume" "databricks_packages_volume_stg00" {
   count = var.env == "stg" ? 1 : 0
 
   name             = "packages"
-  catalog_name     = databricks_catalog.aria_catalog_stg00.name
+  catalog_name     = databricks_catalog.aria_catalog_stg00[0].name
   schema_name      = databricks_schema.aria_stg00["ariadm_active_appeals"].name
   volume_type      = "MANAGED"
   comment          = "this volume is managed by terraform"
@@ -688,7 +688,7 @@ resource "databricks_volume" "databricks_packages_volume_stg01" {
   count = var.env == "stg" ? 1 : 0
 
   name             = "packages"
-  catalog_name     = databricks_catalog.aria_catalog_stg01.name
+  catalog_name     = databricks_catalog.aria_catalog_stg01[0].name
   schema_name      = databricks_schema.aria_stg01["ariadm_active_appeals"].name
   volume_type      = "MANAGED"
   comment          = "this volume is managed by terraform"
@@ -900,7 +900,7 @@ resource "databricks_volume" "databricks_packages_volume_prod00" {
   count = var.env == "stg" ? 1 : 0
 
   name             = "packages"
-  catalog_name     = databricks_catalog.aria_catalog_prod00.name
+  catalog_name     = databricks_catalog.aria_catalog_prod00[0].name
   schema_name      = databricks_schema.aria_prod00["ariadm_active_appeals"].name
   volume_type      = "MANAGED"
   comment          = "this volume is managed by terraform"
