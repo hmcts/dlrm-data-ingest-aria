@@ -182,7 +182,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "MANAGE",
       "BROWSE",
       "USE_SCHEMA",
-      "READ VOLUME"
+      "READ_VOLUME"
     ]
   }
   grant {
@@ -198,7 +198,7 @@ resource "databricks_grants" "sbox00_catalog" {
       "MODIFY",
       "BROWSE",
       "USE_SCHEMA",
-      "READ VOLUME"
+      "READ_VOLUME"
     ]
   }
 }
