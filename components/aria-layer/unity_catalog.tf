@@ -216,7 +216,7 @@ resource "databricks_grants" "metastore_sbox00" {
   }
 
   depends_on = [
-    databricks_metastore_assignment.workspace_sbox00
+    databricks_metastore_assignment.workspace_00
   ]
 }
 
