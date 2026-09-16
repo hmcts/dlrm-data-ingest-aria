@@ -34,7 +34,6 @@ resource "databricks_group_member" "aria_admins" {
 
 # Access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
-
   for_each = var.landing_zones
 
   name                = "${var.env}${each.key}-ext-access-connector"
@@ -44,6 +43,8 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   identity {
     type = "SystemAssigned"
   }
+
+  tags = module.ctags.common_tags
 }
 
 ###############################sbox00#############################
