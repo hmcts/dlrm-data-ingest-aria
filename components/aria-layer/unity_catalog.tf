@@ -264,6 +264,8 @@ resource "databricks_grants" "schema_grants" {
 resource "databricks_volume" "databricks_packages_volume_sbox00" {
   count = var.env == "sbox" ? 1 : 0
 
+  provider         = databricks.sbox-00
+
   name             = "packages"
   catalog_name     = databricks_catalog.aria_catalog_sbox00[0].name
   schema_name      = databricks_schema.aria_sbox00["ariadm_active_appeals"].name
@@ -488,6 +490,8 @@ resource "databricks_grants" "schema_grants_stg00" {
 
 resource "databricks_volume" "databricks_packages_volume_stg00" {
   count = var.env == "stg" ? 1 : 0
+
+  provider         = databricks.stg-00
 
   name             = "packages"
   catalog_name     = databricks_catalog.aria_catalog_stg00[0].name
@@ -714,6 +718,8 @@ resource "databricks_grants" "schema_grants_stg01" {
 resource "databricks_volume" "databricks_packages_volume_stg01" {
   count = var.env == "stg" ? 1 : 0
 
+  provider         = databricks.stg-01
+
   name             = "packages"
   catalog_name     = databricks_catalog.aria_catalog_stg01[0].name
   schema_name      = databricks_schema.aria_stg01["ariadm_active_appeals"].name
@@ -935,6 +941,8 @@ resource "databricks_grants" "schema_grants_prod00" {
 
 resource "databricks_volume" "databricks_packages_volume_prod00" {
   count = var.env == "prod" ? 1 : 0
+
+  provider         = databricks.prod-00
 
   name             = "packages"
   catalog_name     = databricks_catalog.aria_catalog_prod00[0].name
