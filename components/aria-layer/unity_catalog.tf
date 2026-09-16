@@ -897,7 +897,7 @@ resource "databricks_grants" "schema_grants_prod00" {
 }
 
 resource "databricks_volume" "databricks_packages_volume_prod00" {
-  count = var.env == "stg" ? 1 : 0
+  count = var.env == "prod" ? 1 : 0
 
   name             = "packages"
   catalog_name     = databricks_catalog.aria_catalog_prod00[0].name
