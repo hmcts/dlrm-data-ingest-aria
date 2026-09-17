@@ -34,7 +34,6 @@ resource "databricks_group_member" "aria_admins" {
 
 # Access connector
 resource "azurerm_databricks_access_connector" "ext_access_connector" {
-
   for_each = var.landing_zones
 
   name                = "${var.env}${each.key}-ext-access-connector"
@@ -44,6 +43,8 @@ resource "azurerm_databricks_access_connector" "ext_access_connector" {
   identity {
     type = "SystemAssigned"
   }
+
+  tags = module.ctags.common_tags
 }
 
 ###############################sbox00#############################
@@ -180,7 +181,10 @@ resource "databricks_grants" "sbox00_catalog" {
       "MODIFY",
       "MANAGE",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
   grant {
@@ -195,7 +199,10 @@ resource "databricks_grants" "sbox00_catalog" {
       "MANAGE",
       "MODIFY",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
 }
@@ -214,6 +221,10 @@ resource "databricks_grants" "metastore_sbox00" {
       "CREATE_EXTERNAL_LOCATION"
     ]
   }
+
+  depends_on = [
+    databricks_metastore_assignment.workspace_00
+  ]
 }
 
 resource "databricks_grants" "schema_grants" {
@@ -248,6 +259,22 @@ resource "databricks_grants" "schema_grants" {
       "SELECT"
     ]
   }
+}
+
+resource "databricks_volume" "databricks_packages_volume_sbox00" {
+  count = var.env == "sbox" ? 1 : 0
+
+  provider         = databricks.sbox-00
+
+  name             = "packages"
+  catalog_name     = databricks_catalog.aria_catalog_sbox00[0].name
+  schema_name      = databricks_schema.aria_sbox00["ariadm_active_appeals"].name
+  volume_type      = "MANAGED"
+  comment          = "this volume is managed by terraform"
+
+  depends_on = [
+    databricks_grants.sbox00_catalog
+  ]
 }
 
 #############################stg00#############################
@@ -382,7 +409,10 @@ resource "databricks_grants" "stg00_catalog" {
       "MODIFY",
       "MANAGE",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
   grant {
@@ -397,7 +427,10 @@ resource "databricks_grants" "stg00_catalog" {
       "MANAGE",
       "MODIFY",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
 }
@@ -453,6 +486,22 @@ resource "databricks_grants" "schema_grants_stg00" {
       "SELECT"
     ]
   }
+}
+
+resource "databricks_volume" "databricks_packages_volume_stg00" {
+  count = var.env == "stg" ? 1 : 0
+
+  provider         = databricks.stg-00
+
+  name             = "packages"
+  catalog_name     = databricks_catalog.aria_catalog_stg00[0].name
+  schema_name      = databricks_schema.aria_stg00["ariadm_active_appeals"].name
+  volume_type      = "MANAGED"
+  comment          = "this volume is managed by terraform"
+
+  depends_on = [
+    databricks_grants.stg00_catalog
+  ]
 }
 
 ###############################stg01#############################
@@ -587,7 +636,10 @@ resource "databricks_grants" "stg01_catalog" {
       "MODIFY",
       "MANAGE",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
   grant {
@@ -602,7 +654,10 @@ resource "databricks_grants" "stg01_catalog" {
       "MANAGE",
       "MODIFY",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
 }
@@ -621,6 +676,10 @@ resource "databricks_grants" "metastore_stg01" {
       "CREATE_EXTERNAL_LOCATION"
     ]
   }
+
+  depends_on = [
+    databricks_metastore_assignment.workspace_stg01
+  ]
 }
 
 resource "databricks_grants" "schema_grants_stg01" {
@@ -654,6 +713,22 @@ resource "databricks_grants" "schema_grants_stg01" {
       "SELECT"
     ]
   }
+}
+
+resource "databricks_volume" "databricks_packages_volume_stg01" {
+  count = var.env == "stg" ? 1 : 0
+
+  provider         = databricks.stg-01
+
+  name             = "packages"
+  catalog_name     = databricks_catalog.aria_catalog_stg01[0].name
+  schema_name      = databricks_schema.aria_stg01["ariadm_active_appeals"].name
+  volume_type      = "MANAGED"
+  comment          = "this volume is managed by terraform"
+
+  depends_on = [
+    databricks_grants.stg01_catalog
+  ]
 }
 
 ########################prod00########################
@@ -788,7 +863,10 @@ resource "databricks_grants" "prod00_catalog" {
       "MODIFY",
       "MANAGE",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
   grant {
@@ -803,7 +881,10 @@ resource "databricks_grants" "prod00_catalog" {
       "MANAGE",
       "MODIFY",
       "BROWSE",
-      "USE_SCHEMA"
+      "USE_SCHEMA",
+      "CREATE_VOLUME",
+      "READ_VOLUME",
+      "WRITE_VOLUME"
     ]
   }
 }
@@ -856,4 +937,20 @@ resource "databricks_grants" "schema_grants_prod00" {
       "SELECT"
     ]
   }
+}
+
+resource "databricks_volume" "databricks_packages_volume_prod00" {
+  count = var.env == "prod" ? 1 : 0
+
+  provider         = databricks.prod-00
+
+  name             = "packages"
+  catalog_name     = databricks_catalog.aria_catalog_prod00[0].name
+  schema_name      = databricks_schema.aria_prod00["ariadm_active_appeals"].name
+  volume_type      = "MANAGED"
+  comment          = "this volume is managed by terraform"
+
+  depends_on = [
+    databricks_grants.prod00_catalog
+  ]
 }
