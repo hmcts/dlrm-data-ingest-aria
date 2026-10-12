@@ -66,7 +66,10 @@ variable "aria_uc_admins" {
     "nazee.kadiu1@hmcts.net",
     "peter.gresty@hmcts.net",
     "rafiul.alam@hmcts.net",
-    "tony.chow@hmcts.net"
+    "tony.chow@hmcts.net",
+    "andrew.mcdevitt@justice.gov.uk",
+    "peter.gresty@justice.gov.uk",
+    "tony.chow@justice.gov.uk"
   ]
 }
 
