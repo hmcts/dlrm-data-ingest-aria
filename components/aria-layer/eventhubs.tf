@@ -31,8 +31,7 @@ resource "azurerm_eventhub" "aria_topic" {
   message_retention   = each.value.segment == "td" ? 5 : 1
 
   #   tags = module.ctags.common_tags
-} #      if !(var.env == "sbox" && combo.lz_key == "00") #|| combo.lz_key == "01"
-#       count = var.landing_zones == "00" ? 1 : 0
+}
 
 #active EventHubs
 resource "azurerm_eventhub" "aria_active_topic" {
@@ -136,21 +135,3 @@ output "eventhub_sas_keys" {
   description = "Connection string for eventhubs to be stored in key vaults"
 
 }
-
-# data "azure_eventhub_namespace" "aria_eventhub_ns" {
-#     for_each = var.landing_zones
-
-#     name = "ingest${each.key}-integration-eventHubNamspace001-${var.env}"
-#     resource_group_name = ""
-# }
-
-
-# import {
-#   id = "/subscriptions/df72bb30-d6fb-47bd-82ee-5eb87473ddb3/resourceGroups/ingest01-main-sbox/providers/Microsoft.EventHub/namespaces/ingest01-integration-eventHubNamespace001-sbox/eventhubs/evh-active-ack-01-uks-dlrm-01"
-#   to = azurerm_eventhub.aria_active_topic["01-ack"]
-# }
-
-# import {
-#   id = "/subscriptions/df72bb30-d6fb-47bd-82ee-5eb87473ddb3/resourceGroups/ingest00-main-sbox/providers/Microsoft.EventHub/namespaces/ingest00-integration-eventHubNamespace001-sbox/eventhubs/evh-active-pub-00-uks-dlrm-01"
-#   to = azurerm_eventhub.aria_active_topic["00-pub"]
-# }
