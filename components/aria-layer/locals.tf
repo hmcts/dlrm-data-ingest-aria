@@ -27,6 +27,7 @@ locals {
     "af-bails",
     "af-joh",
     "af-td",
+    "af-jpet",
     "af-active-ccd",          # Active Azure Function APP
     "af-active-caselink-ccd", # Active Azure Function APP for case linking
     "af-active-cdam"          # Active Azure Function APP for CDAM
@@ -52,6 +53,7 @@ locals {
     "ariadm_arm_fpa",
     "ariadm_arm_td",
     "ariadm_arm_joh",
+    "ariadm_arm_jpet",
     "ariadm_active_appeals",
     "ariadm_active_appeals_bronze_silver",
     "ariadm_active_appeals_cdam_html",
