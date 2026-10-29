@@ -45,13 +45,13 @@ variable "node_type_id" {
 variable "max_capacity" {
   description = "Max total instances in the pool"
   type        = number
-  default     = 26
+  default     = 24
 }
 
 variable "min_capacity" {
   description = "Min total instances in the pool"
   type        = number
-  default     = 26
+  default     = 0
 }
 
 variable "metastore_id" {
