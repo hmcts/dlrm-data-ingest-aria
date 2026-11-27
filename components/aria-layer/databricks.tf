@@ -242,3 +242,31 @@ resource "databricks_instance_pool" "config_file_prod00" {
   node_type_id                          = var.node_type_id
   idle_instance_autotermination_minutes = 60
 }
+
+resource "databricks_service_principal" "databricks_sp_sbox_00" {
+  count    = var.env == "sbox" ? 1 : 0
+  provider = databricks.sbox-00
+
+  display_name = "aria-job-runner"
+}
+
+resource "databricks_service_principal" "databricks_sp_stg_00" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-00
+
+  display_name = "aria-job-runner"
+}
+
+resource "databricks_service_principal" "databricks_sp_stg_01" {
+  count    = var.env == "stg" ? 1 : 0
+  provider = databricks.stg-01
+
+  display_name = "aria-job-runner"
+}
+
+resource "databricks_service_principal" "databricks_sp_prod_00" {
+  count    = var.env == "prod" ? 1 : 0
+  provider = databricks.prod-00
+
+  display_name = "aria-job-runner"
+}
